@@ -1,0 +1,54 @@
+# robots.txt for AI Supermarket (https://ai.toolboxes.top/)
+
+# Default: allow everything
+User-agent: *
+Allow: /
+
+# Explicitly allow major AI crawlers for GEO (Generative Engine Optimization)
+# See https://ai.supermarket/llms.txt for LLM-friendly index
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: GoogleOther
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: Bytespider
+Allow: /
+User-agent: CCBot
+Allow: /
+User-agent: cohere-ai
+Allow: /
+User-agent: cohere-training-data-crawler
+Allow: /
+User-agent: Diffbot
+Allow: /
+User-agent: DuckAssistBot
+Allow: /
+User-agent: Meta-ExternalAgent
+Allow: /
+User-agent: MistralAI-User
+Allow: /
+User-agent: Amazonbot
+Allow: /
+
+# Sitemap
+Sitemap: https://ai.toolboxes.top/sitemap.xml
+
+# LLM-friendly index (llmstxt.org standard)
+# Listed here for crawlers that don't auto-discover /llms.txt via link tags.

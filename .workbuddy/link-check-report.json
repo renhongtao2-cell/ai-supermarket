@@ -1,0 +1,1447 @@
+{
+  "summary": {
+    "total_tools": 204,
+    "unique_urls": 204,
+    "ok": 137,
+    "redirect": 0,
+    "http4xx": 36,
+    "http5xx": 0,
+    "unreachable": 31
+  },
+  "http4xx": [
+    {
+      "tool": "QuillBot",
+      "url": "quillbot.com",
+      "status": 403,
+      "final": "https://quillbot.com/",
+      "ms": 2916
+    },
+    {
+      "tool": "Midjourney",
+      "url": "www.midjourney.com",
+      "status": 403,
+      "final": "https://www.midjourney.com/",
+      "ms": 1803
+    },
+    {
+      "tool": "DALL·E 3",
+      "url": "openai.com/dall-e-3",
+      "status": 403,
+      "final": "",
+      "ms": 2982
+    },
+    {
+      "tool": "Canva Magic Studio",
+      "url": "www.canva.com",
+      "status": 403,
+      "final": "https://www.canva.com/",
+      "ms": 3061
+    },
+    {
+      "tool": "Sora",
+      "url": "openai.com/sora",
+      "status": 403,
+      "final": "",
+      "ms": 1650
+    },
+    {
+      "tool": "Windsurf",
+      "url": "windsurf.com",
+      "status": 429,
+      "final": "https://devin.ai/desktop",
+      "ms": 1075
+    },
+    {
+      "tool": "Tabnine",
+      "url": "www.tabnine.com",
+      "status": 403,
+      "final": "https://www.tabnine.com/",
+      "ms": 2217
+    },
+    {
+      "tool": "Lovable",
+      "url": "lovable.dev",
+      "status": 403,
+      "final": "https://lovable.dev/",
+      "ms": 4544
+    },
+    {
+      "tool": "Cody",
+      "url": "sourcegraph.com/cody",
+      "status": 403,
+      "final": "",
+      "ms": 1713
+    },
+    {
+      "tool": "Phind",
+      "url": "www.phind.com",
+      "status": 403,
+      "final": "https://www.phind.com/",
+      "ms": 1997
+    },
+    {
+      "tool": "Tome",
+      "url": "tome.app",
+      "status": 404,
+      "final": "https://tome.app/",
+      "ms": 287
+    },
+    {
+      "tool": "Make",
+      "url": "www.make.com",
+      "status": 403,
+      "final": "https://www.make.com/en",
+      "ms": 5708
+    },
+    {
+      "tool": "ZoomInfo",
+      "url": "www.zoominfo.com",
+      "status": 403,
+      "final": "https://www.zoominfo.com/",
+      "ms": 7403
+    },
+    {
+      "tool": "Freddy AI",
+      "url": "www.freshworks.com",
+      "status": 403,
+      "final": "https://www.freshworks.com/",
+      "ms": 1638
+    },
+    {
+      "tool": "Ada",
+      "url": "www.ada.cx",
+      "status": 403,
+      "final": "https://www.ada.cx/",
+      "ms": 3210
+    },
+    {
+      "tool": "HireVue",
+      "url": "www.hirevue.com",
+      "status": 403,
+      "final": "https://www.hirevue.com/",
+      "ms": 2206
+    },
+    {
+      "tool": "SeekOut",
+      "url": "www.seekout.com",
+      "status": 403,
+      "final": "https://www.seekout.com/",
+      "ms": 2261
+    },
+    {
+      "tool": "Zest AI",
+      "url": "www.zest.ai",
+      "status": 403,
+      "final": "https://www.zest.ai/",
+      "ms": 8237
+    },
+    {
+      "tool": "Ocrolus",
+      "url": "www.ocrolus.com",
+      "status": 403,
+      "final": "https://www.ocrolus.com/",
+      "ms": 9337
+    },
+    {
+      "tool": "CoCounsel",
+      "url": "casetext.com",
+      "status": 403,
+      "final": "https://casetext.com/",
+      "ms": 4076
+    },
+    {
+      "tool": "Luminance",
+      "url": "www.luminance.com",
+      "status": 403,
+      "final": "https://www.luminance.com/",
+      "ms": 5131
+    },
+    {
+      "tool": "Tempus",
+      "url": "www.tempus.com",
+      "status": 403,
+      "final": "https://www.tempus.com/",
+      "ms": 856
+    },
+    {
+      "tool": "Hippocratic AI",
+      "url": "www.hippocraticai.com",
+      "status": 403,
+      "final": "https://www.hippocraticai.com/",
+      "ms": 2294
+    },
+    {
+      "tool": "Quizlet",
+      "url": "quizlet.com",
+      "status": 403,
+      "final": "https://quizlet.com/",
+      "ms": 2254
+    },
+    {
+      "tool": "Century Tech",
+      "url": "www.century.tech",
+      "status": 403,
+      "final": "https://www.century.tech/",
+      "ms": 2168
+    },
+    {
+      "tool": "Eduaide",
+      "url": "www.eduaide.ai",
+      "status": 403,
+      "final": "https://www.eduaide.ai/",
+      "ms": 1036
+    },
+    {
+      "tool": "Zillow",
+      "url": "www.zillow.com",
+      "status": 403,
+      "final": "https://www.zillow.com/",
+      "ms": 1954
+    },
+    {
+      "tool": "Redfin",
+      "url": "www.redfin.com",
+      "status": 405,
+      "final": "https://www.redfin.com/",
+      "ms": 1830
+    },
+    {
+      "tool": "DataRobot",
+      "url": "www.datarobot.com",
+      "status": 403,
+      "final": "https://www.datarobot.com/",
+      "ms": 1055
+    },
+    {
+      "tool": "Domo",
+      "url": "www.domo.com",
+      "status": 405,
+      "final": "https://www.domo.com/",
+      "ms": 1862
+    },
+    {
+      "tool": "Julius AI",
+      "url": "julius.ai",
+      "status": 403,
+      "final": "https://julius.ai/",
+      "ms": 2024
+    },
+    {
+      "tool": "GuideGeek",
+      "url": "guidegeek.com",
+      "status": 404,
+      "final": "https://guidegeek.com/",
+      "ms": 1074
+    },
+    {
+      "tool": "Augury",
+      "url": "www.augury.com",
+      "status": 403,
+      "final": "https://www.augury.com/",
+      "ms": 4041
+    },
+    {
+      "tool": "Climate FieldView",
+      "url": "climate.com",
+      "status": 404,
+      "final": "https://climate.com/",
+      "ms": 1022
+    },
+    {
+      "tool": "xarvio Field Manager",
+      "url": "www.xarvio.com",
+      "status": 404,
+      "final": "https://www.xarvio.com/cn/za.html",
+      "ms": 2176
+    },
+    {
+      "tool": "Cropwise",
+      "url": "www.cropwise.com",
+      "status": 403,
+      "final": "https://www.cropwise.com/",
+      "ms": 3505
+    }
+  ],
+  "http5xx": [],
+  "unreachable": [
+    {
+      "tool": "ChatGPT",
+      "url": "chatgpt.com",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10694
+    },
+    {
+      "tool": "Google Gemini",
+      "url": "gemini.google.com",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10577
+    },
+    {
+      "tool": "Microsoft Copilot",
+      "url": "copilot.microsoft.com",
+      "status": "TypeError:ECONNRESET",
+      "final": "",
+      "ms": 133
+    },
+    {
+      "tool": "Perplexity",
+      "url": "www.perplexity.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10571
+    },
+    {
+      "tool": "Grok",
+      "url": "grok.com",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10571
+    },
+    {
+      "tool": "Meta AI",
+      "url": "www.meta.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10574
+    },
+    {
+      "tool": "Poe",
+      "url": "poe.com",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10568
+    },
+    {
+      "tool": "Mistral Le Chat",
+      "url": "chat.mistral.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10557
+    },
+    {
+      "tool": "Writesonic",
+      "url": "writesonic.com",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10161
+    },
+    {
+      "tool": "Looka",
+      "url": "looka.com",
+      "status": "TIMEOUT:20",
+      "final": "",
+      "ms": 12007
+    },
+    {
+      "tool": "Ideogram",
+      "url": "ideogram.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10355
+    },
+    {
+      "tool": "Leonardo.Ai",
+      "url": "leonardo.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10334
+    },
+    {
+      "tool": "Pika",
+      "url": "pika.art",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10271
+    },
+    {
+      "tool": "HeyGen",
+      "url": "www.heygen.com",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10274
+    },
+    {
+      "tool": "Suno",
+      "url": "suno.com",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10156
+    },
+    {
+      "tool": "Zoom AI Companion",
+      "url": "www.zoom.us",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10121
+    },
+    {
+      "tool": "Gamma",
+      "url": "gamma.app",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10336
+    },
+    {
+      "tool": "Beautiful.ai",
+      "url": "www.beautiful.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10256
+    },
+    {
+      "tool": "Bloomreach",
+      "url": "www.bloomreach.com",
+      "status": "TIMEOUT:20",
+      "final": "",
+      "ms": 12010
+    },
+    {
+      "tool": "Syte",
+      "url": "syte.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10312
+    },
+    {
+      "tool": "Tidio Lyro",
+      "url": "www.tidio.com",
+      "status": "TIMEOUT:20",
+      "final": "",
+      "ms": 12001
+    },
+    {
+      "tool": "Robin AI",
+      "url": "www.robinai.com",
+      "status": "TypeError:ERR_TLS_CERT_ALTNAME_INVALID",
+      "final": "",
+      "ms": 1473
+    },
+    {
+      "tool": "LawGeex",
+      "url": "www.lawgeex.com",
+      "status": "TypeError:CERT_HAS_EXPIRED",
+      "final": "",
+      "ms": 875
+    },
+    {
+      "tool": "Lexis+ AI",
+      "url": "www.lexisnexis.com",
+      "status": "TypeError:UND_ERR_HEADERS_OVERFLOW",
+      "final": "",
+      "ms": 3361
+    },
+    {
+      "tool": "Viz.ai",
+      "url": "www.viz.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10438
+    },
+    {
+      "tool": "Socratic",
+      "url": "socratic.org",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10348
+    },
+    {
+      "tool": "Hopper",
+      "url": "www.hopper.com",
+      "status": "TIMEOUT:20",
+      "final": "",
+      "ms": 12014
+    },
+    {
+      "tool": "Character.AI",
+      "url": "character.ai",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10373
+    },
+    {
+      "tool": "NovelAI",
+      "url": "novelai.net",
+      "status": "TypeError:UND_ERR_CONNECT_TIMEOUT",
+      "final": "",
+      "ms": 10607
+    },
+    {
+      "tool": "SparkCognition",
+      "url": "www.sparkcognition.com",
+      "status": "TypeError:CERT_HAS_EXPIRED",
+      "final": "",
+      "ms": 1375
+    },
+    {
+      "tool": "Falkonry",
+      "url": "falkonry.com",
+      "status": "TIMEOUT:20",
+      "final": "",
+      "ms": 12006
+    }
+  ],
+  "redirects": [],
+  "ok": [
+    {
+      "tool": "Claude",
+      "url": "claude.ai",
+      "status": 200,
+      "final": "https://claude.com/app-unavailable-in-region",
+      "ms": 3329
+    },
+    {
+      "tool": "DeepSeek",
+      "url": "chat.deepseek.com",
+      "status": 200,
+      "final": "https://chat.deepseek.com/",
+      "ms": 198
+    },
+    {
+      "tool": "Grammarly",
+      "url": "www.grammarly.com",
+      "status": 200,
+      "final": "https://www.grammarly.com/",
+      "ms": 1552
+    },
+    {
+      "tool": "Rytr",
+      "url": "rytr.me",
+      "status": 200,
+      "final": "https://rytr.me/",
+      "ms": 263
+    },
+    {
+      "tool": "Wordtune",
+      "url": "www.wordtune.com",
+      "status": 200,
+      "final": "https://www.wordtune.com/",
+      "ms": 6064
+    },
+    {
+      "tool": "Sudowrite",
+      "url": "www.sudowrite.com",
+      "status": 200,
+      "final": "https://sudowrite.com/",
+      "ms": 8898
+    },
+    {
+      "tool": "HyperWrite",
+      "url": "www.hyperwriteai.com",
+      "status": 200,
+      "final": "https://www.hyperwriteai.com/",
+      "ms": 760
+    },
+    {
+      "tool": "Writer",
+      "url": "writer.com",
+      "status": 200,
+      "final": "https://writer.com/",
+      "ms": 1255
+    },
+    {
+      "tool": "Originality.ai",
+      "url": "originality.ai",
+      "status": 200,
+      "final": "https://originality.ai/",
+      "ms": 2474
+    },
+    {
+      "tool": "Hemingway",
+      "url": "hemingwayapp.com",
+      "status": 200,
+      "final": "https://hemingwayapp.com/",
+      "ms": 1881
+    },
+    {
+      "tool": "Jasper",
+      "url": "www.jasper.ai",
+      "status": 200,
+      "final": "https://www.jasper.ai/",
+      "ms": 755
+    },
+    {
+      "tool": "Copy.ai",
+      "url": "www.copy.ai",
+      "status": 200,
+      "final": "https://www.copy.ai/",
+      "ms": 1102
+    },
+    {
+      "tool": "Surfer SEO",
+      "url": "surferseo.com",
+      "status": 200,
+      "final": "https://surferseo.com/",
+      "ms": 2065
+    },
+    {
+      "tool": "Semrush",
+      "url": "www.semrush.com",
+      "status": 200,
+      "final": "https://www.semrush.com/",
+      "ms": 1590
+    },
+    {
+      "tool": "AdCreative.ai",
+      "url": "www.adcreative.ai",
+      "status": 200,
+      "final": "https://www.adcreative.ai/",
+      "ms": 1191
+    },
+    {
+      "tool": "HubSpot",
+      "url": "www.hubspot.com",
+      "status": 200,
+      "final": "https://www.hubspot.com/",
+      "ms": 2836
+    },
+    {
+      "tool": "MarketMuse",
+      "url": "www.marketmuse.com",
+      "status": 200,
+      "final": "https://www.marketmuse.com/",
+      "ms": 2093
+    },
+    {
+      "tool": "Anyword",
+      "url": "anyword.com",
+      "status": 200,
+      "final": "https://www.anyword.com/",
+      "ms": 5734
+    },
+    {
+      "tool": "Scalenut",
+      "url": "www.scalenut.com",
+      "status": 200,
+      "final": "https://www.scalenut.com/",
+      "ms": 3507
+    },
+    {
+      "tool": "Predis.ai",
+      "url": "predis.ai",
+      "status": 200,
+      "final": "https://predis.ai/",
+      "ms": 1740
+    },
+    {
+      "tool": "Adobe Firefly",
+      "url": "firefly.adobe.com",
+      "status": 200,
+      "final": "https://firefly.adobe.com/denied.html",
+      "ms": 1363
+    },
+    {
+      "tool": "Figma AI",
+      "url": "www.figma.com",
+      "status": 200,
+      "final": "https://www.figma.com/",
+      "ms": 820
+    },
+    {
+      "tool": "Framer AI",
+      "url": "www.framer.com",
+      "status": 200,
+      "final": "https://www.framer.com/",
+      "ms": 292
+    },
+    {
+      "tool": "Uizard",
+      "url": "uizard.io",
+      "status": 200,
+      "final": "https://uizard.io/",
+      "ms": 1044
+    },
+    {
+      "tool": "Stable Diffusion",
+      "url": "stability.ai",
+      "status": 200,
+      "final": "https://stability.ai/",
+      "ms": 1002
+    },
+    {
+      "tool": "Kittl",
+      "url": "www.kittl.com",
+      "status": 200,
+      "final": "https://www.kittl.com/",
+      "ms": 1358
+    },
+    {
+      "tool": "Recraft",
+      "url": "www.recraft.ai",
+      "status": 200,
+      "final": "https://www.recraft.ai/",
+      "ms": 287
+    },
+    {
+      "tool": "Runway",
+      "url": "runwayml.com",
+      "status": 200,
+      "final": "https://runway.com/",
+      "ms": 522
+    },
+    {
+      "tool": "Synthesia",
+      "url": "www.synthesia.io",
+      "status": 200,
+      "final": "https://www.synthesia.io/",
+      "ms": 1010
+    },
+    {
+      "tool": "Descript",
+      "url": "www.descript.com",
+      "status": 200,
+      "final": "https://www.descript.com/",
+      "ms": 4371
+    },
+    {
+      "tool": "ElevenLabs",
+      "url": "elevenlabs.io",
+      "status": 200,
+      "final": "https://elevenlabs.io/",
+      "ms": 1060
+    },
+    {
+      "tool": "Murf AI",
+      "url": "murf.ai",
+      "status": 200,
+      "final": "https://murf.ai/",
+      "ms": 905
+    },
+    {
+      "tool": "Udio",
+      "url": "www.udio.com",
+      "status": 200,
+      "final": "https://www.udio.com/",
+      "ms": 589
+    },
+    {
+      "tool": "Opus Clip",
+      "url": "www.opus.pro",
+      "status": 200,
+      "final": "https://www.opus.pro/",
+      "ms": 1122
+    },
+    {
+      "tool": "Topaz Video AI",
+      "url": "www.topazlabs.com",
+      "status": 200,
+      "final": "https://www.topazlabs.com/",
+      "ms": 2368
+    },
+    {
+      "tool": "CapCut",
+      "url": "www.capcut.com",
+      "status": 200,
+      "final": "https://www.capcut.cn/",
+      "ms": 1071
+    },
+    {
+      "tool": "LALAL.AI",
+      "url": "www.lalal.ai",
+      "status": 200,
+      "final": "https://www.lalal.ai/",
+      "ms": 747
+    },
+    {
+      "tool": "GitHub Copilot",
+      "url": "github.com/features/copilot",
+      "status": 200,
+      "final": "",
+      "ms": 716
+    },
+    {
+      "tool": "Cursor",
+      "url": "cursor.com",
+      "status": 200,
+      "final": "https://cursor.com/",
+      "ms": 277
+    },
+    {
+      "tool": "Replit",
+      "url": "replit.com",
+      "status": 200,
+      "final": "https://replit.com/",
+      "ms": 763
+    },
+    {
+      "tool": "Amazon Q Developer",
+      "url": "aws.amazon.com/q/developer/",
+      "status": 200,
+      "final": "",
+      "ms": 755
+    },
+    {
+      "tool": "v0",
+      "url": "v0.dev",
+      "status": 200,
+      "final": "https://v0.app/",
+      "ms": 540
+    },
+    {
+      "tool": "Bolt.new",
+      "url": "bolt.new",
+      "status": 200,
+      "final": "https://bolt.new/",
+      "ms": 1477
+    },
+    {
+      "tool": "JetBrains AI",
+      "url": "www.jetbrains.com/ai/",
+      "status": 200,
+      "final": "",
+      "ms": 733
+    },
+    {
+      "tool": "Notion AI",
+      "url": "www.notion.com",
+      "status": 200,
+      "final": "https://www.notion.com/",
+      "ms": 895
+    },
+    {
+      "tool": "Otter.ai",
+      "url": "otter.ai",
+      "status": 200,
+      "final": "https://otter.ai/",
+      "ms": 1037
+    },
+    {
+      "tool": "Fireflies.ai",
+      "url": "fireflies.ai",
+      "status": 200,
+      "final": "https://fireflies.ai/",
+      "ms": 2135
+    },
+    {
+      "tool": "ClickUp Brain",
+      "url": "clickup.com",
+      "status": 200,
+      "final": "https://clickup.com/",
+      "ms": 676
+    },
+    {
+      "tool": "Asana AI",
+      "url": "asana.com",
+      "status": 200,
+      "final": "https://asana.com/",
+      "ms": 712
+    },
+    {
+      "tool": "Slack AI",
+      "url": "slack.com",
+      "status": 200,
+      "final": "https://slack.com/",
+      "ms": 770
+    },
+    {
+      "tool": "Superhuman",
+      "url": "superhuman.com",
+      "status": 200,
+      "final": "https://superhuman.com/",
+      "ms": 1102
+    },
+    {
+      "tool": "Zapier",
+      "url": "zapier.com",
+      "status": 200,
+      "final": "https://zapier.com/",
+      "ms": 776
+    },
+    {
+      "tool": "Bardeen",
+      "url": "www.bardeen.ai",
+      "status": 200,
+      "final": "https://www.bardeen.ai/",
+      "ms": 971
+    },
+    {
+      "tool": "Reclaim.ai",
+      "url": "reclaim.ai",
+      "status": 200,
+      "final": "https://reclaim.ai/",
+      "ms": 837
+    },
+    {
+      "tool": "Motion",
+      "url": "www.usemotion.com",
+      "status": 200,
+      "final": "https://www.usemotion.com/",
+      "ms": 1621
+    },
+    {
+      "tool": "Shopify Magic",
+      "url": "www.shopify.com",
+      "status": 200,
+      "final": "https://www.shopify.com/",
+      "ms": 1151
+    },
+    {
+      "tool": "Algolia",
+      "url": "www.algolia.com",
+      "status": 200,
+      "final": "https://www.algolia.com/",
+      "ms": 4695
+    },
+    {
+      "tool": "ViSenze",
+      "url": "www.visenze.com",
+      "status": 200,
+      "final": "https://www.visenze.com/",
+      "ms": 2248
+    },
+    {
+      "tool": "Perfect Corp",
+      "url": "www.perfectcorp.com",
+      "status": 200,
+      "final": "https://www.perfectcorp.com/zh-cn/business",
+      "ms": 259
+    },
+    {
+      "tool": "Clerk.io",
+      "url": "clerk.io",
+      "status": 200,
+      "final": "https://www.clerk.io/",
+      "ms": 1310
+    },
+    {
+      "tool": "Yotpo",
+      "url": "www.yotpo.com",
+      "status": 200,
+      "final": "https://www.yotpo.com/",
+      "ms": 4424
+    },
+    {
+      "tool": "Salesforce Einstein",
+      "url": "www.salesforce.com",
+      "status": 200,
+      "final": "https://www.salesforce.com/",
+      "ms": 793
+    },
+    {
+      "tool": "Apollo.io",
+      "url": "www.apollo.io",
+      "status": 200,
+      "final": "https://www.apollo.io/",
+      "ms": 2067
+    },
+    {
+      "tool": "Clay",
+      "url": "www.clay.com",
+      "status": 200,
+      "final": "https://www.clay.com/",
+      "ms": 949
+    },
+    {
+      "tool": "Gong",
+      "url": "www.gong.io",
+      "status": 200,
+      "final": "https://www.gong.io/",
+      "ms": 2507
+    },
+    {
+      "tool": "Outreach",
+      "url": "www.outreach.io",
+      "status": 200,
+      "final": "https://www.outreach.ai/",
+      "ms": 2039
+    },
+    {
+      "tool": "Regie.ai",
+      "url": "www.regie.ai",
+      "status": 200,
+      "final": "https://regie.ai/",
+      "ms": 1794
+    },
+    {
+      "tool": "Lavender",
+      "url": "www.lavender.ai",
+      "status": 200,
+      "final": "https://lavender.ai/",
+      "ms": 4024
+    },
+    {
+      "tool": "Seamless.AI",
+      "url": "seamless.ai",
+      "status": 200,
+      "final": "https://seamless.ai/",
+      "ms": 998
+    },
+    {
+      "tool": "Intercom Fin",
+      "url": "www.intercom.com",
+      "status": 200,
+      "final": "https://www.intercom.com/",
+      "ms": 1012
+    },
+    {
+      "tool": "Zendesk AI",
+      "url": "www.zendesk.com",
+      "status": 200,
+      "final": "https://www.zendesk.com/",
+      "ms": 2015
+    },
+    {
+      "tool": "Drift",
+      "url": "www.drift.com",
+      "status": 200,
+      "final": "https://www.drift.com/",
+      "ms": 1164
+    },
+    {
+      "tool": "Forethought",
+      "url": "www.forethought.ai",
+      "status": 200,
+      "final": "https://forethought.ai/",
+      "ms": 3391
+    },
+    {
+      "tool": "Chatbase",
+      "url": "www.chatbase.co",
+      "status": 200,
+      "final": "https://www.chatbase.co/",
+      "ms": 278
+    },
+    {
+      "tool": "Voiceflow",
+      "url": "www.voiceflow.com",
+      "status": 200,
+      "final": "https://www.voiceflow.com/",
+      "ms": 732
+    },
+    {
+      "tool": "LivePerson",
+      "url": "www.liveperson.com",
+      "status": 200,
+      "final": "https://www.liveperson.com/",
+      "ms": 756
+    },
+    {
+      "tool": "Paradox Olivia",
+      "url": "www.paradox.ai",
+      "status": 200,
+      "final": "https://www.paradox.ai/",
+      "ms": 2252
+    },
+    {
+      "tool": "Eightfold AI",
+      "url": "eightfold.ai",
+      "status": 200,
+      "final": "https://eightfold.ai/",
+      "ms": 795
+    },
+    {
+      "tool": "Phenom",
+      "url": "www.phenom.com",
+      "status": 200,
+      "final": "https://www.phenom.com/",
+      "ms": 1353
+    },
+    {
+      "tool": "Textio",
+      "url": "textio.com",
+      "status": 200,
+      "final": "https://textio.com/",
+      "ms": 1982
+    },
+    {
+      "tool": "Manatal",
+      "url": "www.manatal.com",
+      "status": 200,
+      "final": "https://www.manatal.com/",
+      "ms": 2777
+    },
+    {
+      "tool": "LinkedIn AI",
+      "url": "www.linkedin.com",
+      "status": 200,
+      "final": "https://www.linkedin.cn/",
+      "ms": 687
+    },
+    {
+      "tool": "Digits",
+      "url": "digits.com",
+      "status": 200,
+      "final": "https://digits.com/",
+      "ms": 853
+    },
+    {
+      "tool": "Truewind",
+      "url": "www.truewind.ai",
+      "status": 200,
+      "final": "https://www.truewind.ai/",
+      "ms": 803
+    },
+    {
+      "tool": "Pilot",
+      "url": "pilot.com",
+      "status": 200,
+      "final": "https://pilot.com/",
+      "ms": 1539
+    },
+    {
+      "tool": "Ramp",
+      "url": "ramp.com",
+      "status": 200,
+      "final": "https://ramp.com/",
+      "ms": 2596
+    },
+    {
+      "tool": "Brex",
+      "url": "www.brex.com",
+      "status": 200,
+      "final": "https://www.brex.com/",
+      "ms": 905
+    },
+    {
+      "tool": "Kavout",
+      "url": "www.kavout.com",
+      "status": 200,
+      "final": "https://www.kavout.com/",
+      "ms": 1524
+    },
+    {
+      "tool": "Booke.ai",
+      "url": "booke.ai",
+      "status": 200,
+      "final": "https://booke.ai/",
+      "ms": 1219
+    },
+    {
+      "tool": "AlphaSense",
+      "url": "www.alpha-sense.com",
+      "status": 200,
+      "final": "https://www.alpha-sense.com/",
+      "ms": 1665
+    },
+    {
+      "tool": "Harvey",
+      "url": "www.harvey.ai",
+      "status": 200,
+      "final": "https://www.harvey.ai/",
+      "ms": 1041
+    },
+    {
+      "tool": "Spellbook",
+      "url": "www.spellbook.legal",
+      "status": 200,
+      "final": "https://spellbook.com/",
+      "ms": 7842
+    },
+    {
+      "tool": "DoNotPay",
+      "url": "donotpay.com",
+      "status": 200,
+      "final": "https://donotpay.com/",
+      "ms": 1286
+    },
+    {
+      "tool": "Genie AI",
+      "url": "www.genieai.co",
+      "status": 200,
+      "final": "https://www.genieai.co/",
+      "ms": 1355
+    },
+    {
+      "tool": "Nuance DAX",
+      "url": "www.nuance.com",
+      "status": 200,
+      "final": "https://dragon.nuance.com/en-us/home",
+      "ms": 5782
+    },
+    {
+      "tool": "Suki",
+      "url": "www.suki.ai",
+      "status": 200,
+      "final": "https://www.suki.ai/",
+      "ms": 2052
+    },
+    {
+      "tool": "Abridge",
+      "url": "www.abridge.com",
+      "status": 200,
+      "final": "https://www.abridge.com/",
+      "ms": 3705
+    },
+    {
+      "tool": "Ada Health",
+      "url": "ada.com",
+      "status": 200,
+      "final": "https://ada.com/",
+      "ms": 3222
+    },
+    {
+      "tool": "PathAI",
+      "url": "www.pathai.com",
+      "status": 200,
+      "final": "https://www.pathai.com/",
+      "ms": 1502
+    },
+    {
+      "tool": "Buoy Health",
+      "url": "www.buoyhealth.com",
+      "status": 200,
+      "final": "https://www.buoyhealth.com/",
+      "ms": 921
+    },
+    {
+      "tool": "Glass Health",
+      "url": "glass.health",
+      "status": 200,
+      "final": "https://glass.health/",
+      "ms": 627
+    },
+    {
+      "tool": "Khanmigo",
+      "url": "www.khanacademy.org/khan-labs",
+      "status": 200,
+      "final": "",
+      "ms": 259
+    },
+    {
+      "tool": "Duolingo",
+      "url": "www.duolingo.com",
+      "status": 200,
+      "final": "https://www.duolingo.com/",
+      "ms": 834
+    },
+    {
+      "tool": "Photomath",
+      "url": "photomath.com",
+      "status": 200,
+      "final": "https://photomath.com/",
+      "ms": 1352
+    },
+    {
+      "tool": "Carnegie Learning",
+      "url": "www.carnegielearning.com",
+      "status": 200,
+      "final": "https://www.carnegielearning.com/",
+      "ms": 1080
+    },
+    {
+      "tool": "Gradescope",
+      "url": "www.gradescope.com",
+      "status": 200,
+      "final": "https://www.gradescope.com/",
+      "ms": 1190
+    },
+    {
+      "tool": "MagicSchool",
+      "url": "www.magicschool.ai",
+      "status": 200,
+      "final": "https://www.magicschool.ai/",
+      "ms": 4468
+    },
+    {
+      "tool": "HouseCanary",
+      "url": "www.housecanary.com",
+      "status": 200,
+      "final": "https://www.housecanary.com/",
+      "ms": 1007
+    },
+    {
+      "tool": "Restb.ai",
+      "url": "www.restb.ai",
+      "status": 200,
+      "final": "https://restb.ai/",
+      "ms": 1169
+    },
+    {
+      "tool": "Epique AI",
+      "url": "epiqueai.com",
+      "status": 200,
+      "final": "https://epiqueai.com/",
+      "ms": 953
+    },
+    {
+      "tool": "Ylopo",
+      "url": "www.ylopo.com",
+      "status": 200,
+      "final": "https://www.ylopo.com/",
+      "ms": 1277
+    },
+    {
+      "tool": "Structurely",
+      "url": "structurely.com",
+      "status": 200,
+      "final": "https://www.structurely.com/",
+      "ms": 1376
+    },
+    {
+      "tool": "Matterport",
+      "url": "www.matterport.com",
+      "status": 200,
+      "final": "https://matterport.com/",
+      "ms": 3369
+    },
+    {
+      "tool": "Tableau",
+      "url": "www.tableau.com",
+      "status": 200,
+      "final": "https://www.tableau.com/",
+      "ms": 1027
+    },
+    {
+      "tool": "Microsoft Power BI",
+      "url": "www.microsoft.com/power-platform/products/power-bi",
+      "status": 200,
+      "final": "https://www.microsoft.com/zh-cn/power-platform/products/power-bi",
+      "ms": 2584
+    },
+    {
+      "tool": "ThoughtSpot",
+      "url": "www.thoughtspot.com",
+      "status": 200,
+      "final": "https://www.thoughtspot.com/",
+      "ms": 1507
+    },
+    {
+      "tool": "H2O.ai",
+      "url": "h2o.ai",
+      "status": 200,
+      "final": "https://h2o.ai/",
+      "ms": 973
+    },
+    {
+      "tool": "Hex",
+      "url": "hex.tech",
+      "status": 200,
+      "final": "https://hex.tech/",
+      "ms": 2021
+    },
+    {
+      "tool": "Rows",
+      "url": "rows.com",
+      "status": 200,
+      "final": "https://rows.com/product",
+      "ms": 1893
+    },
+    {
+      "tool": "Akkio",
+      "url": "www.akkio.com",
+      "status": 200,
+      "final": "https://www.akkio.com/",
+      "ms": 2188
+    },
+    {
+      "tool": "Expedia",
+      "url": "www.expedia.com",
+      "status": 200,
+      "final": "https://www.expedia.com/",
+      "ms": 1766
+    },
+    {
+      "tool": "Booking.com",
+      "url": "www.booking.com",
+      "status": 200,
+      "final": "https://www.booking.com/pipl_consent.zh-cn.html?target_page=https%3A%2F%2Fwww.booking.com%2F%3F&aid=304142",
+      "ms": 2340
+    },
+    {
+      "tool": "Mindtrip",
+      "url": "www.mindtrip.ai",
+      "status": 200,
+      "final": "https://images.mindtrip.ai/heroku/construction.html",
+      "ms": 4961
+    },
+    {
+      "tool": "Layla",
+      "url": "layla.ai",
+      "status": 200,
+      "final": "https://layla.ai/",
+      "ms": 760
+    },
+    {
+      "tool": "Wonderplan",
+      "url": "wonderplan.ai",
+      "status": 200,
+      "final": "https://wonderplan.ai/",
+      "ms": 1707
+    },
+    {
+      "tool": "iPlan.ai",
+      "url": "iplan.ai",
+      "status": 200,
+      "final": "https://iplan.ai/",
+      "ms": 2301
+    },
+    {
+      "tool": "Inworld AI",
+      "url": "inworld.ai",
+      "status": 200,
+      "final": "https://inworld.ai/",
+      "ms": 1199
+    },
+    {
+      "tool": "Convai",
+      "url": "www.convai.com",
+      "status": 200,
+      "final": "https://convai.com/",
+      "ms": 7309
+    },
+    {
+      "tool": "Charisma",
+      "url": "charisma.ai",
+      "status": 200,
+      "final": "https://charisma.ai/",
+      "ms": 1099
+    },
+    {
+      "tool": "Rosebud AI",
+      "url": "rosebud.ai",
+      "status": 200,
+      "final": "https://rosebud.ai/",
+      "ms": 1740
+    },
+    {
+      "tool": "Ludo.ai",
+      "url": "ludo.ai",
+      "status": 200,
+      "final": "https://ludo.ai/",
+      "ms": 2199
+    },
+    {
+      "tool": "AI Dungeon",
+      "url": "aidungeon.io",
+      "status": 200,
+      "final": "https://aidungeon.com/",
+      "ms": 2340
+    },
+    {
+      "tool": "C3 AI",
+      "url": "c3.ai",
+      "status": 200,
+      "final": "https://c3.ai/",
+      "ms": 2404
+    },
+    {
+      "tool": "Uptake",
+      "url": "uptake.com",
+      "status": 200,
+      "final": "https://uptake.com/",
+      "ms": 1613
+    },
+    {
+      "tool": "Sight Machine",
+      "url": "sightmachine.com",
+      "status": 200,
+      "final": "https://www.sightmachine.com/",
+      "ms": 963
+    },
+    {
+      "tool": "OneSoil",
+      "url": "onesoil.ai",
+      "status": 200,
+      "final": "https://onesoil.ai/en",
+      "ms": 1733
+    },
+    {
+      "tool": "Plantix",
+      "url": "plantix.net",
+      "status": 200,
+      "final": "https://plantix.net/en/",
+      "ms": 2003
+    }
+  ]
+}

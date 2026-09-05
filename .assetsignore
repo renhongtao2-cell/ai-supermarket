@@ -1,0 +1,4 @@
+outputs/
+.workbuddy/
+.git/
+*.log
