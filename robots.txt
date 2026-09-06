@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Explicitly allow major AI crawlers for GEO (Generative Engine Optimization)
-# See https://ai.supermarket/llms.txt for LLM-friendly index
+# See https://ai.toolboxes.top/llms.txt for LLM-friendly index
 User-agent: GPTBot
 Allow: /
 User-agent: OAI-SearchBot

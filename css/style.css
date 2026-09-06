@@ -546,6 +546,9 @@ button {
   border: 1px solid var(--border);
   overflow: hidden;
   transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  /* Perf: skip layout/paint for off-screen cards (217-card catalog pages) */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 340px;
 }
 
 .tool-card:hover {

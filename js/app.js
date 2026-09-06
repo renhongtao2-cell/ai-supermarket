@@ -16,6 +16,14 @@
   };
 
   const DEPT_BY_ID = Object.fromEntries(DEPARTMENTS.map(d => [d.id, d]));
+
+  const slugify = s => s.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "tool";
+  const _used = new Set();
+  TOOLS.forEach(t => {
+    let base = slugify(t.name), s = base;
+    if (_used.has(s)) { s = base + "-" + t.dept; let n = 2; while (_used.has(s)) s = base + "-" + t.dept + "-" + n++; }
+    _used.add(s); t._slug = s;
+  });
   const DEPT_COUNTS = {};
   TOOLS.forEach(t => { DEPT_COUNTS[t.dept] = (DEPT_COUNTS[t.dept] || 0) + 1; });
 
@@ -49,7 +57,7 @@
       <button class="cart-add${inCart ? " on" : ""}" data-tool="${esc(t.name)}"
               aria-label="${inCart ? "Remove from" : "Add to"} my list"
               title="${inCart ? "Remove from my list" : "Save to my list"}">${inCart ? "✓" : "+"}</button>
-      <a class="tool-main" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">
+      <a class="tool-main" href="/tool/${t._slug}">
         <div class="tool-head">
           <span class="tool-logo" style="--dept:${dept.color}">${esc(t.name.charAt(0))}
             <img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64"
@@ -64,7 +72,7 @@
       </a>
       <div class="tool-foot">
         <span class="dept-chip" style="--dept:${dept.color}">${dept.icon} ${esc(dept.name)}</span>
-        <span class="visit" aria-hidden="true">Visit ↗</span>
+        <span class="visit" aria-hidden="true">Details →</span>
       </div>
     </article>`;
   }

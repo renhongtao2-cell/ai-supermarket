@@ -1,36 +1,36 @@
 # AI Supermarket
 
-> A hand-curated directory of 203 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Updated regularly.
+> A hand-curated directory of 203 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Last updated: 2026-09-06.
 
 ## Pages
 
 - [AI Supermarket](https://ai.toolboxes.top/): browse and search all AI tools by department
-- [About](https://ai.toolboxes.top/about.html): curation policy and contact
-- [Privacy Policy](https://ai.toolboxes.top/privacy.html)
+- [About](https://ai.toolboxes.top/about): curation policy and contact
+- [Privacy Policy](https://ai.toolboxes.top/privacy)
 
 ## Departments
 
-- [AI Assistants AI Tools](https://ai.toolboxes.top/departments/assistants.html): 10 hand-picked tools
-- [Writing & Content AI Tools](https://ai.toolboxes.top/departments/writing.html): 9 hand-picked tools
-- [Marketing & SEO AI Tools](https://ai.toolboxes.top/departments/marketing.html): 11 hand-picked tools
-- [Design & Art AI Tools](https://ai.toolboxes.top/departments/design.html): 13 hand-picked tools
-- [Video & Audio AI Tools](https://ai.toolboxes.top/departments/video.html): 14 hand-picked tools
-- [Software & Dev AI Tools](https://ai.toolboxes.top/departments/dev.html): 12 hand-picked tools
-- [Productivity AI Tools](https://ai.toolboxes.top/departments/productivity.html): 15 hand-picked tools
-- [E-commerce AI Tools](https://ai.toolboxes.top/departments/ecommerce.html): 8 hand-picked tools
-- [Sales & CRM AI Tools](https://ai.toolboxes.top/departments/sales.html): 9 hand-picked tools
-- [Customer Support AI Tools](https://ai.toolboxes.top/departments/support.html): 10 hand-picked tools
-- [HR & Recruiting AI Tools](https://ai.toolboxes.top/departments/hr.html): 8 hand-picked tools
-- [Finance & Accounting AI Tools](https://ai.toolboxes.top/departments/finance.html): 10 hand-picked tools
-- [Legal AI Tools](https://ai.toolboxes.top/departments/legal.html): 9 hand-picked tools
-- [Healthcare AI Tools](https://ai.toolboxes.top/departments/health.html): 10 hand-picked tools
-- [Education AI Tools](https://ai.toolboxes.top/departments/education.html): 10 hand-picked tools
-- [Real Estate AI Tools](https://ai.toolboxes.top/departments/realestate.html): 8 hand-picked tools
-- [Data & Analytics AI Tools](https://ai.toolboxes.top/departments/data.html): 10 hand-picked tools
-- [Travel AI Tools](https://ai.toolboxes.top/departments/travel.html): 8 hand-picked tools
-- [Gaming AI Tools](https://ai.toolboxes.top/departments/gaming.html): 8 hand-picked tools
-- [Manufacturing AI Tools](https://ai.toolboxes.top/departments/manufacturing.html): 6 hand-picked tools
-- [Agriculture AI Tools](https://ai.toolboxes.top/departments/agriculture.html): 5 hand-picked tools
+- [AI Assistants AI Tools](https://ai.toolboxes.top/departments/assistants): 10 hand-picked tools
+- [Writing & Content AI Tools](https://ai.toolboxes.top/departments/writing): 9 hand-picked tools
+- [Marketing & SEO AI Tools](https://ai.toolboxes.top/departments/marketing): 11 hand-picked tools
+- [Design & Art AI Tools](https://ai.toolboxes.top/departments/design): 13 hand-picked tools
+- [Video & Audio AI Tools](https://ai.toolboxes.top/departments/video): 14 hand-picked tools
+- [Software & Dev AI Tools](https://ai.toolboxes.top/departments/dev): 12 hand-picked tools
+- [Productivity AI Tools](https://ai.toolboxes.top/departments/productivity): 15 hand-picked tools
+- [E-commerce AI Tools](https://ai.toolboxes.top/departments/ecommerce): 8 hand-picked tools
+- [Sales & CRM AI Tools](https://ai.toolboxes.top/departments/sales): 9 hand-picked tools
+- [Customer Support AI Tools](https://ai.toolboxes.top/departments/support): 10 hand-picked tools
+- [HR & Recruiting AI Tools](https://ai.toolboxes.top/departments/hr): 8 hand-picked tools
+- [Finance & Accounting AI Tools](https://ai.toolboxes.top/departments/finance): 10 hand-picked tools
+- [Legal AI Tools](https://ai.toolboxes.top/departments/legal): 9 hand-picked tools
+- [Healthcare AI Tools](https://ai.toolboxes.top/departments/health): 10 hand-picked tools
+- [Education AI Tools](https://ai.toolboxes.top/departments/education): 10 hand-picked tools
+- [Real Estate AI Tools](https://ai.toolboxes.top/departments/realestate): 8 hand-picked tools
+- [Data & Analytics AI Tools](https://ai.toolboxes.top/departments/data): 10 hand-picked tools
+- [Travel AI Tools](https://ai.toolboxes.top/departments/travel): 8 hand-picked tools
+- [Gaming AI Tools](https://ai.toolboxes.top/departments/gaming): 8 hand-picked tools
+- [Manufacturing AI Tools](https://ai.toolboxes.top/departments/manufacturing): 6 hand-picked tools
+- [Agriculture AI Tools](https://ai.toolboxes.top/departments/agriculture): 5 hand-picked tools
 
 ## All tools (203)
 
