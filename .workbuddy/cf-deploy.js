@@ -2,6 +2,18 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
+// Auto-load credentials from gitignored .workbuddy/cf.env when env vars are unset
+if (!process.env.CF_ACC || !process.env.CF_TOK) {
+  try {
+    for (const line of fs
+      .readFileSync(path.join(__dirname, "cf.env"), "utf8")
+      .split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z_]+)\s*=\s*(.+?)\s*$/);
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+    }
+  } catch (e) {}
+}
+
 const ACC = process.env.CF_ACC;
 const PROJ = process.env.CF_PROJ || "ai-supermarket";
 const TOK = process.env.CF_TOK;
