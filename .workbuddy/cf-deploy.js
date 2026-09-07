@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { execSync } = require("child_process");
 
 // Auto-load credentials from gitignored .workbuddy/cf.env when env vars are unset
 if (!process.env.CF_ACC || !process.env.CF_TOK) {
@@ -42,6 +43,13 @@ function collect(dir, base = "", out = []) {
 }
 
 (async () => {
+  // 部署前自动给 HTML 里的 css/js 引用加内容哈希版本号，防止边缘缓存新旧混搭
+  try {
+    execSync("node scripts/version-assets.mjs", { cwd: path.join(__dirname, ".."), stdio: "inherit" });
+  } catch (e) {
+    console.warn("version-assets.mjs failed, deploying without refresh:", e.message);
+  }
+
   const files = collect(ROOT).filter((f) =>
     /\.(html|css|js|json|svg|png|ico|txt)$/i.test(f)
   );

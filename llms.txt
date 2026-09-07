@@ -1,6 +1,6 @@
 # AI Supermarket
 
-> A hand-curated directory of 203 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Last updated: 2026-09-06.
+> A hand-curated directory of 203 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Last updated: 2026-09-07.
 
 ## Pages
 

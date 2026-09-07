@@ -1,5 +1,6 @@
 // gen-tool-pages.mjs — 生成 224 个工具详情页 + 站内链接改造 + sitemap 重建
 // 运行:node scripts/gen-tool-pages.mjs
+// 注意:生成后需运行 node scripts/version-assets.mjs 补上 css/js 的 ?v= 版本号
 import fs from "fs";
 import path from "path";
 

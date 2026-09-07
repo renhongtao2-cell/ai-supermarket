@@ -1,3 +1,24 @@
+// ============================================================
+// ⚠️ 已废弃 (DEPRECATED) — 2026-09-07
+// 本脚本是旧版生成器，已与线上现状脱节。若直接运行会造成严重回退：
+//   1. canonical / og:url / 站内链接 全部退回带 .html 的形式
+//      （线上已统一为无扩展名，.html 会被 Cloudflare Pages 308 重定向）
+//   2. llms.txt 会丢失 "Last updated" 日期，且链接退回 .html
+//   3. sitemap.xml 只生成 24 条且带 .html（线上是 227 条无扩展名）
+//   4. 21 个部门页的 id="ai-summary" TL;DR 块会被覆盖丢失
+// 现行权威生成器是：scripts/gen-tool-pages.mjs
+//   （203 个工具页 + 站内链接改造 + 227 条 sitemap 重建 + 动态日期）
+// 如确需运行本脚本（例如重新生成 about/privacy），请显式设置：
+//   I_KNOW_SITE_GEN_IS_DEPRECATED=1
+// ============================================================
+if (!process.env.I_KNOW_SITE_GEN_IS_DEPRECATED) {
+  console.error('\n[site-gen.js] 已废弃，拒绝运行以免回退线上修复。');
+  console.error('  现行生成器: node scripts/gen-tool-pages.mjs');
+  console.error('  强制运行:   I_KNOW_SITE_GEN_IS_DEPRECATED=1 node .workbuddy/site-gen.js\n');
+  process.exit(1);
+}
+
+// 注意:生成后需运行 node scripts/version-assets.mjs 补上 css/js 的 ?v= 版本号
 const fs = require('fs');
 const path = require('path');
 const ROOT = path.join(__dirname, '..');

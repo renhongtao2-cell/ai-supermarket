@@ -49,9 +49,13 @@ The site is 100% static — drag-and-drop or connect the repo:
 - **Cloudflare Pages** — create a Pages project, upload the folder
 - **GitHub Pages** — push to a repo, enable Pages on the root
 
-After deploying, point your domain at it and update the two placeholder URLs in
-`index.html` (the JSON-LD `"url"` and SearchAction `target`, currently
-`https://aisupermarket.com/`) plus the `mailto:` addresses.
+Canonical URL is `https://ai.toolboxes.top/` — already wired into `index.html`
+(the JSON-LD `"url"`, the SearchAction `target`, `<link rel="canonical">` and
+`og:url`). If you move the site to a new domain, update all four, plus `robots.txt`,
+`sitemap.xml` and `llms.txt`.
+
+`mailto:` addresses in `about.html` / `privacy.html` are still placeholders —
+replace them with a real contact address.
 
 ## How to add / edit a tool
 
