@@ -55,6 +55,14 @@ for (const rel of files) {
     .replace(/(?<=")(js\/(?:app|data)\.js)\?v=[0-9a-f]+/g, "$1")
     .replace(/(?<=")(js\/(?:app|data)\.js)(?=["\s])/g, `$1?v=${jsVersion}`);
 
+  // AdSense 审核代码：注入到 </head> 前（幂等，已存在则跳过）
+  if (!html.includes("adsbygoogle")) {
+    html = html.replace(
+      "</head>",
+      `  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>\n</head>`,
+    );
+  }
+
   if (html !== before) {
     fs.writeFileSync(p, html);
     changed++;

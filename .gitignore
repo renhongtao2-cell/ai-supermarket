@@ -1,4 +1,9 @@
 .wrangler/
 node_modules/
-.workbuddy/memory/
-.workbuddy/cf.env
+.workbuddy/
+outputs/
+scripts/*
+!scripts/*.mjs
+worker.js
+wrangler.toml
+README.md

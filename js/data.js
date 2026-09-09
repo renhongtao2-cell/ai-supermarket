@@ -117,7 +117,7 @@ const TOOLS = [
   { name: "Bolt.new",           url: "https://bolt.new",                    dept: "dev", pricing: "freemium", isNew: true, desc: "Prompt, run and deploy full-stack web apps in the browser.", tags: ["fullstack", "no-code", "apps"] },
   { name: "Lovable",            url: "https://lovable.dev",                 dept: "dev", pricing: "freemium", isNew: true, desc: "Describe an app in chat and get a working full-stack product.", tags: ["app builder", "fullstack", "no-code"] },
   { name: "Cody",               url: "https://sourcegraph.com/cody",        dept: "dev", pricing: "freemium", desc: "Codebase-aware AI chat and search for large repositories.", tags: ["coding", "chat", "codebase"] },
-  { name: "Phind",              url: "https://www.phind.com",               dept: "dev", pricing: "freemium", desc: "Developer search engine with technical, cited answers.", tags: ["search", "coding", "answers"] },
+  { name: "Devin",              url: "https://cognition.ai",                dept: "dev", pricing: "paid", desc: "Autonomous AI software engineer that plans, codes and ships tickets.", tags: ["agent", "engineering", "autonomous"] },
   { name: "JetBrains AI",       url: "https://www.jetbrains.com/ai/",       dept: "dev", pricing: "freemium", desc: "AI assistance built into IntelliJ, PyCharm and other IDEs.", tags: ["ide", "coding", "intellij"] },
 
   /* ---------- PRODUCTIVITY ---------- */
@@ -281,6 +281,20 @@ const TOOLS = [
   { name: "Climate FieldView", url: "https://climate.com",     dept: "agriculture", pricing: "freemium", desc: "Bayer's field data platform with AI agronomic insights.", tags: ["farming", "fields", "bayer"] },
   { name: "OneSoil",           url: "https://onesoil.ai",      dept: "agriculture", pricing: "free", desc: "Free precision-farming maps built from satellite data.", tags: ["satellite", "fields", "precision"] },
   { name: "Plantix",           url: "https://plantix.net",     dept: "agriculture", pricing: "free", desc: "Diagnose crop diseases from a phone photo in seconds.", tags: ["crops", "disease", "mobile"] },
-  { name: "xarvio Field Manager", url: "https://www.xarvio.com", dept: "agriculture", pricing: "freemium", desc: "Agronomic AI for spray timing and field scouting.", tags: ["spraying", "scouting", "agronomy"] },
-  { name: "Cropwise",          url: "https://www.cropwise.com", dept: "agriculture", pricing: "freemium", desc: "Syngenta's digital agronomy platform with AI advisories.", tags: ["agronomy", "advisory", "syngenta"] }
+  { name: "xarvio Field Manager", url: "https://www.xarvio.com/en", dept: "agriculture", pricing: "freemium", desc: "Agronomic AI for spray timing and field scouting.", tags: ["spraying", "scouting", "agronomy"] },
+  { name: "Cropwise",          url: "https://www.cropwise.com", dept: "agriculture", pricing: "freemium", desc: "Syngenta's digital agronomy platform with AI advisories.", tags: ["agronomy", "advisory", "syngenta"] },
+  { name: "Taranis",           url: "https://www.taranis.com",  dept: "agriculture", pricing: "paid", desc: "Sub-millimeter aerial imagery AI that scouts every plant in a field.", tags: ["scouting", "imagery", "aerial"] },
+  { name: "CropX",             url: "https://www.cropx.com",    dept: "agriculture", pricing: "paid", desc: "Soil moisture and evapotranspiration sensors with AI irrigation advice.", tags: ["soil", "irrigation", "sensors"] },
+  { name: "AgriWebb",          url: "https://www.agriwebb.com", dept: "agriculture", pricing: "paid", desc: "Livestock farm management with animal records and grazing planning.", tags: ["livestock", "grazing", "records"] },
+  { name: "Arable",            url: "https://www.arable.com",   dept: "agriculture", pricing: "paid", desc: "In-field weather and crop sensing for high-value irrigated crops.", tags: ["weather", "sensing", "crops"] },
+
+  /* ---------- MANUFACTURING (extended) ---------- */
+  { name: "MachineMetrics",    url: "https://www.machinemetrics.com", dept: "manufacturing", pricing: "paid", desc: "Plug-and-play machine monitoring that turns shop-floor data into OEE gains.", tags: ["monitoring", "oee", "shop floor"] },
+  { name: "Tulip Interfaces",  url: "https://tulip.co",         dept: "manufacturing", pricing: "paid", desc: "No-code apps for frontline operators with real-time production visibility.", tags: ["no-code", "operators", "frontline"] },
+  { name: "Instrumental",      url: "https://instrumental.com", dept: "manufacturing", pricing: "paid", desc: "AI camera system that catches assembly-line defects before they ship.", tags: ["defects", "quality", "vision"] },
+
+  /* ---------- GAMING (extended) ---------- */
+  { name: "Scenario",          url: "https://scenario.com",     dept: "gaming", pricing: "freemium", desc: "Generate consistent game assets, textures and sprites in your own art style.", tags: ["assets", "textures", "sprites"] },
+  { name: "Promethean AI",     url: "https://www.prometheanai.com", dept: "gaming", pricing: "freemium", desc: "AI world-building assistant that dresses and populates 3D scenes from prompts.", tags: ["3d", "world building", "scenes"] },
+  { name: "Layer.ai",          url: "https://layer.ai",         dept: "gaming", pricing: "paid", desc: "On-brand generative art pipelines for game studios at production scale.", tags: ["generative", "studio", "pipeline"] }
 ];

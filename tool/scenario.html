@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenario — Pricing, Features &amp; Alternatives | AI Supermarket</title>
+  <meta name="description" content="Generate consistent game assets, textures and sprites in your own art style. Scenario is a freemium AI tool for Gaming. See details, alternatives and the official site.">
+  <link rel="canonical" href="https://ai.toolboxes.top/tool/scenario">
+  <meta property="og:title" content="Scenario — Gaming AI Tool | AI Supermarket">
+  <meta property="og:description" content="Generate consistent game assets, textures and sprites in your own art style.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ai.toolboxes.top/tool/scenario">
+  <meta property="og:image" content="https://ai.toolboxes.top/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.72em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2255%22>🛒</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"></noscript>
+  <style>/* asm-inline-css */
+/* ============================================================
+   AI SUPERMARKET — styles
+   Light & dark themes via [data-theme] on <html>
+   ============================================================ */
+
+:root {
+  --green: #10b981;
+  --green-dark: #059669;
+  --green-deep: #065f46;
+  --amber: #f59e0b;
+
+  --bg: #fafaf6;
+  --bg-alt: #f2f3ee;
+  --surface: #ffffff;
+  --surface-2: #f6f7f4;
+  --text: #17251f;
+  --text-2: #5b6b63;
+  --border: #e4e8e2;
+  --shadow: 0 1px 2px rgba(23, 37, 31, .05), 0 8px 24px -12px rgba(23, 37, 31, .12);
+
+  --awn1: #10b981;
+  --awn2: #ffffff;
+  --trim: #0d9668;
+
+  --radius: 14px;
+  --header-h: 64px;
+}
+
+[data-theme="dark"] {
+  --bg: #0d1512;
+  --bg-alt: #101a16;
+  --surface: #16211c;
+  --surface-2: #1b2822;
+  --text: #e7efe9;
+  --text-2: #93a59b;
+  --border: #25352d;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -12px rgba(0, 0, 0, .55);
+
+  --awn1: #0b7a57;
+  --awn2: #12241d;
+  --trim: #0b7a57;
+}
+
+/* ---------- base ---------- */
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.container {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.section { padding: 56px 0; }
+.section-alt { background: var(--bg-alt); }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.section-note { color: var(--text-2); font-size: 14px; }
+
+.see-all {
+  color: var(--green-dark);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+[data-theme="dark"] .see-all { color: var(--green); }
+
+/* ---------- header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -.02em;
+}
+
+.logo em {
+  font-style: normal;
+  color: var(--green-dark);
+}
+
+[data-theme="dark"] .logo em { color: var(--green); }
+
+.logo-cart { width: 24px; height: 24px; color: var(--green-dark); }
+[data-theme="dark"] .logo-cart { color: var(--green); }
+
+.header-actions { display: flex; align-items: center; gap: 10px; }
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 17px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color .15s ease, transform .15s ease;
+}
+
+.icon-btn:hover { border-color: var(--green); transform: translateY(-1px); }
+
+.list-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.list-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+.cart-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .25);
+  font-size: 12px;
+}
+
+/* ---------- awning (supermarket canopy) ---------- */
+.awning {
+  height: 20px;
+  background: repeating-linear-gradient(90deg, var(--awn1) 0 56px, var(--awn2) 56px 112px);
+  border-bottom: 1px solid rgba(0, 0, 0, .06);
+}
+
+.awning::after {
+  content: "";
+  display: block;
+  height: 12px;
+  background-image: radial-gradient(circle 12px at 12px 0, var(--trim) 11px, transparent 11.8px);
+  background-size: 24px 12px;
+  background-repeat: repeat-x;
+  margin-top: -1px;
+}
+
+/* ---------- hero ---------- */
+.hero {
+  padding: 64px 0 48px;
+  text-align: center;
+}
+
+.hero-kicker {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: var(--green-dark);
+}
+
+[data-theme="dark"] .hero-kicker { color: var(--green); }
+
+.hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(34px, 6vw, 58px);
+  line-height: 1.06;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+.hero h1 em {
+  font-style: normal;
+  background-image: linear-gradient(120deg, var(--green) 0%, #34d399 45%, var(--amber) 120%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-sub {
+  margin: 0 auto 30px;
+  max-width: 620px;
+  color: var(--text-2);
+  font-size: 17px;
+}
+
+.hero-sub strong { color: var(--text); }
+
+.search-wrap {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 20px;
+  height: 20px;
+  color: var(--text-2);
+  pointer-events: none;
+}
+
+#searchInput {
+  width: 100%;
+  height: 58px;
+  padding: 0 52px 0 52px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  box-shadow: var(--shadow);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+#searchInput::placeholder { color: var(--text-2); }
+
+#searchInput:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 18%, transparent), var(--shadow);
+}
+
+#searchInput::-webkit-search-cancel-button { display: none; }
+
+.search-clear {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--text-2);
+  font-size: 13px;
+  background: var(--surface-2);
+}
+
+.search-clear:hover { color: var(--text); }
+
+/* free samples strip */
+.free-samples {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 10px;
+  font-size: 13.5px;
+}
+
+.free-samples-label { color: var(--text-2); font-weight: 600; }
+
+.sample-chips { display: inline-flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+.sample-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  transition: border-color .15s ease, transform .15s ease;
+}
+
+.sample-chip:hover { border-color: var(--green); transform: translateY(-1px); }
+
+.sample-more { font-weight: 700; color: var(--green-dark); padding: 6px 4px; }
+[data-theme="dark"] .sample-more { color: var(--green); }
+
+/* ---------- departments grid ---------- */
+.dept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.dept-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  padding: 18px 10px 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.dept-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--dept, var(--green));
+  box-shadow: var(--shadow);
+}
+
+.dept-card-icon { font-size: 26px; line-height: 1; }
+
+.dept-card h3 {
+  margin: 6px 0 2px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.dept-card-count { font-size: 12px; color: var(--text-2); }
+
+.all-card { border-style: dashed; border-color: var(--green); }
+.all-card .dept-card-icon { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--green) 35%, transparent)); }
+
+/* ---------- featured (best sellers) ---------- */
+.featured-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 272px;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 4px 18px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.featured-grid .tool-card { scroll-snap-align: start; }
+
+/* ---------- browse layout ---------- */
+.browse-layout {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.filter-group h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.dept-list { display: flex; flex-direction: column; gap: 2px; }
+
+.dept-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+  transition: background .12s ease, color .12s ease;
+}
+
+.dept-item:hover { background: var(--surface-2); color: var(--text); }
+
+.dept-item.active {
+  background: color-mix(in srgb, var(--green) 13%, transparent);
+  color: var(--green-dark);
+}
+
+[data-theme="dark"] .dept-item.active { color: var(--green); }
+
+.dept-emoji { width: 20px; text-align: center; }
+
+.dept-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.dept-count {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.pricing-filters { display: flex; flex-direction: column; gap: 8px; }
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-2);
+}
+
+.check input { position: absolute; opacity: 0; pointer-events: none; }
+
+.check .box {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  transition: all .12s ease;
+}
+
+.check .box::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(0.5px, -1px);
+  opacity: 0;
+}
+
+.check input:checked + .box { background: var(--green); border-color: var(--green); }
+.check input:checked + .box::after { opacity: 1; }
+.check:has(input:checked) { color: var(--text); }
+
+.clear-btn {
+  align-self: flex-start;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.clear-btn:hover { color: var(--text); }
+
+/* ---------- toolbar ---------- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.result-count { margin: 0; font-size: 14px; color: var(--text-2); font-weight: 600; }
+
+.toolbar-right { display: flex; align-items: center; gap: 8px; }
+
+.sort-label { font-size: 13px; color: var(--text-2); font-weight: 600; }
+
+#sortSelect {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+/* ---------- tool cards ---------- */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 14px;
+}
+
+.tool-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  /* Perf: skip layout/paint for off-screen cards (217-card catalog pages) */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 340px;
+}
+
+.tool-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--green) 55%, var(--border));
+  box-shadow: var(--shadow);
+}
+
+.tool-main { display: block; padding: 16px 16px 12px; flex: 1; }
+
+.tool-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+
+.tool-logo {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--dept, var(--green));
+  background: color-mix(in srgb, var(--dept, var(--green)) 13%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--dept, var(--green)) 22%, var(--border));
+}
+
+.tool-logo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 7px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: var(--surface);
+}
+
+.tool-id { min-width: 0; }
+
+.tool-id h3 {
+  margin: 0 0 3px;
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.new-pill {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: #fff;
+  background: var(--amber);
+  padding: 2px 6px;
+  border-radius: 5px;
+  translate: 0 -1px;
+}
+
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.pill.free     { background: color-mix(in srgb, #22c55e 16%, transparent); color: #15803d; }
+.pill.freemium { background: color-mix(in srgb, #f59e0b 16%, transparent); color: #b45309; }
+.pill.paid     { background: color-mix(in srgb, #64748b 16%, transparent); color: #475569; }
+
+[data-theme="dark"] .pill.free     { color: #4ade80; }
+[data-theme="dark"] .pill.freemium { color: #fbbf24; }
+[data-theme="dark"] .pill.paid     { color: #94a3b8; }
+
+.tool-desc {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 41px;
+}
+
+.tool-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.dept-chip { font-size: 12px; font-weight: 700; color: var(--text-2); }
+
+.visit {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--green-dark);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+[data-theme="dark"] .visit { color: var(--green); }
+
+.tool-card:hover .visit { opacity: 1; transform: translateX(0); }
+
+/* add-to-list button on card */
+.cart-add {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: all .14s ease;
+}
+
+.cart-add:hover {
+  color: #fff;
+  background: var(--green);
+  border-color: var(--green);
+  transform: scale(1.08);
+}
+
+.cart-add.on {
+  color: #fff;
+  background: var(--green);
+  border-color: var(--green);
+}
+
+/* ---------- empty state ---------- */
+.empty-state {
+  text-align: center;
+  padding: 64px 20px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+}
+
+.empty-emoji { font-size: 34px; margin: 0 0 8px; }
+
+.empty-state h3 { margin: 0 0 6px; color: var(--text); }
+
+.empty-state p { margin: 0 0 18px; }
+
+/* ---------- buttons ---------- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14.5px;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+.btn-lg { padding: 14px 26px; font-size: 15.5px; }
+
+.btn-secondary {
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-weight: 700;
+  font-size: 13.5px;
+  transition: border-color .15s ease;
+}
+
+.btn-secondary:hover { border-color: var(--green); }
+
+/* ---------- CTA ---------- */
+.cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cta-inner h2 { margin: 0 0 6px; font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+.cta-inner p { margin: 0; color: var(--text-2); }
+
+/* ---------- footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding-top: 44px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 32px;
+  padding-bottom: 36px;
+}
+
+.footer-brand p { color: var(--text-2); font-size: 14px; max-width: 300px; }
+
+.footer-col h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.footer-links { display: flex; flex-direction: column; gap: 8px; }
+
+.footer-links a { font-size: 14px; color: var(--text-2); font-weight: 600; }
+.footer-links a:hover { color: var(--green-dark); }
+[data-theme="dark"] .footer-links a:hover { color: var(--green); }
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-block: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.footer-bottom p { margin: 0; }
+
+/* ---------- my list drawer ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 15, .45);
+  backdrop-filter: blur(2px);
+  z-index: 90;
+}
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(380px, 92vw);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  transform: translateX(105%);
+  transition: transform .24s ease;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, .12);
+}
+
+.cart-drawer.open { transform: translateX(0); }
+
+.cart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.cart-head h3 { margin: 0; font-size: 19px; font-weight: 800; }
+
+.cart-hint { margin: 0 0 14px; font-size: 13px; color: var(--text-2); }
+
+.cart-items { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface-2);
+}
+
+.cart-item a { min-width: 0; display: flex; flex-direction: column; }
+.cart-item strong { font-size: 14px; }
+.cart-item span { font-size: 12px; color: var(--text-2); }
+.cart-item a:hover strong { color: var(--green-dark); }
+
+.cart-remove {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.cart-remove:hover { color: #ef4444; border-color: #ef4444; }
+
+.cart-empty {
+  text-align: center;
+  color: var(--text-2);
+  font-size: 14px;
+  padding: 44px 12px;
+}
+
+.cart-empty p:first-child { font-size: 34px; margin: 0 0 8px; }
+.cart-empty p { margin: 0; line-height: 1.6; }
+
+.cart-foot {
+  display: flex;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.cart-foot .btn-secondary { flex: 1; }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 120;
+  background: var(--text);
+  color: var(--bg);
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  animation: toast-in .2s ease;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; translate: -50% 8px; }
+  to   { opacity: 1; translate: -50% 0; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .browse-layout { grid-template-columns: 1fr; gap: 20px; }
+
+  .sidebar {
+    position: static;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .filter-group h3 { margin-bottom: 8px; }
+
+  .dept-list {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+  }
+
+  .dept-item { flex: none; background: var(--surface-2); border: 1px solid var(--border); }
+
+  .pricing-filters { flex-direction: row; gap: 16px; flex-wrap: wrap; }
+
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .container { padding-inline: 16px; }
+  .section { padding: 40px 0; }
+  .hero { padding: 44px 0 36px; }
+  .hero-sub { font-size: 15.5px; }
+  #searchInput { height: 52px; }
+  .featured-grid { grid-auto-columns: 246px; }
+  .tool-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tool-main { padding: 13px 13px 10px; }
+  .tool-foot { padding: 8px 13px; }
+  .logo span { display: none; }
+  .list-btn span[aria-hidden] { display: none; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .tool-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- motion preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ---------- GEO / AI summary block ---------- */
+.ai-summary {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin: 0;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.ai-summary summary {
+  cursor: pointer;
+  color: var(--text-1);
+  font-size: 14px;
+  list-style: none;
+  user-select: none;
+}
+.ai-summary summary::-webkit-details-marker { display: none; }
+.ai-summary summary::before {
+  content: "🤖";
+  margin-right: 8px;
+}
+.ai-summary[open] summary { margin-bottom: 12px; }
+.ai-summary p { margin: 0 0 8px; }
+.ai-summary p:last-child { margin-bottom: 0; }
+.ai-summary a { color: var(--accent); }
+
+/* ---------- FAQ section ---------- */
+details.faq-item{border-bottom:1px solid rgba(128,128,128,.2);padding:11px 0}
+details.faq-item summary{cursor:pointer;font-weight:600;font-size:15px}
+details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
+
+</style>
+  <style>
+    .tool-hero{max-width:1100px;margin:0 auto;padding:34px 20px 10px}
+    .crumb{font-size:13px;opacity:.65;margin-bottom:14px}
+    .crumb a{color:inherit}
+    .tool-hero h1{font-size:30px;margin:6px 0 10px}
+    .tool-sub{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 14px}
+    .visit-btn{display:inline-block;background:var(--green,#10b981);color:#fff;padding:11px 22px;border-radius:10px;text-decoration:none;font-weight:700}
+    .visit-btn:hover{filter:brightness(1.08)}
+    .tool-body{max-width:1100px;margin:18px auto 40px;padding:0 20px;display:grid;grid-template-columns:1.6fr 1fr;gap:24px}
+    .card-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+    .card-panel h2{font-size:17px;margin:0 0 10px}
+    .card-panel p{opacity:.85;font-size:14.5px;line-height:1.65}
+    .fact{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid rgba(128,128,128,.15);font-size:14px}
+    .fact span:first-child{opacity:.6}
+    .alt-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
+    .alt-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-decoration:none;color:inherit}
+    .alt-card:hover{border-color:var(--green,#10b981)}
+    .alt-card p{opacity:.7;font-size:13px;margin:6px 0 0}
+    .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .pill.free{background:rgba(16,185,129,.15);color:#10b981}
+    .pill.freemium{background:rgba(14,165,233,.15);color:#0ea5e9}
+    .pill.paid{background:rgba(232,118,58,.15);color:#e8763a}
+    .tag-chip{display:inline-block;margin:3px 6px 3px 0;padding:4px 10px;border-radius:999px;border:1px solid rgba(128,128,128,.3);font-size:12.5px;opacity:.8}
+    details.faq-item{border-bottom:1px solid rgba(128,128,128,.2);padding:10px 0}
+    details.faq-item summary{cursor:pointer;font-weight:600}
+    details.faq-item p{opacity:.75;font-size:14px;margin-top:8px}
+    @media (max-width:800px){.tool-body{grid-template-columns:1fr}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Scenario","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://scenario.com","description":"Generate consistent game assets, textures and sprites in your own art style.","offers":{"@type":"Offer","priceCurrency":"USD","availability":"https://schema.org/InStock"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AI Supermarket","item":"https://ai.toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Gaming","item":"https://ai.toolboxes.top/departments/gaming"},{"@type":"ListItem","position":3,"name":"Scenario"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Scenario?","acceptedAnswer":{"@type":"Answer","text":"Generate consistent game assets, textures and sprites in your own art style. It is listed under Gaming on AI Supermarket."}},{"@type":"Question","name":"Is Scenario free to use?","acceptedAnswer":{"@type":"Answer","text":"It follows a freemium model: core features are free, while advanced features require a paid plan."}},{"@type":"Question","name":"What are the best alternatives to Scenario?","acceptedAnswer":{"@type":"Answer","text":"Character.AI, Inworld AI, Convai, Charisma, Rosebud AI, Ludo.ai"}}]}]}</script>
+  <script>
+    try { var t = localStorage.getItem("asm-theme");
+      if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) document.documentElement.dataset.theme = "dark";
+    } catch (e) {}
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
+</head>
+<body id="top">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/" aria-label="AI Supermarket home">
+        <svg class="logo-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/>
+          <path d="M2.5 3h2l2.4 12.2a2 2 0 0 0 2 1.6h9.2a2 2 0 0 0 2-1.6L22 7H6"/>
+        </svg>
+        <span>AI<em>Supermarket</em></span>
+      </a>
+      <div class="header-actions"><a class="list-btn" href="/" style="text-decoration:none"><span aria-hidden="true">🏪</span> All departments</a></div>
+    </div>
+  </header>
+  <div class="awning" aria-hidden="true"></div>
+
+  <div class="tool-hero">
+    <div class="crumb"><a href="/">AI Supermarket</a> / <a href="/departments/gaming">Gaming</a> / Scenario</div>
+    <h1>Scenario</h1>
+    <p class="intro">Generate consistent game assets, textures and sprites in your own art style.</p>
+    <div class="tool-sub">
+      <span class="pill freemium">Freemium</span>
+      <span class="tag-chip">🎮 Gaming</span>
+      <span class="tag-chip">scenario.com</span>
+    </div>
+    <a class="visit-btn" href="https://scenario.com" target="_blank" rel="noopener noreferrer">Visit official site ↗</a>
+  </div>
+
+  <div class="tool-body">
+    <div>
+      <div class="card-panel">
+        <h2>What is Scenario?</h2>
+        <p>Generate consistent game assets, textures and sprites in your own art style. Scenario works in the browser and fits into Gaming workflows. On this page you can review what it does, check its pricing model, compare it with alternatives and jump straight to the official site.</p>
+        <p style="margin-top:10px"><span class="tag-chip">assets</span> <span class="tag-chip">textures</span> <span class="tag-chip">sprites</span></p>
+      </div>
+      <div class="card-panel" style="margin-top:16px">
+        <h2>Frequently asked questions</h2>
+        
+    <details class="faq-item" open><summary>What is Scenario?</summary>
+      <p>Generate consistent game assets, textures and sprites in your own art style. Scenario is listed under Gaming on AI Supermarket, and you can reach the official site from this page.</p></details>
+    <details class="faq-item"><summary>Is Scenario free to use?</summary>
+      <p>It follows a freemium model: core features are free, while advanced features require a paid plan.</p></details>
+    <details class="faq-item"><summary>What are the best alternatives to Scenario?</summary>
+      <p>Other Gaming tools on AI Supermarket: <a href="/tool/character-ai">Character.AI</a>, <a href="/tool/inworld-ai">Inworld AI</a>, <a href="/tool/convai">Convai</a>, <a href="/tool/charisma">Charisma</a>, <a href="/tool/rosebud-ai">Rosebud AI</a>, <a href="/tool/ludo-ai">Ludo.ai</a>.</p></details>
+      </div>
+    </div>
+    <div>
+      <div class="card-panel">
+        <h2>Quick facts</h2>
+        <div class="fact"><span>Pricing</span><span>Freemium</span></div>
+        <div class="fact"><span>Category</span><span>🎮 Gaming</span></div>
+        <div class="fact"><span>Official site</span><span>scenario.com</span></div>
+        <div class="fact"><span>Listed on</span><span>AI Supermarket</span></div>
+      </div>
+      <div class="card-panel" style="margin-top:16px">
+        <h2>Alternatives in Gaming</h2>
+        <div class="alt-grid">
+      <a class="alt-card" href="/tool/character-ai">
+        <strong>Character.AI</strong>
+        <span class="pill freemium">Freemium</span>
+        <p>Chat with millions of user-created AI characters.</p>
+      </a>
+
+      <a class="alt-card" href="/tool/inworld-ai">
+        <strong>Inworld AI</strong>
+        <span class="pill freemium">Freemium</span>
+        <p>AI brains for NPCs and immersive game characters.</p>
+      </a>
+
+      <a class="alt-card" href="/tool/convai">
+        <strong>Convai</strong>
+        <span class="pill freemium">Freemium</span>
+        <p>Voice-enabled NPCs with spatial awareness for Unreal and Unity.</p>
+      </a>
+
+      <a class="alt-card" href="/tool/charisma">
+        <strong>Charisma</strong>
+        <span class="pill freemium">Freemium</span>
+        <p>Interactive storytelling engine for games and virtual worlds.</p>
+      </a>
+
+      <a class="alt-card" href="/tool/rosebud-ai">
+        <strong>Rosebud AI</strong>
+        <span class="pill freemium">Freemium</span>
+        <p>AI game creation and asset generation platform.</p>
+      </a>
+
+      <a class="alt-card" href="/tool/ludo-ai">
+        <strong>Ludo.ai</strong>
+        <span class="pill freemium">Freemium</span>
+        <p>Ideation and research copilot for game designers.</p>
+      </a></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container" style="padding:24px 20px">
+      <a href="https://plugins.jetbrains.com/plugin/34120-fast-excel-viewer" style="color:inherit;opacity:.6;text-decoration:none;font-size:13px">Also try Fast Excel Viewer — our streaming Excel viewer for JetBrains IDEs</a>
+    </div>
+  </footer>
+</body>
+</html>

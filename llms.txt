@@ -1,6 +1,6 @@
 # AI Supermarket
 
-> A hand-curated directory of 203 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Last updated: 2026-09-07.
+> A hand-curated directory of 213 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Last updated: 2026-09-09.
 
 ## Pages
 
@@ -28,11 +28,11 @@
 - [Real Estate AI Tools](https://ai.toolboxes.top/departments/realestate): 8 hand-picked tools
 - [Data & Analytics AI Tools](https://ai.toolboxes.top/departments/data): 10 hand-picked tools
 - [Travel AI Tools](https://ai.toolboxes.top/departments/travel): 8 hand-picked tools
-- [Gaming AI Tools](https://ai.toolboxes.top/departments/gaming): 8 hand-picked tools
-- [Manufacturing AI Tools](https://ai.toolboxes.top/departments/manufacturing): 6 hand-picked tools
-- [Agriculture AI Tools](https://ai.toolboxes.top/departments/agriculture): 5 hand-picked tools
+- [Gaming AI Tools](https://ai.toolboxes.top/departments/gaming): 11 hand-picked tools
+- [Manufacturing AI Tools](https://ai.toolboxes.top/departments/manufacturing): 9 hand-picked tools
+- [Agriculture AI Tools](https://ai.toolboxes.top/departments/agriculture): 9 hand-picked tools
 
-## All tools (203)
+## All tools (213)
 
 - [ChatGPT](https://chatgpt.com): OpenAI's conversational assistant for writing, coding, analysis and images. [Freemium]
 - [Claude](https://claude.ai): Anthropic's assistant known for long-document analysis and high-quality writing. [Freemium]
@@ -101,7 +101,7 @@
 - [Bolt.new](https://bolt.new): Prompt, run and deploy full-stack web apps in the browser. [Freemium]
 - [Lovable](https://lovable.dev): Describe an app in chat and get a working full-stack product. [Freemium]
 - [Cody](https://sourcegraph.com/cody): Codebase-aware AI chat and search for large repositories. [Freemium]
-- [Phind](https://www.phind.com): Developer search engine with technical, cited answers. [Freemium]
+- [Devin](https://cognition.ai): Autonomous AI software engineer that plans, codes and ships tickets. [Paid]
 - [JetBrains AI](https://www.jetbrains.com/ai/): AI assistance built into IntelliJ, PyCharm and other IDEs. [Freemium]
 - [Notion AI](https://www.notion.com): Q&A, writing and autofill across your workspace docs and wikis. [Freemium]
 - [Otter.ai](https://otter.ai): Meeting transcripts and summaries for Zoom, Meet and Teams. [Freemium]
@@ -235,5 +235,15 @@
 - [Climate FieldView](https://climate.com): Bayer's field data platform with AI agronomic insights. [Freemium]
 - [OneSoil](https://onesoil.ai): Free precision-farming maps built from satellite data. [Free]
 - [Plantix](https://plantix.net): Diagnose crop diseases from a phone photo in seconds. [Free]
-- [xarvio Field Manager](https://www.xarvio.com): Agronomic AI for spray timing and field scouting. [Freemium]
+- [xarvio Field Manager](https://www.xarvio.com/en): Agronomic AI for spray timing and field scouting. [Freemium]
 - [Cropwise](https://www.cropwise.com): Syngenta's digital agronomy platform with AI advisories. [Freemium]
+- [Taranis](https://www.taranis.com): Sub-millimeter aerial imagery AI that scouts every plant in a field. [Paid]
+- [CropX](https://www.cropx.com): Soil moisture and evapotranspiration sensors with AI irrigation advice. [Paid]
+- [AgriWebb](https://www.agriwebb.com): Livestock farm management with animal records and grazing planning. [Paid]
+- [Arable](https://www.arable.com): In-field weather and crop sensing for high-value irrigated crops. [Paid]
+- [MachineMetrics](https://www.machinemetrics.com): Plug-and-play machine monitoring that turns shop-floor data into OEE gains. [Paid]
+- [Tulip Interfaces](https://tulip.co): No-code apps for frontline operators with real-time production visibility. [Paid]
+- [Instrumental](https://instrumental.com): AI camera system that catches assembly-line defects before they ship. [Paid]
+- [Scenario](https://scenario.com): Generate consistent game assets, textures and sprites in your own art style. [Freemium]
+- [Promethean AI](https://www.prometheanai.com): AI world-building assistant that dresses and populates 3D scenes from prompts. [Freemium]
+- [Layer.ai](https://layer.ai): On-brand generative art pipelines for game studios at production scale. [Paid]
