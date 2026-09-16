@@ -296,5 +296,19 @@ const TOOLS = [
   /* ---------- GAMING (extended) ---------- */
   { name: "Scenario",          url: "https://scenario.com",     dept: "gaming", pricing: "freemium", desc: "Generate consistent game assets, textures and sprites in your own art style.", tags: ["assets", "textures", "sprites"] },
   { name: "Promethean AI",     url: "https://www.prometheanai.com", dept: "gaming", pricing: "freemium", desc: "AI world-building assistant that dresses and populates 3D scenes from prompts.", tags: ["3d", "world building", "scenes"] },
-  { name: "Layer.ai",          url: "https://layer.ai",         dept: "gaming", pricing: "paid", desc: "On-brand generative art pipelines for game studios at production scale.", tags: ["generative", "studio", "pipeline"] }
+  { name: "Layer.ai",          url: "https://layer.ai",         dept: "gaming", pricing: "paid", desc: "On-brand generative art pipelines for game studios at production scale.", tags: ["generative", "studio", "pipeline"] },
+
+  /* ---------- DATA & ANALYTICS (extended) ---------- */
+  { name: "Mode Analytics",    url: "https://mode.com",         dept: "data", pricing: "paid", desc: "No-code data exploration with a conversational AI analyst that writes SQL for you.", tags: ["sql", "no-code", "analyst"] },
+  { name: "Snowflake AI",      url: "https://www.snowflake.com", dept: "data", pricing: "paid", desc: "Cortex AI services embedded in the Snowflake data platform for enterprise analytics.", tags: ["warehouse", "cortex", "enterprise"] },
+  { name: "Looker Studio",     url: "https://lookerstudio.google.com", dept: "data", pricing: "free", desc: "Free Google data-visualization tool with AI auto-charts and instant insights.", tags: ["dashboards", "google", "free"] },
+
+  /* ---------- TRAVEL (extended) ---------- */
+  { name: "Wanderlog",         url: "https://wanderlog.com",    dept: "travel", pricing: "freemium", desc: "Map-first AI trip planner that builds shareable day-by-day itineraries.", tags: ["maps", "itinerary", "sharing"] },
+  { name: "Roamer",            url: "https://roamer.com",       dept: "travel", pricing: "free", desc: "Collaborative AI travel planner that turns wishes into a living group itinerary.", tags: ["group", "planner", "trip"] },
+  { name: "Trip.com TripGenie", url: "https://www.trip.com",   dept: "travel", pricing: "free", desc: "AI travel assistant inside the Trip.com app for flights, hotels and local plans.", tags: ["assistant", "flights", "booking"] },
+
+  /* ---------- EDUCATION (extended) ---------- */
+  { name: "Kai",              url: "https://kai.ai",           dept: "education", pricing: "freemium", desc: "AI study buddy that turns lectures into notes, quizzes and flashcards.", tags: ["notes", "quizzes", "students"] },
+  { name: "Squirrel AI",      url: "https://www.squirrelai.com", dept: "education", pricing: "paid", desc: "K-12 adaptive learning engine that personalizes every math path in real time.", tags: ["k12", "adaptive", "math"] }
 ];

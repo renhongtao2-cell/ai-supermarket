@@ -12,6 +12,15 @@ const pricingLabel = p => ({ free: "Free", freemium: "Freemium", paid: "Paid" }[
 
 const count = id => TOOLS.filter(t => t.dept === id).length;
 
+// 定价分类：给 AI 引擎一个显式的 pricing 分组视图（All tools 里有标签，这里再聚合一次）
+const TIERS = ["free", "freemium", "paid"];
+const pricingSection = ["", "## Pricing breakdown", ""].concat(
+  TIERS.map(p => {
+    const list = TOOLS.filter(t => t.pricing === p);
+    return `- ${pricingLabel(p)}: ${list.length} tools — ${list.map(t => t.name).join(", ")}`;
+  })
+);
+
 const out = [
   "# AI Supermarket",
   "",
@@ -27,6 +36,7 @@ const out = [
   ""
 ]
   .concat(DEPARTMENTS.map(d => `- [${d.name} AI Tools](${SITE}/departments/${d.id}): ${count(d.id)} hand-picked tools`))
+  .concat(pricingSection)
   .concat(["", `## All tools (${TOOLS.length})`, ""])
   .concat(TOOLS.map(t => `- [${t.name}](${t.url}): ${t.desc} [${pricingLabel(t.pricing)}]`))
   .join("\n") + "\n";

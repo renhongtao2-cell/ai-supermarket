@@ -1,6 +1,6 @@
 # AI Supermarket
 
-> A hand-curated directory of 213 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Last updated: 2026-09-09.
+> A hand-curated directory of 221 AI tools organized into 21 industry departments — from marketing and design to law and healthcare. Every listing links to the tool's official website with a one-line description and pricing model (free / freemium / paid). Free to browse, no account needed. Last updated: 2026-09-16.
 
 ## Pages
 
@@ -24,15 +24,21 @@
 - [Finance & Accounting AI Tools](https://ai.toolboxes.top/departments/finance): 10 hand-picked tools
 - [Legal AI Tools](https://ai.toolboxes.top/departments/legal): 9 hand-picked tools
 - [Healthcare AI Tools](https://ai.toolboxes.top/departments/health): 10 hand-picked tools
-- [Education AI Tools](https://ai.toolboxes.top/departments/education): 10 hand-picked tools
+- [Education AI Tools](https://ai.toolboxes.top/departments/education): 12 hand-picked tools
 - [Real Estate AI Tools](https://ai.toolboxes.top/departments/realestate): 8 hand-picked tools
-- [Data & Analytics AI Tools](https://ai.toolboxes.top/departments/data): 10 hand-picked tools
-- [Travel AI Tools](https://ai.toolboxes.top/departments/travel): 8 hand-picked tools
+- [Data & Analytics AI Tools](https://ai.toolboxes.top/departments/data): 13 hand-picked tools
+- [Travel AI Tools](https://ai.toolboxes.top/departments/travel): 11 hand-picked tools
 - [Gaming AI Tools](https://ai.toolboxes.top/departments/gaming): 11 hand-picked tools
 - [Manufacturing AI Tools](https://ai.toolboxes.top/departments/manufacturing): 9 hand-picked tools
 - [Agriculture AI Tools](https://ai.toolboxes.top/departments/agriculture): 9 hand-picked tools
 
-## All tools (213)
+## Pricing breakdown
+
+- Free: 22 tools — Meta AI, DeepSeek, Hemingway, Stable Diffusion, Ramp, Brex, Ada Health, Buoy Health, Socratic, Zillow, Redfin, Expedia, Booking.com, Layla, GuideGeek, Wonderplan, Hopper, OneSoil, Plantix, Looker Studio, Roamer, Trip.com TripGenie
+- Freemium: 108 tools — ChatGPT, Claude, Google Gemini, Microsoft Copilot, Perplexity, Grok, Poe, Mistral Le Chat, Grammarly, QuillBot, Rytr, Wordtune, HyperWrite, Copy.ai, HubSpot, Writesonic, Scalenut, Predis.ai, DALL·E 3, Adobe Firefly, Canva Magic Studio, Figma AI, Framer AI, Uizard, Ideogram, Leonardo.Ai, Kittl, Recraft, Runway, Pika, Synthesia, HeyGen, Descript, ElevenLabs, Murf AI, Suno, Udio, Opus Clip, CapCut, LALAL.AI, GitHub Copilot, Cursor, Windsurf, Replit, Tabnine, Amazon Q Developer, v0, Bolt.new, Lovable, Cody, JetBrains AI, Notion AI, Otter.ai, Fireflies.ai, ClickUp Brain, Asana AI, Slack AI, Zoom AI Companion, Gamma, Zapier, Make, Bardeen, Reclaim.ai, Shopify Magic, Algolia, Apollo.io, Clay, Regie.ai, Lavender, Freddy AI, Tidio Lyro, Chatbase, Voiceflow, LinkedIn AI, Booke.ai, Genie AI, Glass Health, Khanmigo, Duolingo, Quizlet, Photomath, Gradescope, MagicSchool, Eduaide, Epique AI, Matterport, Microsoft Power BI, H2O.ai, Hex, Julius AI, Rows, Mindtrip, iPlan.ai, Character.AI, Inworld AI, Convai, Charisma, Rosebud AI, Ludo.ai, AI Dungeon, NovelAI, Climate FieldView, xarvio Field Manager, Cropwise, Scenario, Promethean AI, Wanderlog, Kai
+- Paid: 91 tools — Sudowrite, Writer, Originality.ai, Jasper, Surfer SEO, Semrush, AdCreative.ai, MarketMuse, Anyword, Midjourney, Looka, Sora, Topaz Video AI, Devin, Superhuman, Beautiful.ai, Motion, Bloomreach, ViSenze, Syte, Perfect Corp, Clerk.io, Yotpo, Salesforce Einstein, Gong, Outreach, Seamless.AI, ZoomInfo, Intercom Fin, Zendesk AI, Drift, Ada, Forethought, LivePerson, HireVue, Paradox Olivia, Eightfold AI, Phenom, SeekOut, Textio, Manatal, Digits, Truewind, Pilot, Kavout, Zest AI, Ocrolus, AlphaSense, Harvey, CoCounsel, Luminance, Robin AI, Spellbook, LawGeex, DoNotPay, Lexis+ AI, Nuance DAX, Suki, Abridge, Viz.ai, PathAI, Tempus, Hippocratic AI, Carnegie Learning, Century Tech, HouseCanary, Restb.ai, Ylopo, Structurely, Tableau, ThoughtSpot, DataRobot, Domo, Akkio, C3 AI, Avathon, Augury, Uptake, Falkonry, Sight Machine, Taranis, CropX, AgriWebb, Arable, MachineMetrics, Tulip Interfaces, Instrumental, Layer.ai, Mode Analytics, Snowflake AI, Squirrel AI
+
+## All tools (221)
 
 - [ChatGPT](https://chatgpt.com): OpenAI's conversational assistant for writing, coding, analysis and images. [Freemium]
 - [Claude](https://claude.ai): Anthropic's assistant known for long-document analysis and high-quality writing. [Freemium]
@@ -247,3 +253,11 @@
 - [Scenario](https://scenario.com): Generate consistent game assets, textures and sprites in your own art style. [Freemium]
 - [Promethean AI](https://www.prometheanai.com): AI world-building assistant that dresses and populates 3D scenes from prompts. [Freemium]
 - [Layer.ai](https://layer.ai): On-brand generative art pipelines for game studios at production scale. [Paid]
+- [Mode Analytics](https://mode.com): No-code data exploration with a conversational AI analyst that writes SQL for you. [Paid]
+- [Snowflake AI](https://www.snowflake.com): Cortex AI services embedded in the Snowflake data platform for enterprise analytics. [Paid]
+- [Looker Studio](https://lookerstudio.google.com): Free Google data-visualization tool with AI auto-charts and instant insights. [Free]
+- [Wanderlog](https://wanderlog.com): Map-first AI trip planner that builds shareable day-by-day itineraries. [Freemium]
+- [Roamer](https://roamer.com): Collaborative AI travel planner that turns wishes into a living group itinerary. [Free]
+- [Trip.com TripGenie](https://www.trip.com): AI travel assistant inside the Trip.com app for flights, hotels and local plans. [Free]
+- [Kai](https://kai.ai): AI study buddy that turns lectures into notes, quizzes and flashcards. [Freemium]
+- [Squirrel AI](https://www.squirrelai.com): K-12 adaptive learning engine that personalizes every math path in real time. [Paid]
