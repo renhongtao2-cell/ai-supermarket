@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subtitle File Formats Explained: SRT, VTT, ASS, SBV, TTML</title>
+<meta name="description" content="A practical reference to subtitle file formats — what SubRip, WebVTT, ASS/SSA, SBV and TTML each support, how to identify the file you have, and which one to deliver.">
+<link rel="canonical" href="https://toolboxes.top/guides/subtitle-formats">
+<meta property="og:title" content="Subtitle File Formats Explained: SRT, VTT, ASS, SBV, TTML">
+<meta property="og:description" content="A practical reference to subtitle file formats — what SubRip, WebVTT, ASS/SSA, SBV and TTML each support, how to identify the file you have, and which one to deliver.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolboxes.top/guides/subtitle-formats">
+<meta property="og:site_name" content="Subtitle Toolkit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://toolboxes.top/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2256%22>%F0%9F%92%AC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"TechArticle","headline":"Subtitle File Formats Explained","description":"A practical reference to subtitle file formats — what SubRip, WebVTT, ASS/SSA, SBV and TTML each support, how to identify the file you have, and which one to deliver.","url":"https://toolboxes.top/guides/subtitle-formats","inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Subtitle File Formats Explained","item":"https://toolboxes.top/guides/subtitle-formats"}]}]</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">💬</span>Subtitle<em>Toolkit</em></a>
+    <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main"><div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › Guides › Subtitle File Formats Explained</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Subtitle File Formats Explained</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Most “my subtitles won&#39;t load” problems are format problems. Here is what each container actually is, how to identify the file you have, and which one to deliver.</p>
+  <article>
+<h2>The five formats you will actually meet</h2>
+<p>Subtitle files are plain text. The differences are in how timestamps are written and how much styling the format can carry. That is the whole story, and it explains almost every compatibility problem you will run into.</p>
+<table>
+<thead><tr><th>Format</th><th>Extension</th><th>Timestamp</th><th>Styling</th><th>Positioning</th><th>Typical use</th></tr></thead>
+<tbody>
+<tr><td>SubRip</td><td><code>.srt</code></td><td><code>00:00:01,000</code></td><td>Inline <code>&lt;i&gt;&lt;b&gt;&lt;u&gt;</code></td><td>No</td><td>Universal delivery, desktop editors</td></tr>
+<tr><td>WebVTT</td><td><code>.vtt</code></td><td><code>00:00:01.000</code></td><td>Inline plus <code>STYLE</code> blocks</td><td>Yes</td><td>HTML5 video, streaming, broadcast</td></tr>
+<tr><td>ASS / SSA</td><td><code>.ass</code> <code>.ssa</code></td><td><code>0:00:01.00</code></td><td>Full script, karaoke, fonts</td><td>Yes</td><td>Fansubbing, heavily styled releases</td></tr>
+<tr><td>SBV</td><td><code>.sbv</code></td><td><code>00:00:01.000</code></td><td>None</td><td>No</td><td>Legacy YouTube caption export</td></tr>
+<tr><td>TTML / DFXP</td><td><code>.ttml</code> <code>.xml</code></td><td><code>00:00:01.000</code></td><td>XML styling</td><td>Yes</td><td>Broadcast and streaming delivery specs</td></tr>
+</tbody>
+</table>
+
+<h3>SubRip (.srt)</h3>
+<p>The de facto interchange format. Each cue is a sequence number, a timestamp line using a comma as the decimal separator, the text, then a blank line. Nothing else. That minimalism is exactly why it works everywhere — and why it cannot express position or styling beyond inline italics, bold and underline.</p>
+
+<h3>WebVTT (.vtt)</h3>
+<p>WebVTT is a W3C specification designed for the web. It looks like SubRip with a <code>WEBVTT</code> header and a period instead of a comma, but it adds real capability: <code>NOTE</code> comments, <code>STYLE</code> blocks that behave like scoped CSS, regions, voice spans for identifying speakers, and per-cue settings such as <code>line:</code> and <code>align:</code>.</p>
+<p>It is the only format an HTML5 <code>&lt;track&gt;</code> element accepts. If you are publishing video on a web page, you need WebVTT — see <a href="/guides/add-subtitles-to-html5-video">adding subtitles to HTML5 video</a>.</p>
+
+<h3>ASS and SSA (.ass, .ssa)</h3>
+<p>Advanced SubStation Alpha is a rendering format rather than a caption container. It carries a full stylesheet, font choices, karaoke timing and per-character effects. It is the standard in fansubbing and in any workflow where captions are part of the visual design. Most players and editors do not support it, so outside that world it is rarely a delivery format.</p>
+
+<h3>SBV (.sbv)</h3>
+<p>A YouTube-era export format that resembles WebVTT but has no header, no styling and no positioning. You will mostly meet it when downloading older captions from the platform. Convert it to SubRip or WebVTT for anything else.</p>
+
+<h3>TTML and DFXP (.ttml, .xml)</h3>
+<p>Timed Text Markup Language is an XML-based specification used in broadcast and by streaming services delivering to specific device profiles. It is verbose and rarely hand-edited, but it is what professional delivery specifications usually ask for.</p>
+
+<h2>How to identify a subtitle file</h2>
+<p>Open it in a plain text editor and read the first few lines.</p>
+<ul>
+<li>Starts with <code>WEBVTT</code> → WebVTT.</li>
+<li>Starts with <code>[Script Info]</code> → ASS or SSA.</li>
+<li>Starts with <code>&lt;?xml</code> or <code>&lt;tt</code> → TTML.</li>
+<li>Starts with a number, then a line containing <code>--&gt;</code> with a comma → SubRip.</li>
+<li>Contains <code>--&gt;</code> with a period but no <code>WEBVTT</code> header → SBV, or a WebVTT file missing its header.</li>
+</ul>
+<p>Never trust the file extension alone. Files get renamed constantly, and a <code>.vtt</code> that begins with a cue number and a comma is SubRip content carrying the wrong name.</p>
+
+<h2>Which format should you deliver?</h2>
+<p><strong>Web page or browser player:</strong> WebVTT, because it is the only format the browser reads. Use the <a href="/tools/srt-to-vtt">SRT to VTT converter</a>.</p>
+<p><strong>Desktop editor, mobile player or a platform upload box:</strong> SubRip. It is the most widely accepted and the least likely to be rejected. Start from the <a href="/tools/vtt-to-srt">VTT to SRT converter</a> if you have WebVTT.</p>
+<p><strong>Broadcast or streaming specification:</strong> follow the specification. It will name the format, and it will also mandate things a converter cannot guess — maximum characters per line, minimum and maximum cue duration, reading speed limits.</p>
+<p><strong>Captions as visual design:</strong> keep ASS as the master and generate a plain delivery copy, accepting that positioning and styling will be lost.</p>
+
+<h2>Reading speed is a constraint no format enforces</h2>
+<p>Every format above will happily store a cue containing three dense lines displayed for half a second, and none of them will warn you. Broadcast and streaming guidelines typically land in the range of about 15 to 20 characters per second for adult audiences, and lower for children or for content that will be read in a second language. If a cue feels too fast, it is too fast — split it or shorten the text. No tool can fix that for you, because it is an editorial decision.</p></article>
+  <h2>Tools mentioned in this guide</h2>
+  <div class="grid">
+    <a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a>
+  </div>
+  <p class="updated">Last updated 2026-09-17. All tools run locally in your browser.</p>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>Subtitle Toolkit</h5>
+        <p style="margin:0">Free subtitle and caption utilities that run entirely in your browser. Nothing is uploaded, nothing is stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-17.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
+</body>
+</html>

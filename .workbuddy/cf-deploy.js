@@ -59,6 +59,13 @@ function autoSync(name, args) {
       console.error("工具站核心逻辑测试失败，中止部署。");
       process.exit(1);
     }
+    // 内容体检：AdSense 脚本、canonical 自指、正文字数下限
+    try {
+      execSync("node scripts/check-toolsite-content.mjs", { cwd: ROOT, stdio: "inherit" });
+    } catch (e) {
+      console.error("工具站内容体检未通过，中止部署。");
+      process.exit(1);
+    }
   } else {
     // 目录站：SEO/GEO 数据同步
     autoSync("regen-seo-blocks.mjs");

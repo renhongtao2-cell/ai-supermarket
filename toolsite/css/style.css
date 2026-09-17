@@ -97,6 +97,31 @@ code{background:var(--bg-alt);border:1px solid var(--border);padding:1.5px 6px;
   border-radius:10px;padding:15px 18px;margin:20px 0}
 .note h4{margin:0 0 8px;font-size:14.5px}
 .note ul{margin:8px 0 0}
+.example{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.example>div{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.example h5{margin:0;padding:9px 13px;font-size:12.5px;letter-spacing:.4px;text-transform:uppercase;
+  color:var(--text-2);background:var(--surface);border-bottom:1px solid var(--border);font-weight:700}
+.example pre{margin:0;padding:13px;font-size:12.5px;line-height:1.65;overflow-x:auto;
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color:var(--text);white-space:pre}
+.example .cap{padding:0 13px 11px;margin:0;font-size:12.5px;color:var(--text-2)}
+.tshoot{counter-reset:ts;list-style:none;padding:0;margin:16px 0}
+.tshoot>li{position:relative;padding:0 0 0 34px;margin:0 0 16px}
+.tshoot>li::before{counter-increment:ts;content:counter(ts);position:absolute;left:0;top:1px;
+  width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;
+  font-weight:800;display:flex;align-items:center;justify-content:center}
+.tshoot .sym{display:block;font-weight:700;color:var(--text);margin-bottom:3px}
+.tshoot .fix{color:var(--text-2);font-size:15px}
+@media(max-width:680px){.example{grid-template-columns:1fr}}
+article table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14.5px;
+  display:block;overflow-x:auto;white-space:nowrap}
+article th,article td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+article th{background:var(--surface-2);font-weight:700}
+article td{white-space:normal}
+article pre{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+  padding:13px;overflow-x:auto;font-size:13px;line-height:1.65;color:var(--text);
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace}
+article h3{margin:24px 0 6px;font-size:17px}
 .privacy{background:#e8f7f0;border:1px solid #bfe6cd;border-radius:var(--radius);
   padding:16px 19px;margin:22px 0}
 .privacy h4{margin:0 0 6px;color:var(--green-deep);font-size:15px}
@@ -115,7 +140,8 @@ details.faq .body{padding:0 17px 15px;color:var(--text-2);font-size:15px}
 /* footer */
 footer.site{margin-top:56px;padding:30px 0 40px;border-top:1px solid var(--border);
   background:var(--surface);color:var(--text-2);font-size:14px}
-footer.site .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+footer.site .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px}
+@media(max-width:860px){footer.site .cols{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){footer.site .cols{grid-template-columns:1fr}}
 footer.site h5{margin:0 0 9px;font-size:14px;color:var(--text)}
 footer.site ul{list-style:none;padding:0;margin:0}

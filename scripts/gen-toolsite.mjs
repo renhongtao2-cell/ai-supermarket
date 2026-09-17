@@ -30,6 +30,14 @@ const TOOLS = [
       "The conversion runs locally as you type — no request is made to any server.",
       "Copy the result or download it as a <code>.vtt</code> file.",
     ],
+    deep: {
+      h2: "Where each format is accepted",
+      body: [
+        "<strong>SubRip (.srt)</strong> is the safe default for desktop editing software, mobile players and the subtitle upload boxes used by most video platforms. If you are unsure which format to supply, supply SRT.",
+        "<strong>WebVTT (.vtt)</strong> is required by the HTML5 <code>&lt;track&gt;</code> element, which means every browser-based player, custom web player and most streaming pipelines. It is also the format modern broadcast workflows expect.",
+        "Some tools accept both and detect the format from the content rather than the extension. Those tools are why a file can seem to work locally and then fail after upload — the upload box is stricter than the desktop editor you tested with.",
+      ],
+    },
     notes: [
       "SRT uses <code>00:00:01,000</code> (comma); WebVTT uses <code>00:00:01.000</code> (period). This is the single most common cause of subtitles silently failing to load.",
       "Cue numbers are optional in WebVTT but are kept here so you can diff the output against the input.",
@@ -42,6 +50,23 @@ const TOOLS = [
        "No. All parsing and conversion happens in JavaScript on your device. You can disconnect from the network after the page loads and the converter still works."],
       ["Is there a file size limit?",
        "No server-side limit, because nothing is uploaded. The practical limit is your browser's available memory — files of several megabytes convert instantly."],
+    ],
+    example: {
+      inLabel: "Input — .srt",
+      outLabel: "Output — .vtt",
+      before: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\n<i>Music playing</i>",
+      after: "WEBVTT\n\n1\n00:00:01.000 --> 00:00:04.000\nHello there.\n\n2\n00:00:04.200 --> 00:00:07.000\n<i>Music playing</i>",
+      cap: "The only structural change is the WEBVTT header plus a period instead of a comma in every timestamp. Text, italics and cue numbers survive untouched.",
+    },
+    troubleshoot: [
+      ["The .vtt file loads but no subtitles appear",
+       "Check the <code>&lt;track&gt;</code> tag uses <code>kind=\"subtitles\"</code> and that the server sends the file as <code>text/vtt</code>. A server answering with <code>text/plain</code> makes some browsers ignore the track silently, with no console error."],
+      ["Timestamps still contain a comma after conversion",
+       "A cue was not recognised, so it was passed through as-is. Every cue needs a blank line before it and a line containing <code>--&gt;</code>. Stray text between cues is the usual culprit."],
+      ["Each cue holds two languages stacked on two lines",
+       "That is preserved exactly as written. Most players render both lines; if you need one language per track, split the file before converting."],
+      ["The output contains empty cues",
+       "Cues whose text was only whitespace are kept so the numbering stays stable. Run the file through <a href=\"/tools/clean-subtitles\">Clean subtitles</a> with <em>Drop empty cues</em> enabled."],
     ],
     related: ["vtt-to-srt", "shift-subtitles", "clean-subtitles"],
   },
@@ -59,6 +84,15 @@ const TOOLS = [
       "Headers, <code>NOTE</code> and <code>STYLE</code> blocks, and cue settings like <code>align:</code> are discarded automatically.",
       "Copy or download the resulting <code>.srt</code> file.",
     ],
+    deep: {
+      h2: "What you give up converting VTT to SRT",
+      body: [
+        "<strong>Cue settings.</strong> <code>align:</code>, <code>line:</code>, <code>position:</code>, <code>size:</code> and <code>region:</code> control where text sits on screen. SubRip has no equivalent, so a caption positioned top-left to avoid covering a face will jump to the bottom centre.",
+        "<strong>Regions and STYLE blocks.</strong> WebVTT can define a reusable block of CSS-like styling and apply it to many cues at once. SRT carries only inline <code>&lt;i&gt;</code>, <code>&lt;b&gt;</code> and <code>&lt;u&gt;</code>, so shared styling collapses to whatever was applied inline.",
+        "<strong>Voice spans.</strong> <code>&lt;v Speaker&gt;</code> markup identifies who is speaking and lets a player style each speaker differently. In SRT the tag is dropped, which is why podcast captions converted to SRT often lose their speaker distinction.",
+        "If any of those matter for your project, keep the VTT as the master file and generate SRT only as a delivery copy.",
+      ],
+    },
     notes: [
       "Timestamps are rewritten with comma separators, as SubRip requires.",
       "Cue settings (<code>line:</code>, <code>position:</code>, <code>align:</code>, <code>size:</code>, <code>region:</code>) have no SRT equivalent and are dropped.",
@@ -71,6 +105,23 @@ const TOOLS = [
        "No. Cue start and end times are preserved exactly — only the decimal separator and the surrounding syntax change."],
       ["Can I convert in the other direction too?",
        "Yes — use the <a href=\"/tools/srt-to-vtt\">SRT to VTT converter</a>."],
+    ],
+    example: {
+      inLabel: "Input — .vtt",
+      outLabel: "Output — .srt",
+      before: "WEBVTT\nKind: captions\nLanguage: en\n\nNOTE chapter 2 starts here\n\n1\n00:00:01.000 --> 00:00:04.000 align:start position:10%\nHello there.",
+      after: "1\n00:00:01,000 --> 00:00:04,000\nHello there.",
+      cap: "The header, the NOTE block and the cue settings are gone; only the cue survives, renumbered and rewritten with comma timestamps.",
+    },
+    troubleshoot: [
+      ["My editor reports the file as empty or invalid",
+       "The input had no parseable cue blocks. WebVTT needs a blank line after the header and between cues — a file where the header runs straight into the first cue is rejected."],
+      ["Cue positioning was lost",
+       "Cue settings such as <code>align:</code>, <code>line:</code>, <code>position:</code>, <code>size:</code> and <code>region:</code> have no SubRip equivalent, so they are dropped by design. Burn the position into the video if you need it."],
+      ["Dialogue disappeared from the output",
+       "Text inside <code>NOTE</code> and <code>STYLE</code> blocks is not dialogue and is intentionally discarded. If your captions were stored in a NOTE block, the source file was not valid VTT."],
+      ["The first cue lost its original identifier",
+       "VTT cue identifiers are optional and often absent. Numbers are regenerated from 1 so the SRT file opens everywhere."],
     ],
     related: ["srt-to-vtt", "shift-subtitles", "clean-subtitles"],
   },
@@ -88,6 +139,13 @@ const TOOLS = [
       "Choose whether to merge consecutive duplicate lines — captioners often repeat a line across two cues.",
       "Copy the plain-text transcript.",
     ],
+    deep: {
+      h2: "When you should keep the timestamps",
+      body: [
+        "A plain transcript is easier to read, but the timing is often the part you need later. Before stripping it, check whether the text will be used for <strong>subtitling</strong> (timing required), <strong>interview analysis</strong> (timecodes let you jump back into the recording), <strong>accessibility documentation</strong> (reviewers routinely ask for a timecoded transcript) or <strong>quotation with citation</strong> (a timecode is the citation).",
+        "If any of those apply, keep the original <code>.srt</code> or <code>.vtt</code> as the master file and treat the plain text as a derived copy. Keeping both costs nothing, and re-deriving the transcript later is one click.",
+      ],
+    },
     notes: [
       "Multi-line cues are joined into a single line so the transcript reads naturally.",
       "Turning on <em>Merge repeated lines</em> removes the duplication that comes from two-part captions.",
@@ -100,6 +158,23 @@ const TOOLS = [
        "Many captioners split a long line across two cues, so the same words appear twice. Enable <em>Merge repeated lines</em> to collapse them."],
       ["Which input formats are supported?",
        "SubRip (.srt), WebVTT (.vtt), and most .sbv-style files that use the <code>HH:MM:SS,mmm --&gt; HH:MM:SS,mmm</code> arrow syntax."],
+    ],
+    example: {
+      inLabel: "Input — .srt with timing",
+      outLabel: "Output — plain text",
+      before: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\nHello there.\n\n3\n00:00:07,400 --> 00:00:10,000\nHow are you?",
+      after: "Hello there.\nHow are you?",
+      cap: "Timestamps and cue numbers are gone, and the repeated line from cue 2 is merged because <em>Merge repeated lines</em> is on. Turn it off and you get all three lines.",
+    },
+    troubleshoot: [
+      ["Every sentence appears twice in the transcript",
+       "Two-part captions repeat the line across consecutive cues. Enable <em>Merge repeated lines</em> to collapse them."],
+      ["Sound cues such as [Music] are still in the text",
+       "This tool removes timing, not noise. Run the file through <a href=\"/tools/clean-subtitles\">Clean subtitles</a> with <em>Remove sound cues</em> first, then strip the timestamps."],
+      ["Paragraph breaks are missing",
+       "Each cue becomes one line of text. Paste into a word processor and replace line breaks with spaces if you want flowing paragraphs."],
+      ["The output is empty",
+       "No cue lines were found. Confirm the file contains <code>--&gt;</code> between timestamps — a plain transcript saved with a <code>.srt</code> extension has nothing to parse."],
     ],
     related: ["clean-subtitles", "shift-subtitles", "srt-to-vtt"],
   },
@@ -117,6 +192,14 @@ const TOOLS = [
       "Tick the cleanups you need — the preview updates immediately.",
       "Download the result in the same format you pasted (SRT or VTT is detected automatically).",
     ],
+    deep: {
+      h2: "What auto-captioning actually gets wrong",
+      body: [
+        "Automatic captions fail in predictable ways, and it helps to know which defects are safe to fix automatically. <strong>Sound tags</strong> such as <code>[Music]</code>, <code>(applause)</code> and <code>♪ … ♪</code> are almost always noise. <strong>Markup wrappers</strong> added by an export step are safe to strip. <strong>Speaker labels</strong> are safe to strip only if you do not need to know who spoke.",
+        "Two categories are not safe to automate. <strong>Punctuation and capitalisation</strong> change meaning — a misplaced full stop turns a question into a statement, and automatic rewriting is how transcripts end up misquoting people. <strong>Homophone errors</strong> from the recogniser, such as \"their\" for \"there\", or a name spelled three different ways, need a human reading the text against the audio.",
+        "This tool deliberately only performs the safe category. Anything it cannot fix reliably is left for you rather than guessed at.",
+      ],
+    },
     notes: [
       "Sound cue removal targets bracketed effects such as <code>[Music]</code>, <code>(applause)</code> and <code>♪ … ♪</code>. Genuine dialogue inside brackets is left alone where the pattern is not a known effect.",
       "Speaker-label removal strips leading <code>SPEAKER:</code> style prefixes, which are common in interview and podcast transcripts.",
@@ -129,6 +212,23 @@ const TOOLS = [
        "Yes, enable <em>Remove speaker labels</em>. It strips a leading name followed by a colon, for example <code>HOST:</code> or <code>Jane Doe:</code>."],
       ["Does it fix bad punctuation or capitalisation?",
        "No, and be cautious with tools that claim to. Automated rewriting can change meaning. This tool only removes markup and noise."],
+    ],
+    example: {
+      inLabel: "Input — raw auto-captions",
+      outLabel: "Output — cleaned",
+      before: "1\n00:00:01,000 --> 00:00:04,000\n[Music]\n\n2\n00:00:04,200 --> 00:00:07,000\n<font color=\"#ffffff\">HOST: Welcome back.</font>\n\n3\n00:00:07,400 --> 00:00:10,000\nHOST: Welcome back.",
+      after: "1\n00:00:04,200 --> 00:00:07,000\nWelcome back.",
+      cap: "Cue 1 was a sound cue, cue 3 duplicated cue 2, and the font wrapper and speaker label were stripped. Only one cue survives — with its original timing intact.",
+    },
+    troubleshoot: [
+      ["Genuine dialogue was deleted",
+       "Only bracket patterns matching known sound effects are removed. If a line such as <code>[laughs]</code> was real speech, untick <em>Remove sound cues</em> and clean again."],
+      ["Speaker names are still present",
+       "Enable <em>Remove speaker labels</em>. It strips a leading name followed by a colon, so <code>NARRATOR:</code> and <code>Dr. Chen:</code> are handled, but a name in the middle of a sentence is left alone."],
+      ["The timing looks different after cleaning",
+       "It should not — start and end times are never modified. If cues look wrong, the source was already broken; inspect it with <a href=\"/tools/shift-subtitles\">Shift subtitles</a>."],
+      ["Markup like {\\an8} is still there",
+       "Tick <em>Remove markup</em>. It strips HTML tags and ASS override codes, but leaves plain braces that are part of the dialogue itself."],
     ],
     related: ["remove-timestamps", "shift-subtitles", "srt-to-vtt"],
   },
@@ -146,6 +246,15 @@ const TOOLS = [
       "Enter an offset such as <code>+2.5</code> or <code>-1.2</code> (seconds), or type a value directly in milliseconds.",
       "Download the corrected file. Cues that would start before zero are clamped to 00:00:00.",
     ],
+    deep: {
+      h2: "Offset or resampling? Two different sync problems",
+      body: [
+        "Subtitles fall out of sync in two different ways, and they need different fixes. Tell them apart by checking a cue near the <strong>start</strong> of the file and another near the <strong>end</strong>.",
+        "<strong>Constant offset.</strong> Both cues are wrong by the same amount — for example every line appears two seconds late. This is what this tool fixes: apply one offset and the whole track lines up.",
+        "<strong>Progressive drift.</strong> The first cue is nearly right and the last one is badly wrong, with the error growing through the file. That is a frame-rate mismatch, usually 23.976 fps against 25 fps, and no single offset can fix it. The file needs resampling to the video's frame rate instead.",
+        "If you shift a drifting file until the middle lines up, you make both ends worse. Confirm which problem you have before entering an offset.",
+      ],
+    },
     notes: [
       "Use a positive offset to delay subtitles, a negative one to make them appear earlier.",
       "To find the offset, pick one cue and compare its timestamp with the moment the line is actually spoken.",
@@ -159,11 +268,148 @@ const TOOLS = [
       ["Can I shift only part of a file?",
        "Not with this tool — it applies one offset to every cue. Split the file first if you need per-section offsets."],
     ],
+    example: {
+      inLabel: "Input — subtitles 2.5s too early",
+      outLabel: "Output — offset +2.5",
+      before: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\nHow are you?",
+      after: "1\n00:00:03,500 --> 00:00:06,500\nHello there.\n\n2\n00:00:06,700 --> 00:00:09,500\nHow are you?",
+      cap: "Enter <code>+2.5</code> and every start and end time moves 2.5 seconds later. The text is untouched — only the timing changes.",
+    },
+    troubleshoot: [
+      ["All the cues piled up at 00:00:00",
+       "The offset is too large and negative. Cues cannot start before zero, so they are clamped. Reduce the offset and check the first cue."],
+      ["Subtitles drift progressively out of sync",
+       "A fixed offset cannot fix drift. Drift means the subtitle frame rate differs from the video — typically 23.976 against 25 fps — which needs resampling, not shifting."],
+      ["The picture and sound are out of sync with each other",
+       "This tool only moves subtitles. Correct the audio delay in your video first, then resync the captions against the corrected video."],
+      ["The offset box rejects my value",
+       "Enter a decimal number of seconds such as <code>2.5</code>, or whole milliseconds in the second box. Timecode strings like <code>00:00:02,500</code> are not accepted here."],
+    ],
     related: ["srt-to-vtt", "vtt-to-srt", "clean-subtitles"],
   },
 ];
 
 const bySlug = Object.fromEntries(TOOLS.map((t) => [t.slug, t]));
+
+/* ============================================================
+   1b. 指南页（参考内容，不是工具）—— 支撑收录与 AdSense 内容深度
+   ============================================================ */
+const GUIDES = [
+  {
+    slug: "subtitle-formats",
+    h1: "Subtitle File Formats Explained",
+    title: "Subtitle File Formats Explained: SRT, VTT, ASS, SBV, TTML",
+    desc: "A practical reference to subtitle file formats — what SubRip, WebVTT, ASS/SSA, SBV and TTML each support, how to identify the file you have, and which one to deliver.",
+    lead: "Most \u201cmy subtitles won't load\u201d problems are format problems. Here is what each container actually is, how to identify the file you have, and which one to deliver.",
+    body: `
+<h2>The five formats you will actually meet</h2>
+<p>Subtitle files are plain text. The differences are in how timestamps are written and how much styling the format can carry. That is the whole story, and it explains almost every compatibility problem you will run into.</p>
+<table>
+<thead><tr><th>Format</th><th>Extension</th><th>Timestamp</th><th>Styling</th><th>Positioning</th><th>Typical use</th></tr></thead>
+<tbody>
+<tr><td>SubRip</td><td><code>.srt</code></td><td><code>00:00:01,000</code></td><td>Inline <code>&lt;i&gt;&lt;b&gt;&lt;u&gt;</code></td><td>No</td><td>Universal delivery, desktop editors</td></tr>
+<tr><td>WebVTT</td><td><code>.vtt</code></td><td><code>00:00:01.000</code></td><td>Inline plus <code>STYLE</code> blocks</td><td>Yes</td><td>HTML5 video, streaming, broadcast</td></tr>
+<tr><td>ASS / SSA</td><td><code>.ass</code> <code>.ssa</code></td><td><code>0:00:01.00</code></td><td>Full script, karaoke, fonts</td><td>Yes</td><td>Fansubbing, heavily styled releases</td></tr>
+<tr><td>SBV</td><td><code>.sbv</code></td><td><code>00:00:01.000</code></td><td>None</td><td>No</td><td>Legacy YouTube caption export</td></tr>
+<tr><td>TTML / DFXP</td><td><code>.ttml</code> <code>.xml</code></td><td><code>00:00:01.000</code></td><td>XML styling</td><td>Yes</td><td>Broadcast and streaming delivery specs</td></tr>
+</tbody>
+</table>
+
+<h3>SubRip (.srt)</h3>
+<p>The de facto interchange format. Each cue is a sequence number, a timestamp line using a comma as the decimal separator, the text, then a blank line. Nothing else. That minimalism is exactly why it works everywhere — and why it cannot express position or styling beyond inline italics, bold and underline.</p>
+
+<h3>WebVTT (.vtt)</h3>
+<p>WebVTT is a W3C specification designed for the web. It looks like SubRip with a <code>WEBVTT</code> header and a period instead of a comma, but it adds real capability: <code>NOTE</code> comments, <code>STYLE</code> blocks that behave like scoped CSS, regions, voice spans for identifying speakers, and per-cue settings such as <code>line:</code> and <code>align:</code>.</p>
+<p>It is the only format an HTML5 <code>&lt;track&gt;</code> element accepts. If you are publishing video on a web page, you need WebVTT — see <a href="/guides/add-subtitles-to-html5-video">adding subtitles to HTML5 video</a>.</p>
+
+<h3>ASS and SSA (.ass, .ssa)</h3>
+<p>Advanced SubStation Alpha is a rendering format rather than a caption container. It carries a full stylesheet, font choices, karaoke timing and per-character effects. It is the standard in fansubbing and in any workflow where captions are part of the visual design. Most players and editors do not support it, so outside that world it is rarely a delivery format.</p>
+
+<h3>SBV (.sbv)</h3>
+<p>A YouTube-era export format that resembles WebVTT but has no header, no styling and no positioning. You will mostly meet it when downloading older captions from the platform. Convert it to SubRip or WebVTT for anything else.</p>
+
+<h3>TTML and DFXP (.ttml, .xml)</h3>
+<p>Timed Text Markup Language is an XML-based specification used in broadcast and by streaming services delivering to specific device profiles. It is verbose and rarely hand-edited, but it is what professional delivery specifications usually ask for.</p>
+
+<h2>How to identify a subtitle file</h2>
+<p>Open it in a plain text editor and read the first few lines.</p>
+<ul>
+<li>Starts with <code>WEBVTT</code> \u2192 WebVTT.</li>
+<li>Starts with <code>[Script Info]</code> \u2192 ASS or SSA.</li>
+<li>Starts with <code>&lt;?xml</code> or <code>&lt;tt</code> \u2192 TTML.</li>
+<li>Starts with a number, then a line containing <code>--&gt;</code> with a comma \u2192 SubRip.</li>
+<li>Contains <code>--&gt;</code> with a period but no <code>WEBVTT</code> header \u2192 SBV, or a WebVTT file missing its header.</li>
+</ul>
+<p>Never trust the file extension alone. Files get renamed constantly, and a <code>.vtt</code> that begins with a cue number and a comma is SubRip content carrying the wrong name.</p>
+
+<h2>Which format should you deliver?</h2>
+<p><strong>Web page or browser player:</strong> WebVTT, because it is the only format the browser reads. Use the <a href="/tools/srt-to-vtt">SRT to VTT converter</a>.</p>
+<p><strong>Desktop editor, mobile player or a platform upload box:</strong> SubRip. It is the most widely accepted and the least likely to be rejected. Start from the <a href="/tools/vtt-to-srt">VTT to SRT converter</a> if you have WebVTT.</p>
+<p><strong>Broadcast or streaming specification:</strong> follow the specification. It will name the format, and it will also mandate things a converter cannot guess — maximum characters per line, minimum and maximum cue duration, reading speed limits.</p>
+<p><strong>Captions as visual design:</strong> keep ASS as the master and generate a plain delivery copy, accepting that positioning and styling will be lost.</p>
+
+<h2>Reading speed is a constraint no format enforces</h2>
+<p>Every format above will happily store a cue containing three dense lines displayed for half a second, and none of them will warn you. Broadcast and streaming guidelines typically land in the range of about 15 to 20 characters per second for adult audiences, and lower for children or for content that will be read in a second language. If a cue feels too fast, it is too fast — split it or shorten the text. No tool can fix that for you, because it is an editorial decision.</p>`,
+  },
+  {
+    slug: "add-subtitles-to-html5-video",
+    h1: "How to Add Subtitles to HTML5 Video",
+    title: "How to Add Subtitles to HTML5 Video (track, WebVTT, CORS)",
+    desc: "Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.",
+    lead: "The native track element handles captions without any JavaScript library. Here is the working setup, and the four reasons it silently does nothing.",
+    body: `
+<h2>The short version</h2>
+<p>Use a <code>&lt;track&gt;</code> element pointing at a WebVTT file. If your file is <code>.srt</code>, convert it first — browsers do not read SubRip at all. The three things that break most often are the file format, the server's content type, and cross-origin access.</p>
+
+<h2>A minimal working example</h2>
+<pre>&lt;video controls width="640"&gt;
+  &lt;source src="video.mp4" type="video/mp4"&gt;
+  &lt;track src="captions.vtt" kind="subtitles" srclang="en" label="English" default&gt;
+&lt;/video&gt;</pre>
+<p>Save the captions as <code>captions.vtt</code> beside the video. That is a complete, working setup — no library, no configuration.</p>
+
+<h2>The four attributes that matter</h2>
+<ul>
+<li><code>src</code> — path to the WebVTT file.</li>
+<li><code>kind</code> — use <code>subtitles</code> when you are translating dialogue, <code>captions</code> when you are also conveying sound effects and speaker identity. The distinction is about accessibility, not about file format.</li>
+<li><code>srclang</code> — a BCP 47 language tag such as <code>en</code>, <code>zh-Hans</code> or <code>pt-BR</code>. Required for the track to be offered as a subtitle option.</li>
+<li><code>label</code> — the text shown in the player's caption menu. Omit it and the menu entry can appear blank.</li>
+</ul>
+<p>Add <code>default</code> to the track you want enabled automatically. Supply several tracks without marking any <code>default</code> and captions start switched off, leaving the viewer to find the menu.</p>
+
+<h2>Why your captions silently do nothing</h2>
+<p>Browsers fail quietly here. A broken track usually produces no console error and no visible message — the captions simply never appear.</p>
+<h3>1. The file is SubRip</h3>
+<p>An <code>.srt</code> file is ignored even when you point <code>src</code> straight at it. Convert it with the <a href="/tools/srt-to-vtt">SRT to VTT converter</a>. If you can see a comma inside the timestamp, that is your problem.</p>
+<h3>2. The server sends the wrong content type</h3>
+<p>WebVTT files must be served as <code>text/vtt</code>. Plenty of servers and default static-host configurations serve an unfamiliar extension as <code>application/octet-stream</code> or <code>text/plain</code>, and browsers then refuse the track. Check the response headers in your browser's network panel. On a static host, add a rule mapping <code>.vtt</code> to <code>text/vtt</code>.</p>
+<h3>3. The file is on a different origin</h3>
+<p>Track files follow cross-origin rules. If the video and the captions live on different domains, the caption request needs CORS headers <em>and</em> the <code>&lt;track&gt;</code> element needs <code>crossorigin="anonymous"</code>. Without both, the track is blocked.</p>
+<h3>4. The WebVTT file is malformed</h3>
+<p>WebVTT requires the <code>WEBVTT</code> header, a blank line before the first cue, and a blank line between cues. A file missing any of those parses as empty. Re-convert from the original source, or run it through <a href="/tools/clean-subtitles">Clean subtitles</a>.</p>
+
+<h2>Styling the captions</h2>
+<p>WebVTT cues can be styled from your own CSS using the <code>::cue</code> pseudo-element — a genuine advantage over SubRip.</p>
+<pre>video::cue {
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  font-size: 1.1rem;
+}
+video::cue(.speaker) { color: #ffd479; }</pre>
+<p>To use a class, write it into the cue as <code>&lt;c.speaker&gt;</code> in the WebVTT text. Class-based cue styling is supported unevenly across browsers, so treat it as an enhancement rather than a requirement.</p>
+
+<h2>Serving captions in more than one language</h2>
+<p>Add one <code>&lt;track&gt;</code> per language. The player builds its caption menu from <code>label</code> and <code>srclang</code>.</p>
+<pre>&lt;track src="captions.en.vtt" kind="subtitles" srclang="en" label="English" default&gt;
+&lt;track src="captions.es.vtt" kind="subtitles" srclang="es" label="Espa\u00f1ol"&gt;
+&lt;track src="captions.de.vtt" kind="subtitles" srclang="de" label="Deutsch"&gt;</pre>
+
+<h2>Do you need a player library?</h2>
+<p>Not for basic captions. Native <code>&lt;track&gt;</code> support in modern browsers handles loading, the caption menu, timing and styling on its own. Reach for a JavaScript player library when you need adaptive bitrate streaming, DRM, or caption rendering that must look identical on every platform — not simply to display subtitles.</p>`,
+  },
+];
+const guideBySlug = Object.fromEntries(GUIDES.map((g) => [g.slug, g]));
+
 
 /* ============================================================
    2. 客户端核心逻辑（原样写入 js/tools.js）
@@ -526,6 +772,31 @@ code{background:var(--bg-alt);border:1px solid var(--border);padding:1.5px 6px;
   border-radius:10px;padding:15px 18px;margin:20px 0}
 .note h4{margin:0 0 8px;font-size:14.5px}
 .note ul{margin:8px 0 0}
+.example{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.example>div{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.example h5{margin:0;padding:9px 13px;font-size:12.5px;letter-spacing:.4px;text-transform:uppercase;
+  color:var(--text-2);background:var(--surface);border-bottom:1px solid var(--border);font-weight:700}
+.example pre{margin:0;padding:13px;font-size:12.5px;line-height:1.65;overflow-x:auto;
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color:var(--text);white-space:pre}
+.example .cap{padding:0 13px 11px;margin:0;font-size:12.5px;color:var(--text-2)}
+.tshoot{counter-reset:ts;list-style:none;padding:0;margin:16px 0}
+.tshoot>li{position:relative;padding:0 0 0 34px;margin:0 0 16px}
+.tshoot>li::before{counter-increment:ts;content:counter(ts);position:absolute;left:0;top:1px;
+  width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:12px;
+  font-weight:800;display:flex;align-items:center;justify-content:center}
+.tshoot .sym{display:block;font-weight:700;color:var(--text);margin-bottom:3px}
+.tshoot .fix{color:var(--text-2);font-size:15px}
+@media(max-width:680px){.example{grid-template-columns:1fr}}
+article table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14.5px;
+  display:block;overflow-x:auto;white-space:nowrap}
+article th,article td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+article th{background:var(--surface-2);font-weight:700}
+article td{white-space:normal}
+article pre{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+  padding:13px;overflow-x:auto;font-size:13px;line-height:1.65;color:var(--text);
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace}
+article h3{margin:24px 0 6px;font-size:17px}
 .privacy{background:#e8f7f0;border:1px solid #bfe6cd;border-radius:var(--radius);
   padding:16px 19px;margin:22px 0}
 .privacy h4{margin:0 0 6px;color:var(--green-deep);font-size:15px}
@@ -544,7 +815,8 @@ details.faq .body{padding:0 17px 15px;color:var(--text-2);font-size:15px}
 /* footer */
 footer.site{margin-top:56px;padding:30px 0 40px;border-top:1px solid var(--border);
   background:var(--surface);color:var(--text-2);font-size:14px}
-footer.site .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+footer.site .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px}
+@media(max-width:860px){footer.site .cols{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){footer.site .cols{grid-template-columns:1fr}}
 footer.site h5{margin:0 0 9px;font-size:14px;color:var(--text)}
 footer.site ul{list-style:none;padding:0;margin:0}
@@ -585,6 +857,7 @@ function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ""}
 </head>
 <body${bodyAttr}>
@@ -606,6 +879,10 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
       <div>
         <h5>Tools</h5>
         <ul>${TOOLS.map((t) => `<li><a href="/tools/${t.slug}">${esc(t.h1)}</a></li>`).join("")}</ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul>${GUIDES.map((g) => `<li><a href="/guides/${g.slug}">${esc(g.h1)}</a></li>`).join("")}</ul>
       </div>
       <div>
         <h5>Site</h5>
@@ -673,6 +950,16 @@ const homeBody = `
     <details class="faq"><summary>Which formats are supported?</summary><div class="body">SubRip (<code>.srt</code>) and WebVTT (<code>.vtt</code>) are fully supported, plus most <code>.sbv</code>-style files that use the <code>HH:MM:SS,mmm --&gt; HH:MM:SS,mmm</code> arrow syntax.</div></details>
     <details class="faq"><summary>Can I use these tools offline?</summary><div class="body">Yes. Once the page has loaded, the conversion logic runs locally, so it keeps working if you lose your connection.</div></details>
   </article>
+
+  <h2>Guides</h2>
+  <div class="grid">
+    ${GUIDES.map((g) => `<a class="card" href="/guides/${g.slug}">
+      <div class="ico">📘</div>
+      <h3>${esc(g.h1)}</h3>
+      <p>${esc(g.lead)}</p>
+      <div class="go">Read guide →</div>
+    </a>`).join("")}
+  </div>
   <p class="updated">Last updated ${UPDATED}. Found a bug or need another format? The <a href="https://ai.toolboxes.top/">AI tool directory</a> lists transcription and captioning tools that produce these files in the first place.</p>
 </div>`;
 
@@ -745,9 +1032,30 @@ Paste your subtitle file here…"></textarea>
       <h4>Good to know</h4>
       <ul>${t.notes.map((n) => `<li>${n}</li>`).join("")}</ul>
     </div>
+${t.deep ? `
+    <h2>${t.deep.h2}</h2>
+    ${t.deep.body.map((p) => `<p>${p}</p>`).join("\n    ")}` : ""}
+${t.example ? `
+    <h2>Worked example</h2>
+    <div class="example">
+      <div>
+        <h5>${esc(t.example.inLabel)}</h5>
+        <pre>${esc(t.example.before)}</pre>
+      </div>
+      <div>
+        <h5>${esc(t.example.outLabel)}</h5>
+        <pre>${esc(t.example.after)}</pre>
+      </div>
+    </div>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">${t.example.cap}</p>` : ""}
 
     <h2>FAQ</h2>
     ${t.faq.map(([q, a]) => `<details class="faq"><summary>${q}</summary><div class="body">${a}</div></details>`).join("\n    ")}
+${t.troubleshoot ? `
+    <h2>Troubleshooting</h2>
+    <ol class="tshoot">
+      ${t.troubleshoot.map(([sym, fix]) => `<li><span class="sym">${sym}</span><span class="fix">${fix}</span></li>`).join("\n      ")}
+    </ol>` : ""}
 
     <h2>Related tools</h2>
     <div class="grid">
@@ -757,6 +1065,10 @@ Paste your subtitle file here…"></textarea>
       }).join("")}
     </div>
   </article>
+  <div class="note">
+    <h4>Further reading</h4>
+    <ul>${GUIDES.map((g) => `<li><a href="/guides/${g.slug}">${esc(g.h1)}</a></li>`).join("")}</ul>
+  </div>
   <p class="updated">Last updated ${UPDATED}. All conversions happen locally in your browser.</p>
 </div>`;
 }
@@ -798,7 +1110,7 @@ function toolJsonLd(t) {
    5. 写入
    ============================================================ */
 fs.rmSync(OUT, { recursive: true, force: true });
-for (const d of ["css", "js", "tools"]) fs.mkdirSync(path.join(OUT, d), { recursive: true });
+for (const d of ["css", "js", "tools", "guides"]) fs.mkdirSync(path.join(OUT, d), { recursive: true });
 
 const write = (rel, content) => {
   const p = path.join(OUT, rel);
@@ -850,6 +1162,47 @@ for (const t of TOOLS) {
       body: toolBody(t),
       jsonLd: toolJsonLd(t),
       bodyAttr: ` data-tool="${t.mode}"`,
+    })
+  );
+}
+
+/* 指南页 */
+for (const g of GUIDES) {
+  write(
+    `guides/${g.slug}.html`,
+    layout({
+      title: g.title,
+      desc: g.desc,
+      canonicalPath: `/guides/${g.slug}`,
+      body: `<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> \u203a Guides \u203a ${esc(g.h1)}</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">${esc(g.h1)}</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">${esc(g.lead)}</p>
+  <article>${g.body}</article>
+  <h2>Tools mentioned in this guide</h2>
+  <div class="grid">
+    ${TOOLS.map((t) => `<a class="card" href="/tools/${t.slug}"><h3>${esc(t.h1)}</h3><p>${esc(t.tagline)}</p><div class="go">Open tool \u2192</div></a>`).join("")}
+  </div>
+  <p class="updated">Last updated ${UPDATED}. All tools run locally in your browser.</p>
+</div>`,
+      jsonLd: [
+        {
+          "@context": "https://schema.org",
+          "@type": "TechArticle",
+          headline: g.h1,
+          description: g.desc,
+          url: `${SITE}/guides/${g.slug}`,
+          inLanguage: "en",
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: SITE + "/" },
+            { "@type": "ListItem", position: 2, name: g.h1, item: `${SITE}/guides/${g.slug}` },
+          ],
+        },
+      ],
     })
   );
 }
@@ -936,12 +1289,15 @@ write(
       <p style="margin-top:26px"><a href="/">← Back to all tools</a></p>
     </div>`,
   }).replace('<meta name="robots" content="index, follow, max-image-preview:large">', '<meta name="robots" content="noindex, follow">')
+    // AdSense policy: no ad code on error pages (no publisher content)
+    .replace(/<script async src="https:\/\/pagead2\.googlesyndication\.com[^"]*"[^>]*><\/script>\n?/, "")
 );
 
 /* sitemap */
 const urls = [
   { loc: "/", pri: "1.0", freq: "weekly" },
   ...TOOLS.map((t) => ({ loc: `/tools/${t.slug}`, pri: "0.9", freq: "monthly" })),
+  ...GUIDES.map((g) => ({ loc: `/guides/${g.slug}`, pri: "0.8", freq: "monthly" })),
   { loc: "/about", pri: "0.4", freq: "yearly" },
   { loc: "/privacy", pri: "0.3", freq: "yearly" },
 ];

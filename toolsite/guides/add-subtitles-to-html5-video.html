@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Add Subtitles to HTML5 Video (track, WebVTT, CORS)</title>
+<meta name="description" content="Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.">
+<link rel="canonical" href="https://toolboxes.top/guides/add-subtitles-to-html5-video">
+<meta property="og:title" content="How to Add Subtitles to HTML5 Video (track, WebVTT, CORS)">
+<meta property="og:description" content="Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolboxes.top/guides/add-subtitles-to-html5-video">
+<meta property="og:site_name" content="Subtitle Toolkit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://toolboxes.top/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2256%22>%F0%9F%92%AC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Add Subtitles to HTML5 Video","description":"Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.","url":"https://toolboxes.top/guides/add-subtitles-to-html5-video","inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"How to Add Subtitles to HTML5 Video","item":"https://toolboxes.top/guides/add-subtitles-to-html5-video"}]}]</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">💬</span>Subtitle<em>Toolkit</em></a>
+    <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main"><div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › Guides › How to Add Subtitles to HTML5 Video</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">How to Add Subtitles to HTML5 Video</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">The native track element handles captions without any JavaScript library. Here is the working setup, and the four reasons it silently does nothing.</p>
+  <article>
+<h2>The short version</h2>
+<p>Use a <code>&lt;track&gt;</code> element pointing at a WebVTT file. If your file is <code>.srt</code>, convert it first — browsers do not read SubRip at all. The three things that break most often are the file format, the server's content type, and cross-origin access.</p>
+
+<h2>A minimal working example</h2>
+<pre>&lt;video controls width="640"&gt;
+  &lt;source src="video.mp4" type="video/mp4"&gt;
+  &lt;track src="captions.vtt" kind="subtitles" srclang="en" label="English" default&gt;
+&lt;/video&gt;</pre>
+<p>Save the captions as <code>captions.vtt</code> beside the video. That is a complete, working setup — no library, no configuration.</p>
+
+<h2>The four attributes that matter</h2>
+<ul>
+<li><code>src</code> — path to the WebVTT file.</li>
+<li><code>kind</code> — use <code>subtitles</code> when you are translating dialogue, <code>captions</code> when you are also conveying sound effects and speaker identity. The distinction is about accessibility, not about file format.</li>
+<li><code>srclang</code> — a BCP 47 language tag such as <code>en</code>, <code>zh-Hans</code> or <code>pt-BR</code>. Required for the track to be offered as a subtitle option.</li>
+<li><code>label</code> — the text shown in the player's caption menu. Omit it and the menu entry can appear blank.</li>
+</ul>
+<p>Add <code>default</code> to the track you want enabled automatically. Supply several tracks without marking any <code>default</code> and captions start switched off, leaving the viewer to find the menu.</p>
+
+<h2>Why your captions silently do nothing</h2>
+<p>Browsers fail quietly here. A broken track usually produces no console error and no visible message — the captions simply never appear.</p>
+<h3>1. The file is SubRip</h3>
+<p>An <code>.srt</code> file is ignored even when you point <code>src</code> straight at it. Convert it with the <a href="/tools/srt-to-vtt">SRT to VTT converter</a>. If you can see a comma inside the timestamp, that is your problem.</p>
+<h3>2. The server sends the wrong content type</h3>
+<p>WebVTT files must be served as <code>text/vtt</code>. Plenty of servers and default static-host configurations serve an unfamiliar extension as <code>application/octet-stream</code> or <code>text/plain</code>, and browsers then refuse the track. Check the response headers in your browser's network panel. On a static host, add a rule mapping <code>.vtt</code> to <code>text/vtt</code>.</p>
+<h3>3. The file is on a different origin</h3>
+<p>Track files follow cross-origin rules. If the video and the captions live on different domains, the caption request needs CORS headers <em>and</em> the <code>&lt;track&gt;</code> element needs <code>crossorigin="anonymous"</code>. Without both, the track is blocked.</p>
+<h3>4. The WebVTT file is malformed</h3>
+<p>WebVTT requires the <code>WEBVTT</code> header, a blank line before the first cue, and a blank line between cues. A file missing any of those parses as empty. Re-convert from the original source, or run it through <a href="/tools/clean-subtitles">Clean subtitles</a>.</p>
+
+<h2>Styling the captions</h2>
+<p>WebVTT cues can be styled from your own CSS using the <code>::cue</code> pseudo-element — a genuine advantage over SubRip.</p>
+<pre>video::cue {
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  font-size: 1.1rem;
+}
+video::cue(.speaker) { color: #ffd479; }</pre>
+<p>To use a class, write it into the cue as <code>&lt;c.speaker&gt;</code> in the WebVTT text. Class-based cue styling is supported unevenly across browsers, so treat it as an enhancement rather than a requirement.</p>
+
+<h2>Serving captions in more than one language</h2>
+<p>Add one <code>&lt;track&gt;</code> per language. The player builds its caption menu from <code>label</code> and <code>srclang</code>.</p>
+<pre>&lt;track src="captions.en.vtt" kind="subtitles" srclang="en" label="English" default&gt;
+&lt;track src="captions.es.vtt" kind="subtitles" srclang="es" label="Español"&gt;
+&lt;track src="captions.de.vtt" kind="subtitles" srclang="de" label="Deutsch"&gt;</pre>
+
+<h2>Do you need a player library?</h2>
+<p>Not for basic captions. Native <code>&lt;track&gt;</code> support in modern browsers handles loading, the caption menu, timing and styling on its own. Reach for a JavaScript player library when you need adaptive bitrate streaming, DRM, or caption rendering that must look identical on every platform — not simply to display subtitles.</p></article>
+  <h2>Tools mentioned in this guide</h2>
+  <div class="grid">
+    <a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a>
+  </div>
+  <p class="updated">Last updated 2026-09-17. All tools run locally in your browser.</p>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>Subtitle Toolkit</h5>
+        <p style="margin:0">Free subtitle and caption utilities that run entirely in your browser. Nothing is uploaded, nothing is stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-17.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
+</body>
+</html>

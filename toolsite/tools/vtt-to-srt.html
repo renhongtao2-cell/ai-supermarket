@@ -20,6 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"VTT to SRT Converter","url":"https://toolboxes.top/tools/vtt-to-srt","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Free WebVTT to SRT converter running fully in your browser. Strips VTT headers, NOTE and STYLE blocks, and cue settings. No upload or signup required.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste your VTT content or drop the .vtt file onto the box.","Headers, NOTE and STYLE blocks, and cue settings like align: are discarded automatically.","Copy or download the resulting .srt file."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What happens to NOTE and STYLE blocks?","acceptedAnswer":{"@type":"Answer","text":"They are discarded. SubRip has no equivalent syntax, and leaving them in produces a file that most editors refuse to open."}},{"@type":"Question","name":"Will I lose any timing information?","acceptedAnswer":{"@type":"Answer","text":"No. Cue start and end times are preserved exactly — only the decimal separator and the surrounding syntax change."}},{"@type":"Question","name":"Can I convert in the other direction too?","acceptedAnswer":{"@type":"Answer","text":"Yes — use the SRT to VTT converter."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"VTT to SRT Converter","item":"https://toolboxes.top/tools/vtt-to-srt"}]}]</script>
 </head>
 <body data-tool="convert-srt">
@@ -81,16 +82,57 @@ Paste your subtitle file here…"></textarea>
       <ul><li>Timestamps are rewritten with comma separators, as SubRip requires.</li><li>Cue settings (<code>line:</code>, <code>position:</code>, <code>align:</code>, <code>size:</code>, <code>region:</code>) have no SRT equivalent and are dropped.</li><li>Cue identifiers are replaced with a clean 1-based sequence.</li></ul>
     </div>
 
+    <h2>What you give up converting VTT to SRT</h2>
+    <p><strong>Cue settings.</strong> <code>align:</code>, <code>line:</code>, <code>position:</code>, <code>size:</code> and <code>region:</code> control where text sits on screen. SubRip has no equivalent, so a caption positioned top-left to avoid covering a face will jump to the bottom centre.</p>
+    <p><strong>Regions and STYLE blocks.</strong> WebVTT can define a reusable block of CSS-like styling and apply it to many cues at once. SRT carries only inline <code>&lt;i&gt;</code>, <code>&lt;b&gt;</code> and <code>&lt;u&gt;</code>, so shared styling collapses to whatever was applied inline.</p>
+    <p><strong>Voice spans.</strong> <code>&lt;v Speaker&gt;</code> markup identifies who is speaking and lets a player style each speaker differently. In SRT the tag is dropped, which is why podcast captions converted to SRT often lose their speaker distinction.</p>
+    <p>If any of those matter for your project, keep the VTT as the master file and generate SRT only as a delivery copy.</p>
+
+    <h2>Worked example</h2>
+    <div class="example">
+      <div>
+        <h5>Input — .vtt</h5>
+        <pre>WEBVTT
+Kind: captions
+Language: en
+
+NOTE chapter 2 starts here
+
+1
+00:00:01.000 --&gt; 00:00:04.000 align:start position:10%
+Hello there.</pre>
+      </div>
+      <div>
+        <h5>Output — .srt</h5>
+        <pre>1
+00:00:01,000 --&gt; 00:00:04,000
+Hello there.</pre>
+      </div>
+    </div>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">The header, the NOTE block and the cue settings are gone; only the cue survives, renumbered and rewritten with comma timestamps.</p>
+
     <h2>FAQ</h2>
     <details class="faq"><summary>What happens to NOTE and STYLE blocks?</summary><div class="body">They are discarded. SubRip has no equivalent syntax, and leaving them in produces a file that most editors refuse to open.</div></details>
     <details class="faq"><summary>Will I lose any timing information?</summary><div class="body">No. Cue start and end times are preserved exactly — only the decimal separator and the surrounding syntax change.</div></details>
     <details class="faq"><summary>Can I convert in the other direction too?</summary><div class="body">Yes — use the <a href="/tools/srt-to-vtt">SRT to VTT converter</a>.</div></details>
+
+    <h2>Troubleshooting</h2>
+    <ol class="tshoot">
+      <li><span class="sym">My editor reports the file as empty or invalid</span><span class="fix">The input had no parseable cue blocks. WebVTT needs a blank line after the header and between cues — a file where the header runs straight into the first cue is rejected.</span></li>
+      <li><span class="sym">Cue positioning was lost</span><span class="fix">Cue settings such as <code>align:</code>, <code>line:</code>, <code>position:</code>, <code>size:</code> and <code>region:</code> have no SubRip equivalent, so they are dropped by design. Burn the position into the video if you need it.</span></li>
+      <li><span class="sym">Dialogue disappeared from the output</span><span class="fix">Text inside <code>NOTE</code> and <code>STYLE</code> blocks is not dialogue and is intentionally discarded. If your captions were stored in a NOTE block, the source file was not valid VTT.</span></li>
+      <li><span class="sym">The first cue lost its original identifier</span><span class="fix">VTT cue identifiers are optional and often absent. Numbers are regenerated from 1 so the SRT file opens everywhere.</span></li>
+    </ol>
 
     <h2>Related tools</h2>
     <div class="grid">
       <a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a>
     </div>
   </article>
+  <div class="note">
+    <h4>Further reading</h4>
+    <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
+  </div>
   <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
 </div></main>
 <footer class="site">
@@ -103,6 +145,10 @@ Paste your subtitle file here…"></textarea>
       <div>
         <h5>Tools</h5>
         <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
       </div>
       <div>
         <h5>Site</h5>

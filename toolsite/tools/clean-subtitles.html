@@ -20,6 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Clean Up AI-Generated Subtitles","url":"https://toolboxes.top/tools/clean-subtitles","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Clean messy AI subtitles in your browser: strip sound tags like [Music], HTML and ASS formatting, speaker labels and duplicate cues. No upload required.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop the subtitle file you want to clean.","Tick the cleanups you need — the preview updates immediately.","Download the result in the same format you pasted (SRT or VTT is detected automatically)."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will cleaning break my subtitle timing?","acceptedAnswer":{"@type":"Answer","text":"No. Cue start and end times are untouched — only the text inside each cue is modified."}},{"@type":"Question","name":"Can it remove speaker names from a podcast transcript?","acceptedAnswer":{"@type":"Answer","text":"Yes, enable Remove speaker labels. It strips a leading name followed by a colon, for example HOST: or Jane Doe:."}},{"@type":"Question","name":"Does it fix bad punctuation or capitalisation?","acceptedAnswer":{"@type":"Answer","text":"No, and be cautious with tools that claim to. Automated rewriting can change meaning. This tool only removes markup and noise."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Clean Up AI-Generated Subtitles","item":"https://toolboxes.top/tools/clean-subtitles"}]}]</script>
 </head>
 <body data-tool="clean">
@@ -87,16 +88,58 @@ Paste your subtitle file here…"></textarea>
       <ul><li>Sound cue removal targets bracketed effects such as <code>[Music]</code>, <code>(applause)</code> and <code>♪ … ♪</code>. Genuine dialogue inside brackets is left alone where the pattern is not a known effect.</li><li>Speaker-label removal strips leading <code>SPEAKER:</code> style prefixes, which are common in interview and podcast transcripts.</li><li>Empty cues are dropped so the timeline stays valid.</li></ul>
     </div>
 
+    <h2>What auto-captioning actually gets wrong</h2>
+    <p>Automatic captions fail in predictable ways, and it helps to know which defects are safe to fix automatically. <strong>Sound tags</strong> such as <code>[Music]</code>, <code>(applause)</code> and <code>♪ … ♪</code> are almost always noise. <strong>Markup wrappers</strong> added by an export step are safe to strip. <strong>Speaker labels</strong> are safe to strip only if you do not need to know who spoke.</p>
+    <p>Two categories are not safe to automate. <strong>Punctuation and capitalisation</strong> change meaning — a misplaced full stop turns a question into a statement, and automatic rewriting is how transcripts end up misquoting people. <strong>Homophone errors</strong> from the recogniser, such as "their" for "there", or a name spelled three different ways, need a human reading the text against the audio.</p>
+    <p>This tool deliberately only performs the safe category. Anything it cannot fix reliably is left for you rather than guessed at.</p>
+
+    <h2>Worked example</h2>
+    <div class="example">
+      <div>
+        <h5>Input — raw auto-captions</h5>
+        <pre>1
+00:00:01,000 --&gt; 00:00:04,000
+[Music]
+
+2
+00:00:04,200 --&gt; 00:00:07,000
+&lt;font color=&quot;#ffffff&quot;&gt;HOST: Welcome back.&lt;/font&gt;
+
+3
+00:00:07,400 --&gt; 00:00:10,000
+HOST: Welcome back.</pre>
+      </div>
+      <div>
+        <h5>Output — cleaned</h5>
+        <pre>1
+00:00:04,200 --&gt; 00:00:07,000
+Welcome back.</pre>
+      </div>
+    </div>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">Cue 1 was a sound cue, cue 3 duplicated cue 2, and the font wrapper and speaker label were stripped. Only one cue survives — with its original timing intact.</p>
+
     <h2>FAQ</h2>
     <details class="faq"><summary>Will cleaning break my subtitle timing?</summary><div class="body">No. Cue start and end times are untouched — only the text inside each cue is modified.</div></details>
     <details class="faq"><summary>Can it remove speaker names from a podcast transcript?</summary><div class="body">Yes, enable <em>Remove speaker labels</em>. It strips a leading name followed by a colon, for example <code>HOST:</code> or <code>Jane Doe:</code>.</div></details>
     <details class="faq"><summary>Does it fix bad punctuation or capitalisation?</summary><div class="body">No, and be cautious with tools that claim to. Automated rewriting can change meaning. This tool only removes markup and noise.</div></details>
+
+    <h2>Troubleshooting</h2>
+    <ol class="tshoot">
+      <li><span class="sym">Genuine dialogue was deleted</span><span class="fix">Only bracket patterns matching known sound effects are removed. If a line such as <code>[laughs]</code> was real speech, untick <em>Remove sound cues</em> and clean again.</span></li>
+      <li><span class="sym">Speaker names are still present</span><span class="fix">Enable <em>Remove speaker labels</em>. It strips a leading name followed by a colon, so <code>NARRATOR:</code> and <code>Dr. Chen:</code> are handled, but a name in the middle of a sentence is left alone.</span></li>
+      <li><span class="sym">The timing looks different after cleaning</span><span class="fix">It should not — start and end times are never modified. If cues look wrong, the source was already broken; inspect it with <a href="/tools/shift-subtitles">Shift subtitles</a>.</span></li>
+      <li><span class="sym">Markup like {\an8} is still there</span><span class="fix">Tick <em>Remove markup</em>. It strips HTML tags and ASS override codes, but leaves plain braces that are part of the dialogue itself.</span></li>
+    </ol>
 
     <h2>Related tools</h2>
     <div class="grid">
       <a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a>
     </div>
   </article>
+  <div class="note">
+    <h4>Further reading</h4>
+    <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
+  </div>
   <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
 </div></main>
 <footer class="site">
@@ -109,6 +152,10 @@ Paste your subtitle file here…"></textarea>
       <div>
         <h5>Tools</h5>
         <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
       </div>
       <div>
         <h5>Site</h5>

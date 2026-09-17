@@ -20,6 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Remove Timestamps from Subtitles","url":"https://toolboxes.top/tools/remove-timestamps","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Convert .srt or .vtt subtitles into plain text by removing timestamps and cue numbers. Runs in your browser with no upload. Optionally merges repeated lines.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop your .srt or .vtt file.","Choose whether to merge consecutive duplicate lines — captioners often repeat a line across two cues.","Copy the plain-text transcript."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does this keep any timing information?","acceptedAnswer":{"@type":"Answer","text":"No. The output is plain text only. If you need the timing, use Shift subtitles instead, which preserves cues."}},{"@type":"Question","name":"Why does my transcript repeat sentences?","acceptedAnswer":{"@type":"Answer","text":"Many captioners split a long line across two cues, so the same words appear twice. Enable Merge repeated lines to collapse them."}},{"@type":"Question","name":"Which input formats are supported?","acceptedAnswer":{"@type":"Answer","text":"SubRip (.srt), WebVTT (.vtt), and most .sbv-style files that use the HH:MM:SS,mmm --&gt; HH:MM:SS,mmm arrow syntax."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Remove Timestamps from Subtitles","item":"https://toolboxes.top/tools/remove-timestamps"}]}]</script>
 </head>
 <body data-tool="to-text">
@@ -83,16 +84,56 @@ Paste your subtitle file here…"></textarea>
       <ul><li>Multi-line cues are joined into a single line so the transcript reads naturally.</li><li>Turning on <em>Merge repeated lines</em> removes the duplication that comes from two-part captions.</li><li>If you also want to strip sound cues like <code>[Music]</code>, use <a href="/tools/clean-subtitles">Clean subtitles</a> first.</li></ul>
     </div>
 
+    <h2>When you should keep the timestamps</h2>
+    <p>A plain transcript is easier to read, but the timing is often the part you need later. Before stripping it, check whether the text will be used for <strong>subtitling</strong> (timing required), <strong>interview analysis</strong> (timecodes let you jump back into the recording), <strong>accessibility documentation</strong> (reviewers routinely ask for a timecoded transcript) or <strong>quotation with citation</strong> (a timecode is the citation).</p>
+    <p>If any of those apply, keep the original <code>.srt</code> or <code>.vtt</code> as the master file and treat the plain text as a derived copy. Keeping both costs nothing, and re-deriving the transcript later is one click.</p>
+
+    <h2>Worked example</h2>
+    <div class="example">
+      <div>
+        <h5>Input — .srt with timing</h5>
+        <pre>1
+00:00:01,000 --&gt; 00:00:04,000
+Hello there.
+
+2
+00:00:04,200 --&gt; 00:00:07,000
+Hello there.
+
+3
+00:00:07,400 --&gt; 00:00:10,000
+How are you?</pre>
+      </div>
+      <div>
+        <h5>Output — plain text</h5>
+        <pre>Hello there.
+How are you?</pre>
+      </div>
+    </div>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">Timestamps and cue numbers are gone, and the repeated line from cue 2 is merged because <em>Merge repeated lines</em> is on. Turn it off and you get all three lines.</p>
+
     <h2>FAQ</h2>
     <details class="faq"><summary>Does this keep any timing information?</summary><div class="body">No. The output is plain text only. If you need the timing, use <a href="/tools/shift-subtitles">Shift subtitles</a> instead, which preserves cues.</div></details>
     <details class="faq"><summary>Why does my transcript repeat sentences?</summary><div class="body">Many captioners split a long line across two cues, so the same words appear twice. Enable <em>Merge repeated lines</em> to collapse them.</div></details>
     <details class="faq"><summary>Which input formats are supported?</summary><div class="body">SubRip (.srt), WebVTT (.vtt), and most .sbv-style files that use the <code>HH:MM:SS,mmm --&gt; HH:MM:SS,mmm</code> arrow syntax.</div></details>
+
+    <h2>Troubleshooting</h2>
+    <ol class="tshoot">
+      <li><span class="sym">Every sentence appears twice in the transcript</span><span class="fix">Two-part captions repeat the line across consecutive cues. Enable <em>Merge repeated lines</em> to collapse them.</span></li>
+      <li><span class="sym">Sound cues such as [Music] are still in the text</span><span class="fix">This tool removes timing, not noise. Run the file through <a href="/tools/clean-subtitles">Clean subtitles</a> with <em>Remove sound cues</em> first, then strip the timestamps.</span></li>
+      <li><span class="sym">Paragraph breaks are missing</span><span class="fix">Each cue becomes one line of text. Paste into a word processor and replace line breaks with spaces if you want flowing paragraphs.</span></li>
+      <li><span class="sym">The output is empty</span><span class="fix">No cue lines were found. Confirm the file contains <code>--&gt;</code> between timestamps — a plain transcript saved with a <code>.srt</code> extension has nothing to parse.</span></li>
+    </ol>
 
     <h2>Related tools</h2>
     <div class="grid">
       <a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a>
     </div>
   </article>
+  <div class="note">
+    <h4>Further reading</h4>
+    <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
+  </div>
   <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
 </div></main>
 <footer class="site">
@@ -105,6 +146,10 @@ Paste your subtitle file here…"></textarea>
       <div>
         <h5>Tools</h5>
         <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
       </div>
       <div>
         <h5>Site</h5>

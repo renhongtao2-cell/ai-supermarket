@@ -34,7 +34,7 @@ const SITES = {
       "index.html", "about.html", "privacy.html", "404.html",
       "sitemap.xml", "robots.txt", "ads.txt", "_headers", "_redirects", "llms.txt",
     ],
-    dirs: ["css", "js", "tools"],
+    dirs: ["css", "js", "tools", "guides"],
   },
 };
 
