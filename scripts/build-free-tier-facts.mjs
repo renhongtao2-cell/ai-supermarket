@@ -53,14 +53,32 @@ const facts = {};
 const stats = {
   total: 0, cardContradiction: 0, watermarkContradiction: 0,
   published: 0, skipped: 0, quotaRaw: 0, quotaOk: 0, quotaDropped: 0,
+  excluded: 0, excludedKeys: 0,
   byReason: { strong: 0, trialOnly: 0, quotaOnly: 0 },
 };
 const keyUnion = new Set();
+
+// 人工排除清单：抽取器在这些条目上会出错，且原因明确 —— 宁缺毋滥。
+// 每条都写清"为什么错"，将来条件变了可以复核。
+const EXCLUDE = {
+  // openai.com 是全库唯一一组「同域多工具」（DALL·E 3 → /dall-e-3，Sora → /sora）。
+  // 抓取器从产品页跟到 openai.com/pricing，拿到的是 ChatGPT 免费档那一列，
+  // 于是被错记成这两个产品有免费档 —— 实际它们只在付费档内提供。
+  "DALL·E 3": { all: "openai.com 同域误配：抓到的是 ChatGPT 免费档那一列" },
+  "Sora": { all: "同上：openai.com/pricing 的 Free 列属于 ChatGPT，非 Sora" },
+  // AI Dungeon「免费可玩」属实，但 freeQuota 从 $14.99 附近误匹配出「14 images」，
+  // 只丢错误的额度，保留 freePlan。
+  "AI Dungeon": { keys: ["freeQuota"], why: "freeQuota 误匹配（14 images 来自 $14.99 附近）" },
+};
 
 for (const r of audit.results) {
   stats.total++;
   const s = { ...(r.signals || {}) };
   Object.keys(s).forEach((k) => keyUnion.add(k));
+
+  const ex = EXCLUDE[r.name];
+  if (ex && ex.all) { stats.excluded++; continue; }
+  if (ex && ex.keys) ex.keys.forEach((k) => { delete s[k]; stats.excludedKeys++; });
 
   // 丢矛盾：绑卡
   if (s.noCreditCard && s.creditCardRequired) {

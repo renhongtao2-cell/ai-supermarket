@@ -126,22 +126,44 @@ async function getBrowser() {
   await _ctx.addInitScript(() => { Object.defineProperty(navigator, 'webdriver', { get: () => undefined }); });
   return _browser;
 }
-async function closeBrowser() { try { if (_browser) await _browser.close(); } catch {} _browser = null; _ctx = null; }
+async function closeBrowser() {
+  try {
+    // close() 在有 page 卡住时会永久挂起 —— 包超时，否则进程跑完也不退出（被外层 timeout 杀掉）
+    if (_browser) await Promise.race([_browser.close(), new Promise(r => setTimeout(r, 8000))]);
+  } catch {}
+  _browser = null; _ctx = null;
+}
+
+// 任何 await 都可能永久挂住 —— 全部包一层超时，绝不留无界等待
+const withTimeout = (p, ms, tag) =>
+  Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(tag)), ms))]);
 
 async function browserGet(url, timeoutMs = 32000) {
   await getBrowser();
-  const page = await _ctx.newPage();
+  // newPage 自己也会挂：一旦上下文被泄漏的 page 撑满，这里就是整轮的死锁点
+  const page = await withTimeout(_ctx.newPage(), timeoutMs, 'NEWPAGE_TIMEOUT');
   try {
+    page.setDefaultTimeout(timeoutMs);
+    page.setDefaultNavigationTimeout(timeoutMs);
     await page.route('**/*', route => {
       const t = route.request().resourceType();
       return (t === 'image' || t === 'font' || t === 'media' || t === 'stylesheet') ? route.abort() : route.continue();
     });
     const resp = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
     await page.waitForTimeout(2200);
-    const text = await page.evaluate(() => (document.body ? document.body.innerText : ''));
-    const html = await page.content();
+    // 定价表大多是懒渲染的：滚到底触发加载再回顶部，否则抓到的全是导航菜单
+    // （实测 Copy.ai / Figma 只拿到 nav，滚过之后才有 Free / 价格行）
+    await withTimeout(page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)), 8000, 'SCROLL_TIMEOUT').catch(() => {});
+    await page.waitForTimeout(1800);
+    await withTimeout(page.evaluate(() => window.scrollTo(0, 0)), 8000, 'SCROLL_TIMEOUT').catch(() => {});
+    const text = await withTimeout(
+      page.evaluate(() => (document.body ? document.body.innerText : '')), timeoutMs, 'EVAL_TIMEOUT');
+    const html = await withTimeout(page.content(), timeoutMs, 'CONTENT_TIMEOUT');
     return { status: resp ? resp.status() : 0, headers: {}, body: text, text, html, finalUrl: page.url() };
-  } finally { await page.close(); }
+  } finally {
+    // close 同样会挂（页面正在导航中），包超时且吞掉错误
+    await withTimeout(page.close().catch(() => {}), 5000, 'CLOSE_TIMEOUT').catch(() => {});
+  }
 }
 
 // 三级降级：直连 → 代理 → 无头浏览器。谁先成功用谁。
@@ -221,8 +243,10 @@ async function gatherText(baseUrl) {
 const SIGNALS = [
   { key: 'noCreditCard',     label: '无需信用卡', re: /\b(no|without|not? requiring|doesn'?t require)\s+(a\s+)?credit\s*card\b|\bcredit\s*card\s*(is\s*)?(not\s*required|never\s*required)\b/i },
   { key: 'creditCardRequired', label: '需绑卡',   re: /\bcredit\s*card\s*(is\s*)?required\b|\badd\s+(your\s+)?(credit\s*)?card\b|\brequires?\s+a\s+(valid\s+)?credit\s*card\b/i },
-  { key: 'freeForever',      label: '永久免费',   re: /\bfree\s*forever\b|\balways\s*free\b|\bpermanently\s*free\b|\bfree\s*for\s*life\b/i },
-  { key: 'freePlan',         label: '有免费套餐', re: /\bfree\s*(plan|tier|version|account|edition)\b/i },
+  { key: 'freeForever',      label: '永久免费',   re: /\bfree\s*forever\b|\balways\s*free\b|\bpermanently\s*free\b|\bfree\s*for\s*life\b|\b(totally|completely|entirely|100%)\s+free\b|\bfree\s*of\s*charge\b/i },
+  // 定价表把套餐名单独渲染成一行 "Free" 是最常见的形态（实测 Figma 就是「Free / Free limited
+  // access to Figma products」），只认 "free plan|tier" 会漏掉一大类。整行只有 Free 无歧义。
+  { key: 'freePlan',         label: '有免费套餐', re: /\bfree\s*(plan|tier|version|account|edition)\b|^\s*free\s*$|\bfree\s+limited\s+access\b/im },
   { key: 'freeTrial',        label: '免费试用',   re: /\bfree\s*trial\b/i },
   { key: 'trialDays',        label: '试用天数',   re: /\b(\d{1,2})[\s-]*day\s*(free\s*)?trial\b|\bfree\s*trial\s*(for\s*)?(\d{1,2})\s*days?\b/i, capture: true },
   { key: 'freeQuota',        label: '免费额度',   re: /\b(\d[\d,\.]*\s*(?:free\s*)?(?:credits?|tokens?|words?|characters?|messages?|generations?|images?|requests?|minutes?|projects?|seats?|users?)\b[^.]{0,40}?\b(?:free|per\s*(?:month|day|week)|monthly|forever)\b|\bfree\b[^.]{0,30}?\d[\d,\.]*\s*(?:credits?|tokens?|words?|messages?|generations?|images?|requests?|minutes?|projects?)\b)/i, capture: true },
@@ -245,6 +269,7 @@ function extract(text) {
 // ---------- 主流程 ----------
 const results = [];
 let done = 0;
+let lastProgressAt = Date.now();
 
 if (FROM_CACHE) {
   // 从 .workbuddy/free-tier-text/*.txt 重抽，不联网
@@ -292,11 +317,22 @@ if (FROM_CACHE) {
       const tool = queue.shift();
       const t0 = Date.now();
       // 硬超时兜底：个别站点会把整轮卡死（实测有 6 个工具挂住 25 分钟）
+      // 注意：输掉 race 的那条链**不会停**，它仍然持有 page —— 所以要吞掉它的
+      // rejection（否则变 unhandled），并在超时后强制重启浏览器（见下）。
+      const work = gatherText(tool.url);
+      work.catch(() => {});
       const gathered = await Promise.race([
-        gatherText(tool.url),
+        work,
         new Promise(res => setTimeout(() => res({ home: { text: '', note: 'TOOL_TIMEOUT' }, pricing: null }), TOOL_TIMEOUT)),
       ]);
+      lastProgressAt = Date.now();
       const { home, pricing } = gathered;
+      // 超时 → 那条链还挂在某个 page 上。直接重启浏览器，把泄漏的 page 一起带走。
+      // 不这么做的话，CONC 个 worker 会各卡在一次 newPage() 上，永久推不动（实测挂了 3.5h）。
+      if (home.note === 'TOOL_TIMEOUT') {
+        console.log(`  ⏱ ${tool.name} 超时 → 重启浏览器回收泄漏 page`);
+        await closeBrowser();
+      }
       const combined = [home.text, pricing?.text || ''].filter(Boolean).join(' \n ');
       const ex = combined.length > 200 ? extract(combined) : { signals: {}, hits: 0 };
       results.push({
@@ -318,7 +354,23 @@ if (FROM_CACHE) {
   }
 
   const queue = [...pool];
-  await Promise.all(Array.from({ length: CONC }, () => worker(queue)));
+  // 看门狗：如果超过 max(6×单工具超时, 10min) 没有任何工具完成，说明全部 worker 都卡住了，
+  // 强制重启浏览器把它们踢出来。没有这个的话整轮会静默挂死（实测 3.5 小时零产出）。
+  const stallMs = Math.max(TOOL_TIMEOUT * 6, 10 * 60 * 1000);
+  const watchdog = setInterval(async () => {
+    const idle = Date.now() - lastProgressAt;
+    if (idle > stallMs) {
+      console.log(`  🐕 看门狗：${Math.round(idle / 60000)} 分钟无进展 → 强制重启浏览器`);
+      lastProgressAt = Date.now();
+      await closeBrowser();
+    }
+  }, 30000);
+  watchdog.unref?.();
+  try {
+    await Promise.all(Array.from({ length: CONC }, () => worker(queue)));
+  } finally {
+    clearInterval(watchdog);
+  }
   await closeBrowser();
 }
 
@@ -428,3 +480,7 @@ console.log(`\n可达 ${reachable.length}/${pool.length} | 有定价页 ${withPr
 console.log('通道分布: ' + Object.entries(viaCount).map(([k, v]) => `${k}=${v}`).join('  '));
 console.log('JSON: ' + OUT_JSON);
 console.log('复核队列: ' + mdPath);
+
+// 强制退出：超时后仍在跑的泄漏 promise / socket 会吊住事件循环，导致「跑完但不退出」，
+// 被外层 timeout 杀掉后误报 failed。文件都已同步落盘，这里延迟一点点让 stdout 冲干净再退。
+setTimeout(() => process.exit(0), 300);
