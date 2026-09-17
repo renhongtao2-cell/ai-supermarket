@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.renhongtao2-cell/ai-tools-directory",
+  "title": "AI Tools Directory",
+  "description": "Curated index of 221 AI tools across 21 industries. Search by use case, department or pricing tier.",
+  "repository": {
+    "url": "https://github.com/renhongtao2-cell/ai-tools-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "websiteUrl": "https://ai.toolboxes.top",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://ai-tools-mcp.toolboxes.top/mcp"
+    }
+  ]
+}

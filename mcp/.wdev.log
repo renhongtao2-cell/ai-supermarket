@@ -1,0 +1,24 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ ⛅️ wrangler 4.129.0
+────────────────────
+⎔ Starting local server...
+[wrangler:warn] Unable to fetch the `Request.cf` object! Falling back to a default placeholder...
+TimeoutError: The operation was aborted due to timeout
+    at new DOMException (node:internal/per_context/domexception:76:18)
+    at Timeout._onTimeout (node:internal/abort_controller:155:9)
+    at listOnTimeout (node:internal/timers:585:17)
+    at process.processTimers (node:internal/timers:521:7)
+    at C:\Users\Administrator\.workbuddy\binaries\node\workspace\node_modules\miniflare\node_modules\undici\index.js:157:7
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runNextTicks (node:internal/process/task_queues:68:3)
+    at process.processTimers (node:internal/timers:518:9)
+    at async setupCf (C:\Users\Administrator\.workbuddy\binaries\node\workspace\node_modules\miniflare\dist\src\index.js:52933:17)
+    at async #assembleConfig (C:\Users\Administrator\.workbuddy\binaries\node\workspace\node_modules\miniflare\dist\src\index.js:82440:21)
+    at async #assembleAndUpdateConfig (C:\Users\Administrator\.workbuddy\binaries\node\workspace\node_modules\miniflare\dist\src\index.js:82809:21)
+    at async C:\Users\Administrator\.workbuddy\binaries\node\workspace\node_modules\miniflare\dist\src\index.js:81664:7
+    at async Mutex.runWith (C:\Users\Administrator\.workbuddy\binaries\node\workspace\node_modules\miniflare\dist\src\index.js:54769:16)
+    at async #waitForReady (C:\Users\Administrator\.workbuddy\binaries\node\workspace\node_modules\miniflare\dist\src\index.js:82994:5)
+[wrangler:info] Ready on http://127.0.0.1:8791

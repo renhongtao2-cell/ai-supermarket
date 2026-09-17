@@ -2,6 +2,7 @@
 node_modules/
 .workbuddy/
 outputs/
+.deploy/
 scripts/*
 !scripts/*.mjs
 worker.js

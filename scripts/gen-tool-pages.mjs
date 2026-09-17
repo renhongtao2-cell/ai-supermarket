@@ -14,6 +14,14 @@ const { DEPARTMENTS, TOOLS } = new Function(
   raw + "\n;return { DEPARTMENTS, TOOLS };"
 )();
 
+/* ---------- load free-tier facts (optional, produced by build-free-tier-facts.mjs) ---------- */
+let FREE_FACTS = {};
+try {
+  const fp = path.join(ROOT, ".workbuddy", "free-tier-facts.json");
+  if (fs.existsSync(fp)) FREE_FACTS = JSON.parse(fs.readFileSync(fp, "utf8")).facts || {};
+} catch (e) { FREE_FACTS = {}; }
+const FACTS_DATE = "2026-09-17";
+
 /* ---------- slug ---------- */
 const slugify = (s) =>
   s.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "tool";
@@ -44,6 +52,23 @@ const pricingAnswer = p => ({
   paid: "No. It is a paid tool — check the official website for current plans and pricing."
 }[p] || "Check the official website for current pricing.");
 
+const hostOf = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return ""; } };
+
+/* 把结构化事实转成人话列表（只输出高置信信号） */
+function freeLines(f) {
+  if (!f) return [];
+  const L = [];
+  if (f.freeForever) L.push("A permanent free tier is available (no time limit).");
+  else if (f.freePlan) L.push("A free plan is available.");
+  if (f.freeTrial || f.trialDays) L.push(f.trialDays ? `Free trial: ${f.trialDays} days.` : "A free trial is available.");
+  if (f.noCreditCard) L.push("No credit card required to start.");
+  if (f.apiOnFree) L.push("API access is available on the free tier.");
+  if (f.watermarkFree) L.push("No watermark on the free tier.");
+  if (f.commercialUse) L.push("Commercial use is allowed on the free plan.");
+  if (f.freeQuota && !f.freeForever && !f.freePlan && !f.freeTrial) L.push("Includes a free usage quota.");
+  return L;
+}
+
 /* ---------- 生成单个工具详情页 ---------- */
 function toolPage(t) {
   const dept = deptById[t.dept];
@@ -57,11 +82,21 @@ function toolPage(t) {
         <span class="pill ${a.pricing}">${pricingLabel(a.pricing)}</span>
         <p>${esc(a.desc)}</p>
       </a>`).join("\n");
+  const fLines = freeLines(FREE_FACTS[t.name]);
+  const fAnswer = fLines.length
+    ? `${pricingAnswer(t.pricing)} Our automated check of the vendor's pricing page on ${FACTS_DATE} also found: ${fLines.map(x => x.replace(/\.$/, "")).join("; ")}. (Auto-detected — confirm on the official site.)`
+    : pricingAnswer(t.pricing);
+  const freeBlock = fLines.length ? `
+      <div class="card-panel free-panel" style="margin-top:16px">
+        <h2>Free tier — what we found</h2>
+        <ul class="free-list">${fLines.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+        <p class="free-note">Auto-checked from ${esc(hostOf(t.url))}'s pricing page on ${FACTS_DATE}. Free tiers change often — always confirm on the official site.</p>
+      </div>` : "";
   const faq = `
     <details class="faq-item" open><summary>What is ${esc(t.name)}?</summary>
       <p>${esc(t.desc)} ${esc(t.name)} is listed under ${esc(dept.name)} on AI Supermarket, and you can reach the official site from this page.</p></details>
     <details class="faq-item"><summary>Is ${esc(t.name)} free to use?</summary>
-      <p>${pricingAnswer(t.pricing)}</p></details>
+      <p>${fAnswer}</p></details>
     <details class="faq-item"><summary>What are the best alternatives to ${esc(t.name)}?</summary>
       <p>${alts.length ? "Other " + esc(dept.name) + " tools on AI Supermarket: " + alts.map(a => `<a href="/tool/${a._slug}">${esc(a.name)}</a>`).join(", ") + "." : "Browse the " + esc(dept.name) + " department for similar tools."}</p></details>`;
 
@@ -78,7 +113,7 @@ function toolPage(t) {
           { "@type": "ListItem", position: 3, name: t.name } ] },
       { "@type": "FAQPage", mainEntity: [
           { "@type": "Question", name: `What is ${t.name}?`, acceptedAnswer: { "@type": "Answer", text: `${t.desc} It is listed under ${dept.name} on AI Supermarket.` } },
-          { "@type": "Question", name: `Is ${t.name} free to use?`, acceptedAnswer: { "@type": "Answer", text: pricingAnswer(t.pricing) } },
+          { "@type": "Question", name: `Is ${t.name} free to use?`, acceptedAnswer: { "@type": "Answer", text: fAnswer } },
           { "@type": "Question", name: `What are the best alternatives to ${t.name}?`,
             acceptedAnswer: { "@type": "Answer", text: alts.map(a => a.name).join(", ") || `Other ${dept.name} tools on AI Supermarket.` } } ] }
     ]
@@ -129,6 +164,11 @@ function toolPage(t) {
     details.faq-item{border-bottom:1px solid rgba(128,128,128,.2);padding:10px 0}
     details.faq-item summary{cursor:pointer;font-weight:600}
     details.faq-item p{opacity:.75;font-size:14px;margin-top:8px}
+    .free-panel{border-color:rgba(16,185,129,.35)}
+    .free-list{margin:6px 0 10px;padding-left:0;list-style:none}
+    .free-list li{position:relative;padding:5px 0 5px 22px;font-size:14.5px;opacity:.9;line-height:1.5}
+    .free-list li:before{content:"✓";position:absolute;left:0;color:#10b981;font-weight:700}
+    .free-note{font-size:12.5px;opacity:.55;margin:0;line-height:1.5}
     @media (max-width:800px){.tool-body{grid-template-columns:1fr}}
   </style>
   <script type="application/ld+json">${ld}</script>
@@ -171,7 +211,7 @@ function toolPage(t) {
         <h2>What is ${esc(t.name)}?</h2>
         <p>${esc(t.desc)} ${esc(t.name)} works in the browser and fits into ${esc(dept.name)} workflows. On this page you can review what it does, check its pricing model, compare it with alternatives and jump straight to the official site.</p>
         <p style="margin-top:10px">${tagList || ""}</p>
-      </div>
+      </div>${freeBlock}
       <div class="card-panel" style="margin-top:16px">
         <h2>Frequently asked questions</h2>
         ${faq}

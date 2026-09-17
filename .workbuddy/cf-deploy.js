@@ -28,16 +28,38 @@ const WRANGLER =
   process.env.WRANGLER_BIN ||
   "C:/Users/Administrator/.workbuddy/binaries/node/workspace/node_modules/wrangler/bin/wrangler.js";
 
+// Pre-deploy SEO/GEO auto-sync. Running these by hand was the #1 source of drift:
+// every time data.js gained tools, index.html counts / ItemList / llms.txt went stale
+// (happened on 09-10 and 09-16). Automating here means deployment can never ship stale counts.
+function autoSync(name) {
+  try {
+    execSync(`node scripts/${name}`, { cwd: ROOT, stdio: "inherit" });
+  } catch (e) {
+    console.warn(`${name} failed (continuing deploy):`, e.message);
+  }
+}
+
 (async () => {
-  // Pre-deploy: inline css + add ?v= hash to js refs so edge caches can't mix old/new
+  // 1) Rebuild ItemList + department ai-summary blocks from data.js (idempotent)
+  autoSync("regen-seo-blocks.mjs");
+  // 2) Rebuild llms.txt with today's date + full tool list
+  autoSync("gen-llms.mjs");
+
+  // 3) Pre-deploy: inline css + add ?v= hash to js refs so edge caches can't mix old/new
   try {
     execSync("node scripts/version-assets.mjs", { cwd: ROOT, stdio: "inherit" });
   } catch (e) {
     console.warn("version-assets.mjs failed, deploying without refresh:", e.message);
   }
 
+  // 4) Build a clean staging dir that contains ONLY site files.
+  //    SECURITY: never deploy ROOT — wrangler pages deploy ignores .assetsignore and would
+  //    upload .workbuddy/ (contains cf.env token), scripts/, worker.js, README, etc.
+  const STAGE = path.join(ROOT, ".deploy");
+  execSync("node scripts/prepare-deploy-dir.mjs", { cwd: ROOT, stdio: "inherit" });
+
   execSync(
-    `"${process.execPath}" "${WRANGLER}" pages deploy "${ROOT}" --project-name=${PROJ} --branch=main --commit-dirty=true`,
+    `"${process.execPath}" "${WRANGLER}" pages deploy "${STAGE}" --project-name=${PROJ} --branch=main --commit-dirty=true`,
     {
       cwd: ROOT,
       stdio: "inherit",
