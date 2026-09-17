@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clean Up AI-Generated Subtitles — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Clean messy AI subtitles in your browser: strip sound tags like [Music], HTML and ASS formatting, speaker labels and duplicate cues. No upload required.">
+<link rel="canonical" href="https://toolboxes.top/tools/clean-subtitles">
+<meta property="og:title" content="Clean Up AI-Generated Subtitles — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Clean messy AI subtitles in your browser: strip sound tags like [Music], HTML and ASS formatting, speaker labels and duplicate cues. No upload required.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolboxes.top/tools/clean-subtitles">
+<meta property="og:site_name" content="Subtitle Toolkit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://toolboxes.top/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2256%22>%F0%9F%92%AC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Clean Up AI-Generated Subtitles","url":"https://toolboxes.top/tools/clean-subtitles","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Clean messy AI subtitles in your browser: strip sound tags like [Music], HTML and ASS formatting, speaker labels and duplicate cues. No upload required.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop the subtitle file you want to clean.","Tick the cleanups you need — the preview updates immediately.","Download the result in the same format you pasted (SRT or VTT is detected automatically)."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will cleaning break my subtitle timing?","acceptedAnswer":{"@type":"Answer","text":"No. Cue start and end times are untouched — only the text inside each cue is modified."}},{"@type":"Question","name":"Can it remove speaker names from a podcast transcript?","acceptedAnswer":{"@type":"Answer","text":"Yes, enable Remove speaker labels. It strips a leading name followed by a colon, for example HOST: or Jane Doe:."}},{"@type":"Question","name":"Does it fix bad punctuation or capitalisation?","acceptedAnswer":{"@type":"Answer","text":"No, and be cautious with tools that claim to. Automated rewriting can change meaning. This tool only removes markup and noise."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Clean Up AI-Generated Subtitles","item":"https://toolboxes.top/tools/clean-subtitles"}]}]</script>
+</head>
+<body data-tool="clean">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">💬</span>Subtitle<em>Toolkit</em></a>
+    <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Clean Up AI-Generated Subtitles</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Clean Up AI-Generated Subtitles</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p>
+
+  <div class="tool">
+    <div id="drop">
+      Drop a subtitle file here, or
+      <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
+    </div>
+    <div class="panes">
+      <div class="pane">
+        <label for="in">Input — .srt / .vtt</label>
+        <textarea id="in" spellcheck="false" placeholder="1
+00:00:01,000 --> 00:00:04,000
+Paste your subtitle file here…"></textarea>
+      </div>
+      <div class="pane">
+        <label for="out">SRT output</label>
+        <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
+      </div>
+    </div>
+    
+    <div class="opts">
+      <label><input type="checkbox" id="opt-sound" checked> Remove sound cues</label>
+      <label><input type="checkbox" id="opt-tags" checked> Remove markup</label>
+      <label><input type="checkbox" id="opt-speaker"> Remove speaker labels</label>
+      <label><input type="checkbox" id="opt-dupe"> Remove duplicate cues</label>
+      <label><input type="checkbox" id="opt-empty" checked> Drop empty cues</label>
+    </div>
+    
+    <div class="row">
+      <button class="btn primary" id="copy">Copy result</button>
+      <button class="btn" id="download" data-name="output.srt">Download SRT</button>
+      <button class="btn" id="clear">Clear</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+  </div>
+
+  <div class="privacy">
+    <h4>Your file never leaves your device</h4>
+    <p>This tool is plain JavaScript. There is no upload step and no server-side processing, so confidential captions, unreleased content and client material stay on your machine.</p>
+  </div>
+
+  <article>
+    <h2>What this does</h2>
+    <p>Auto-generated captions arrive with markup you rarely want: <code>[Music]</code> and <code>[Applause]</code> tags, <code>&lt;font&gt;</code> wrappers, ASS override codes, ALL-CAPS speaker labels and the same line repeated across two cues. This tool removes them and re-emits a valid subtitle file.</p>
+
+    <h2>How to use it</h2>
+    <ol><li>Paste or drop the subtitle file you want to clean.</li><li>Tick the cleanups you need — the preview updates immediately.</li><li>Download the result in the same format you pasted (SRT or VTT is detected automatically).</li></ol>
+
+    <div class="note">
+      <h4>Good to know</h4>
+      <ul><li>Sound cue removal targets bracketed effects such as <code>[Music]</code>, <code>(applause)</code> and <code>♪ … ♪</code>. Genuine dialogue inside brackets is left alone where the pattern is not a known effect.</li><li>Speaker-label removal strips leading <code>SPEAKER:</code> style prefixes, which are common in interview and podcast transcripts.</li><li>Empty cues are dropped so the timeline stays valid.</li></ul>
+    </div>
+
+    <h2>FAQ</h2>
+    <details class="faq"><summary>Will cleaning break my subtitle timing?</summary><div class="body">No. Cue start and end times are untouched — only the text inside each cue is modified.</div></details>
+    <details class="faq"><summary>Can it remove speaker names from a podcast transcript?</summary><div class="body">Yes, enable <em>Remove speaker labels</em>. It strips a leading name followed by a colon, for example <code>HOST:</code> or <code>Jane Doe:</code>.</div></details>
+    <details class="faq"><summary>Does it fix bad punctuation or capitalisation?</summary><div class="body">No, and be cautious with tools that claim to. Automated rewriting can change meaning. This tool only removes markup and noise.</div></details>
+
+    <h2>Related tools</h2>
+    <div class="grid">
+      <a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a>
+    </div>
+  </article>
+  <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>Subtitle Toolkit</h5>
+        <p style="margin:0">Free subtitle and caption utilities that run entirely in your browser. Nothing is uploaded, nothing is stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-17.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subtitle Toolkit — Free browser-based subtitle tools (SRT &amp; VTT)</title>
+<meta name="description" content="Convert, clean and resync .srt and .vtt subtitle files in your browser. No upload, no signup, no file size limit. Your captions never leave your device.">
+<link rel="canonical" href="https://toolboxes.top/">
+<meta property="og:title" content="Subtitle Toolkit — Free browser-based subtitle tools (SRT &amp; VTT)">
+<meta property="og:description" content="Convert, clean and resync .srt and .vtt subtitle files in your browser. No upload, no signup, no file size limit. Your captions never leave your device.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolboxes.top/">
+<meta property="og:site_name" content="Subtitle Toolkit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://toolboxes.top/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2256%22>%F0%9F%92%AC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebSite","name":"Subtitle Toolkit","url":"https://toolboxes.top/","description":"Free browser-based subtitle and caption utilities."},{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"name":"SRT to VTT Converter","url":"https://toolboxes.top/tools/srt-to-vtt"},{"@type":"ListItem","position":2,"name":"VTT to SRT Converter","url":"https://toolboxes.top/tools/vtt-to-srt"},{"@type":"ListItem","position":3,"name":"Remove Timestamps from Subtitles","url":"https://toolboxes.top/tools/remove-timestamps"},{"@type":"ListItem","position":4,"name":"Clean Up AI-Generated Subtitles","url":"https://toolboxes.top/tools/clean-subtitles"},{"@type":"ListItem","position":5,"name":"Shift Subtitle Timing","url":"https://toolboxes.top/tools/shift-subtitles"}]}]</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">💬</span>Subtitle<em>Toolkit</em></a>
+    <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <h1>Free subtitle tools that run in your browser</h1>
+    <p class="lead">Convert, clean and resync <code>.srt</code> and <code>.vtt</code> files. No upload, no signup, no file size limit — your captions never leave your device.</p>
+    <div class="badges">
+      <span class="badge on">100% client-side</span>
+      <span class="badge">No account needed</span>
+      <span class="badge">Works offline after load</span>
+      <span class="badge">No file size limit</span>
+    </div>
+  </div>
+</section>
+<div class="wrap narrow">
+  <div class="privacy">
+    <h4>Why “client-side” matters for subtitles</h4>
+    <p>Subtitle files often contain unreleased product names, internal meeting transcripts or client interviews. Most online converters upload your file to a server to process it. These tools don’t: the conversion is plain JavaScript running on your own machine, so the file never travels over the network.</p>
+  </div>
+  <div class="grid">
+    <a class="card" href="/tools/srt-to-vtt">
+      <div class="ico">🔄</div>
+      <h3>SRT to VTT Converter</h3>
+      <p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p>
+      <div class="go">Open tool →</div>
+    </a><a class="card" href="/tools/vtt-to-srt">
+      <div class="ico">🔄</div>
+      <h3>VTT to SRT Converter</h3>
+      <p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p>
+      <div class="go">Open tool →</div>
+    </a><a class="card" href="/tools/remove-timestamps">
+      <div class="ico">📄</div>
+      <h3>Remove Timestamps from Subtitles</h3>
+      <p>Strip timestamps and cue numbers to get a clean, readable transcript.</p>
+      <div class="go">Open tool →</div>
+    </a><a class="card" href="/tools/clean-subtitles">
+      <div class="ico">🧹</div>
+      <h3>Clean Up AI-Generated Subtitles</h3>
+      <p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p>
+      <div class="go">Open tool →</div>
+    </a><a class="card" href="/tools/shift-subtitles">
+      <div class="ico">⏱️</div>
+      <h3>Shift Subtitle Timing</h3>
+      <p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p>
+      <div class="go">Open tool →</div>
+    </a>
+  </div>
+
+  <article>
+    <h2>Which tool do I need?</h2>
+    <ul>
+      <li><strong>Subtitles won’t show up on a web page</strong> → your file is probably <code>.srt</code>. Use <a href="/tools/srt-to-vtt">SRT to VTT</a>.</li>
+      <li><strong>Your video editor rejects the file</strong> → it’s probably WebVTT. Use <a href="/tools/vtt-to-srt">VTT to SRT</a>.</li>
+      <li><strong>Subtitles appear too early or too late</strong> → <a href="/tools/shift-subtitles">Shift subtitle timing</a>.</li>
+      <li><strong>You want a readable transcript</strong> → <a href="/tools/remove-timestamps">Remove timestamps</a>.</li>
+      <li><strong>Auto-captions are full of <code>[Music]</code> and markup</strong> → <a href="/tools/clean-subtitles">Clean up AI subtitles</a>.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <details class="faq"><summary>Are these tools really free?</summary><div class="body">Yes. There is no account, no usage quota and no watermark. The site is supported by advertising, which is why you may see ads on the page.</div></details>
+    <details class="faq"><summary>Do you store my subtitle files?</summary><div class="body">No. Files are read directly by your browser and processed in memory. Nothing is transmitted to a server, and nothing is written to storage. Closing the tab discards everything.</div></details>
+    <details class="faq"><summary>Is there a file size limit?</summary><div class="body">No server-side limit, because nothing is uploaded. In practice the limit is your browser’s available memory — files of several megabytes process instantly.</div></details>
+    <details class="faq"><summary>Which formats are supported?</summary><div class="body">SubRip (<code>.srt</code>) and WebVTT (<code>.vtt</code>) are fully supported, plus most <code>.sbv</code>-style files that use the <code>HH:MM:SS,mmm --&gt; HH:MM:SS,mmm</code> arrow syntax.</div></details>
+    <details class="faq"><summary>Can I use these tools offline?</summary><div class="body">Yes. Once the page has loaded, the conversion logic runs locally, so it keeps working if you lose your connection.</div></details>
+  </article>
+  <p class="updated">Last updated 2026-09-17. Found a bug or need another format? The <a href="https://ai.toolboxes.top/">AI tool directory</a> lists transcription and captioning tools that produce these files in the first place.</p>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>Subtitle Toolkit</h5>
+        <p style="margin:0">Free subtitle and caption utilities that run entirely in your browser. Nothing is uploaded, nothing is stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-17.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
+</body>
+</html>

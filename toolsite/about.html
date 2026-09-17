@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Subtitle Toolkit</title>
+<meta name="description" content="Who builds Subtitle Toolkit, how the tools work, and why everything runs locally in your browser.">
+<link rel="canonical" href="https://toolboxes.top/about">
+<meta property="og:title" content="About — Subtitle Toolkit">
+<meta property="og:description" content="Who builds Subtitle Toolkit, how the tools work, and why everything runs locally in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolboxes.top/about">
+<meta property="og:site_name" content="Subtitle Toolkit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://toolboxes.top/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2256%22>%F0%9F%92%AC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">💬</span>Subtitle<em>Toolkit</em></a>
+    <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main"><div class="wrap narrow"><article>
+      <h1 style="font-size:30px;margin:26px 0 12px">About Subtitle Toolkit</h1>
+      <p>Subtitle Toolkit is a small set of free utilities for people who work with subtitle and caption files: video editors, translators, podcast producers, accessibility specialists and anyone handed a <code>.srt</code> that won’t load.</p>
+      <h2>Why it runs in your browser</h2>
+      <p>Subtitle files are frequently confidential. An unreleased product demo, a client interview, a medical lecture or a legal deposition can all arrive as a caption file. Uploading those to an unknown server to change a comma into a period is a bad trade.</p>
+      <p>Every tool here is plain JavaScript that executes on your own device. There is no upload endpoint, no queue, no storage and no account. You can load a page, disconnect from the internet, and the tool will still work.</p>
+      <h2>How the site is funded</h2>
+      <p>The tools are free and have no usage limits. The site is supported by advertising, which is why you may see ads on the page. Ads are never placed inside the tool interface, and no subtitle content is ever shared with advertisers — the content never leaves your browser in the first place.</p>
+      <h2>Accuracy and limitations</h2>
+      <p>These tools perform deterministic text and timestamp transformations. They do not rewrite, translate or “improve” your text, because automated rewriting of captions risks changing meaning. Where a transformation could be lossy — such as discarding WebVTT cue settings when converting to SRT — it is documented on the relevant tool page.</p>
+      <h2>Related project</h2>
+      <p>For finding the tools that <em>produce</em> these files — transcription, captioning and translation services — see the <a href="https://ai.toolboxes.top/">AI tool directory</a>.</p>
+      <p class="updated">Last updated 2026-09-17.</p>
+    </article></div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>Subtitle Toolkit</h5>
+        <p style="margin:0">Free subtitle and caption utilities that run entirely in your browser. Nothing is uploaded, nothing is stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-17.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
+</body>
+</html>

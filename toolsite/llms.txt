@@ -1,0 +1,25 @@
+# Subtitle Toolkit
+
+> Free subtitle and caption utilities that run entirely in the browser. Subtitle files are never uploaded — all processing is client-side JavaScript.
+
+Site: https://toolboxes.top/
+Last updated: 2026-09-17
+
+## Tools
+
+- [SRT to VTT Converter](https://toolboxes.top/tools/srt-to-vtt): Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.
+- [VTT to SRT Converter](https://toolboxes.top/tools/vtt-to-srt): Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.
+- [Remove Timestamps from Subtitles](https://toolboxes.top/tools/remove-timestamps): Strip timestamps and cue numbers to get a clean, readable transcript.
+- [Clean Up AI-Generated Subtitles](https://toolboxes.top/tools/clean-subtitles): Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.
+- [Shift Subtitle Timing](https://toolboxes.top/tools/shift-subtitles): Move every subtitle cue earlier or later to fix out-of-sync captions.
+
+## Key facts
+
+- Supported formats: SubRip (.srt), WebVTT (.vtt), and .sbv-style arrow syntax.
+- No account, no usage quota, no watermark, no file size limit.
+- Processing is 100% client-side; subtitle content is never transmitted.
+- Output format follows the input format unless an explicit conversion is chosen.
+
+## Related
+
+- [AI tool directory](https://ai.toolboxes.top/): a directory of AI tools, including transcription and captioning services.

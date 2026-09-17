@@ -1,0 +1,3 @@
+# toolboxes.top 已改为字幕工具站；旧目录路径永久跳转到 ai.toolboxes.top
+/tool/*         https://ai.toolboxes.top/tool/:splat        301
+/departments/*  https://ai.toolboxes.top/departments/:splat 301

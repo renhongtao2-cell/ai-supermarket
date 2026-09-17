@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remove Timestamps from Subtitles — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Convert .srt or .vtt subtitles into plain text by removing timestamps and cue numbers. Runs in your browser with no upload. Optionally merges repeated lines.">
+<link rel="canonical" href="https://toolboxes.top/tools/remove-timestamps">
+<meta property="og:title" content="Remove Timestamps from Subtitles — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Convert .srt or .vtt subtitles into plain text by removing timestamps and cue numbers. Runs in your browser with no upload. Optionally merges repeated lines.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://toolboxes.top/tools/remove-timestamps">
+<meta property="og:site_name" content="Subtitle Toolkit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://toolboxes.top/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2256%22>%F0%9F%92%AC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Remove Timestamps from Subtitles","url":"https://toolboxes.top/tools/remove-timestamps","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Convert .srt or .vtt subtitles into plain text by removing timestamps and cue numbers. Runs in your browser with no upload. Optionally merges repeated lines.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop your .srt or .vtt file.","Choose whether to merge consecutive duplicate lines — captioners often repeat a line across two cues.","Copy the plain-text transcript."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does this keep any timing information?","acceptedAnswer":{"@type":"Answer","text":"No. The output is plain text only. If you need the timing, use Shift subtitles instead, which preserves cues."}},{"@type":"Question","name":"Why does my transcript repeat sentences?","acceptedAnswer":{"@type":"Answer","text":"Many captioners split a long line across two cues, so the same words appear twice. Enable Merge repeated lines to collapse them."}},{"@type":"Question","name":"Which input formats are supported?","acceptedAnswer":{"@type":"Answer","text":"SubRip (.srt), WebVTT (.vtt), and most .sbv-style files that use the HH:MM:SS,mmm --&gt; HH:MM:SS,mmm arrow syntax."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Remove Timestamps from Subtitles","item":"https://toolboxes.top/tools/remove-timestamps"}]}]</script>
+</head>
+<body data-tool="to-text">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">💬</span>Subtitle<em>Toolkit</em></a>
+    <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Remove Timestamps from Subtitles</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Remove Timestamps from Subtitles</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Strip timestamps and cue numbers to get a clean, readable transcript.</p>
+
+  <div class="tool">
+    <div id="drop">
+      Drop a subtitle file here, or
+      <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
+    </div>
+    <div class="panes">
+      <div class="pane">
+        <label for="in">Input — .srt / .vtt</label>
+        <textarea id="in" spellcheck="false" placeholder="1
+00:00:01,000 --> 00:00:04,000
+Paste your subtitle file here…"></textarea>
+      </div>
+      <div class="pane">
+        <label for="out">Plain text</label>
+        <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
+      </div>
+    </div>
+    
+    
+    <div class="opts">
+      <label><input type="checkbox" id="opt-dedupe" checked> Merge repeated lines</label>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="copy">Copy result</button>
+      <button class="btn" id="download" data-name="transcript.txt">Download TXT</button>
+      <button class="btn" id="clear">Clear</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+  </div>
+
+  <div class="privacy">
+    <h4>Your file never leaves your device</h4>
+    <p>This tool is plain JavaScript. There is no upload step and no server-side processing, so confidential captions, unreleased content and client material stay on your machine.</p>
+  </div>
+
+  <article>
+    <h2>What this does</h2>
+    <p>Subtitle files are awkward to read and impossible to paste into a document. This tool keeps only the spoken text, dropping timestamps, cue numbers and formatting so you get a transcript you can actually use.</p>
+
+    <h2>How to use it</h2>
+    <ol><li>Paste or drop your <code>.srt</code> or <code>.vtt</code> file.</li><li>Choose whether to merge consecutive duplicate lines — captioners often repeat a line across two cues.</li><li>Copy the plain-text transcript.</li></ol>
+
+    <div class="note">
+      <h4>Good to know</h4>
+      <ul><li>Multi-line cues are joined into a single line so the transcript reads naturally.</li><li>Turning on <em>Merge repeated lines</em> removes the duplication that comes from two-part captions.</li><li>If you also want to strip sound cues like <code>[Music]</code>, use <a href="/tools/clean-subtitles">Clean subtitles</a> first.</li></ul>
+    </div>
+
+    <h2>FAQ</h2>
+    <details class="faq"><summary>Does this keep any timing information?</summary><div class="body">No. The output is plain text only. If you need the timing, use <a href="/tools/shift-subtitles">Shift subtitles</a> instead, which preserves cues.</div></details>
+    <details class="faq"><summary>Why does my transcript repeat sentences?</summary><div class="body">Many captioners split a long line across two cues, so the same words appear twice. Enable <em>Merge repeated lines</em> to collapse them.</div></details>
+    <details class="faq"><summary>Which input formats are supported?</summary><div class="body">SubRip (.srt), WebVTT (.vtt), and most .sbv-style files that use the <code>HH:MM:SS,mmm --&gt; HH:MM:SS,mmm</code> arrow syntax.</div></details>
+
+    <h2>Related tools</h2>
+    <div class="grid">
+      <a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a>
+    </div>
+  </article>
+  <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>Subtitle Toolkit</h5>
+        <p style="margin:0">Free subtitle and caption utilities that run entirely in your browser. Nothing is uploaded, nothing is stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li></ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-17.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
+</body>
+</html>
