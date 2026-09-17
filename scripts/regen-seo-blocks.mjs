@@ -94,16 +94,8 @@ if (differs(idxNew, idx)) {
   log.push(`index.html: ItemList 重建为 ${TOOLS.length} 条`);
 }
 
-for (const d of DEPARTMENTS) {
-  const f = path.join(ROOT, "departments", d.id + ".html");
-  if (!fs.existsSync(f)) continue;
-  const before = fs.readFileSync(f, "utf8");
-  const after = rebuildDeptSummary(before, d);
-  if (differs(after, before)) {
-    if (!CHECK_ONLY) fs.writeFileSync(f, after);
-    log.push(`departments/${d.id}.html: ai-summary 计数已同步 (${TOOLS.filter(t => t.dept === d.id).length} 工具)`);
-  }
-}
+/* departments/*.html 的 ai-summary 现在由 scripts/gen-dept-hubs.mjs 全量生成，
+   本脚本不再触碰部门页 —— 否则会把 hub 页里手写的摘要覆盖成通用模板。 */
 
 console.log(CHECK_ONLY ? "[check] 待更新项:" : "[regen-seo-blocks] 已更新:");
 console.log(log.length ? log.map(l => "  - " + l).join("\n") : "  (无，已全部同步)");

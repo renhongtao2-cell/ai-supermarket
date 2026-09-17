@@ -4,6 +4,7 @@
 // 运行：node scripts/gen-toolsite.mjs
 import fs from "fs";
 import path from "path";
+import crypto from "node:crypto";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const OUT = path.join(ROOT, "toolsite");
@@ -833,6 +834,14 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 
 const nav = () => TOOLS.map((t) => `<a href="/tools/${t.slug}">${esc(t.h1.replace(/ Converter| from Subtitles| Timing| Up AI-Generated Subtitles| from AI-Generated Subtitles/, ""))}</a>`).join("");
 
+// 资源版本号：内容变了才变。用于给 /js/tools.js 破缓存。
+const ASSET_V = crypto
+  .createHash("sha1")
+  .update(CSS)
+  .update(TOOLS_JS)
+  .digest("hex")
+  .slice(0, 8);
+
 function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
   const url = SITE + canonicalPath;
   return `<!DOCTYPE html>
@@ -855,7 +864,7 @@ function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css">
+<style>${CSS}</style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ""}
@@ -898,7 +907,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
     </div>
   </div>
 </footer>
-<script src="/js/tools.js"></script>
+<script src="/js/tools.js?v=${ASSET_V}"></script>
 <script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
 </body>
 </html>
