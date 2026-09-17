@@ -11,7 +11,7 @@ const OUT = path.join(ROOT, ".deploy");
 
 // 站点真正需要的文件（白名单，不做黑名单 —— 新增开发文件不会被误传）
 const FILES = [
-  "index.html", "about.html", "privacy.html",
+  "index.html", "about.html", "privacy.html", "404.html",
   "sitemap.xml", "robots.txt", "ads.txt", "_headers",
   "og-image.png", "llms.txt",
 ];
