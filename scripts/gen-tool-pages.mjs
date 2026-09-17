@@ -58,14 +58,17 @@ const hostOf = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } 
 function freeLines(f) {
   if (!f) return [];
   const L = [];
-  if (f.freeForever) L.push("A permanent free tier is available (no time limit).");
-  else if (f.freePlan) L.push("A free plan is available.");
+  // 具体额度放第一条 —— 这是最有信息量的事实（"2,000 minutes per month" 远胜 "has a free tier"）
+  if (f.freeQuota) L.push(`Free allowance: ${f.freeQuota}.`);
+  // 额度句里已经说了 "with no time limit" 就别再重复一遍永久免费
+  const quotaSaysForever = typeof f.freeQuota === "string" && /no time limit/i.test(f.freeQuota);
+  if (f.freeForever && !quotaSaysForever) L.push("A permanent free tier is available (no time limit).");
+  else if (!f.freeForever && f.freePlan) L.push("A free plan is available.");
   if (f.freeTrial || f.trialDays) L.push(f.trialDays ? `Free trial: ${f.trialDays} days.` : "A free trial is available.");
   if (f.noCreditCard) L.push("No credit card required to start.");
   if (f.apiOnFree) L.push("API access is available on the free tier.");
   if (f.watermarkFree) L.push("No watermark on the free tier.");
   if (f.commercialUse) L.push("Commercial use is allowed on the free plan.");
-  if (f.freeQuota && !f.freeForever && !f.freePlan && !f.freeTrial) L.push("Includes a free usage quota.");
   return L;
 }
 

@@ -29,6 +29,11 @@ const has = f => argv.includes(f);
 const valOf = (f, d) => { const i = argv.indexOf(f); return i >= 0 ? argv[i + 1] : d; };
 const LIMIT = has('--all') ? Infinity : parseInt(valOf('--limit', '20'), 10);
 const CONC = parseInt(valOf('--concurrency', '5'), 10);
+// 只跑指定工具（逗号分隔，按名字精确匹配）—— 补抓时用，不必重跑全量
+const ONLY = (valOf('--only', '') || '').split(',').map(s => s.trim()).filter(Boolean);
+// 强制走无头浏览器（JS 渲染）。默认是 direct → proxy → browser 逐级降级，
+// direct 一成功就停，导致 JS 渲染站只拿到导航栏。补抓这类站点时加这个。
+const FORCE_BROWSER = has('--force-browser');
 // 本机代理：Node 的 fetch 不读 HTTP_PROXY 环境变量，被封域名必须走这里
 const PROXY = valOf('--proxy', 'http://127.0.0.1:10809');
 const NO_PROXY = has('--no-proxy');
@@ -141,9 +146,14 @@ async function browserGet(url, timeoutMs = 32000) {
 
 // 三级降级：直连 → 代理 → 无头浏览器。谁先成功用谁。
 async function fetchText(url, timeoutMs = 18000) {
-  const tries = ['direct'];
-  if (!NO_PROXY) tries.push('proxy');
-  if (!NO_BROWSER) tries.push('browser');
+  // FORCE_BROWSER：跳过 direct/proxy，直接上无头浏览器。
+  // 用于补抓 JS 渲染站 —— direct 能拿到很长的导航文本，于是永远不会升级到 browser，
+  // 结果正文（含定价）全是空的。
+  const tries = FORCE_BROWSER ? ['browser'] : ['direct'];
+  if (!FORCE_BROWSER) {
+    if (!NO_PROXY) tries.push('proxy');
+    if (!NO_BROWSER) tries.push('browser');
+  }
   const attempts = [];
   for (const mode of tries) {
     try {
@@ -215,7 +225,7 @@ const SIGNALS = [
   { key: 'freePlan',         label: '有免费套餐', re: /\bfree\s*(plan|tier|version|account|edition)\b/i },
   { key: 'freeTrial',        label: '免费试用',   re: /\bfree\s*trial\b/i },
   { key: 'trialDays',        label: '试用天数',   re: /\b(\d{1,2})[\s-]*day\s*(free\s*)?trial\b|\bfree\s*trial\s*(for\s*)?(\d{1,2})\s*days?\b/i, capture: true },
-  { key: 'freeQuota',        label: '免费额度',   re: /\b(\d[\d,\.]*)\s*(free\s*)?(credits?|tokens?|words?|characters?|messages?|generations?|images?|requests?|minutes?|projects?|seats?|users?)\b[^.]{0,40}?\b(free|per\s*(month|day|week)|monthly|forever)\b|\bfree\b[^.]{0,30}?\b(\d[\d,\.]*)\s*(credits?|tokens?|words?|messages?|generations?|images?|requests?|minutes?|projects?)\b/i },
+  { key: 'freeQuota',        label: '免费额度',   re: /\b(\d[\d,\.]*\s*(?:free\s*)?(?:credits?|tokens?|words?|characters?|messages?|generations?|images?|requests?|minutes?|projects?|seats?|users?)\b[^.]{0,40}?\b(?:free|per\s*(?:month|day|week)|monthly|forever)\b|\bfree\b[^.]{0,30}?\d[\d,\.]*\s*(?:credits?|tokens?|words?|messages?|generations?|images?|requests?|minutes?|projects?)\b)/i, capture: true },
   { key: 'watermarkFree',    label: '免费版无水印', re: /\b(no|without)\s+(a\s+)?watermark\b|\bwatermark[-\s]?free\b/i },
   { key: 'watermark',        label: '免费版带水印', re: /\bwatermark\b/i },
   { key: 'apiOnFree',        label: '免费版含 API', re: /\b(api|api\s*access)\b[^.]{0,40}\bfree\b|\bfree\b[^.]{0,30}\bapi\s*(access|key)\b/i },
@@ -260,8 +270,22 @@ if (FROM_CACHE) {
     results.push({ name: tool.name, url: tool.url, dept: tool.dept, declaredPricing: c.declaredPricing || tool.pricing, reachable: true, pricingUrl: c.pricingUrl, chars: c.text.length, signals: ex.signals, hits: ex.hits, ms: 0, via: c.via || null, note: null });
   }
 } else {
-  const pool = TOOLS.slice(0, LIMIT === Infinity ? TOOLS.length : LIMIT);
-  console.log(`审计 ${pool.length} / ${TOOLS.length} 个工具，并发 ${CONC}，单工具硬超时 ${TOOL_TIMEOUT}ms\n`);
+  const pool = (() => {
+    let p = TOOLS.slice(0, LIMIT === Infinity ? TOOLS.length : LIMIT);
+    if (ONLY.length) {
+      const want = new Set(ONLY.map(s => s.toLowerCase()));
+      p = TOOLS.filter(t => want.has(t.name.toLowerCase()));
+      if (!p.length) {
+        console.error(`--only 未匹配到任何工具。给定的 ${ONLY.length} 个名字里没有匹配 data.js 的。`);
+        process.exit(1);
+      }
+      const matched = new Set(p.map(t => t.name.toLowerCase()));
+      const miss = ONLY.filter(n => !matched.has(n.toLowerCase()));
+      if (miss.length) console.warn(`--only 有 ${miss.length} 个名字未匹配：${miss.slice(0, 5).join(', ')}${miss.length > 5 ? ' …' : ''}`);
+    }
+    return p;
+  })();
+  console.log(`审计 ${pool.length} / ${TOOLS.length} 个工具，并发 ${CONC}，单工具硬超时 ${TOOL_TIMEOUT}ms${FORCE_BROWSER ? '，强制浏览器' : ''}\n`);
 
   async function worker(queue) {
     while (queue.length) {
@@ -329,7 +353,51 @@ const summary = {
   results,
 };
 fs.mkdirSync(path.dirname(OUT_JSON), { recursive: true });
-fs.writeFileSync(OUT_JSON, JSON.stringify(summary, null, 2), 'utf8');
+
+// 补抓模式（--only / --force-browser）：把新结果合并回既有审计，绝不覆盖全量。
+// 否则一次针对 60 个工具的补抓会把另外 160 个工具的记录抹掉。
+let toWrite = summary;
+const isPartialRun = ONLY.length > 0 || FORCE_BROWSER;
+if (isPartialRun && fs.existsSync(OUT_JSON)) {
+  try {
+    const prev = JSON.parse(fs.readFileSync(OUT_JSON, 'utf8'));
+    const prevResults = Array.isArray(prev.results) ? prev.results : [];
+    const fresh = new Map(results.map(r => [r.name, r]));
+    let replaced = 0, added = 0;
+    const merged = prevResults.map(r => {
+      const n = fresh.get(r.name);
+      if (!n) return r;
+      fresh.delete(r.name); replaced++;
+      return n;
+    });
+    for (const r of fresh.values()) { merged.push(r); added++; }
+    // 顺序按 data.js 的 TOOLS 排，保证输出稳定
+    const order = new Map(TOOLS.map((t, i) => [t.name, i]));
+    merged.sort((a, b) => (order.get(a.name) ?? 1e9) - (order.get(b.name) ?? 1e9));
+    const withSig = merged.filter(r => Object.keys(r.signals || {}).length).length;
+    const reach = merged.filter(r => r.reachable).length;
+    toWrite = {
+      ...prev,
+      generatedAt: new Date().toISOString(),
+      total: merged.length,
+      reachable: reach,
+      withSignals: withSig,
+      unknown: merged.length - withSig,
+      partialRuns: [...(prev.partialRuns || []), {
+        at: new Date().toISOString(),
+        tools: results.length,
+        forceBrowser: FORCE_BROWSER,
+        replaced, added,
+      }],
+      results: merged,
+    };
+    console.log(`\n补抓合并：更新 ${replaced} 个 + 新增 ${added} 个，保留其余 ${merged.length - results.length + (added ? 0 : 0)} 个`);
+    console.log(`合并后全量：${merged.length} 个工具，可达 ${reach}，有信号 ${withSig}`);
+  } catch (e) {
+    console.error('合并既有审计失败，改为只写本轮结果：', e.message);
+  }
+}
+fs.writeFileSync(OUT_JSON, JSON.stringify(toWrite, null, 2), 'utf8');
 
 const L = [];
 L.push(`# 免费额度事实抽取 — 复核队列`);
@@ -352,7 +420,8 @@ for (const r of results) {
   L.push(`| ${r.name} | ${r.declaredPricing} | ${r.reachable ? '✓' : '✗ ' + (r.note || '')} | ${r.via || '—'} | ${r.pricingUrl ? '✓' : '✗'} | ${sig} |`);
 }
 fs.mkdirSync(OUT_MD_DIR, { recursive: true });
-const mdPath = path.join(OUT_MD_DIR, `free-tier-review-${new Date().toISOString().slice(0, 10)}.md`);
+const mdSuffix = isPartialRun ? '-partial' : '';
+const mdPath = path.join(OUT_MD_DIR, `free-tier-review-${new Date().toISOString().slice(0, 10)}${mdSuffix}.md`);
 fs.writeFileSync(mdPath, L.join('\n'), 'utf8');
 
 console.log(`\n可达 ${reachable.length}/${pool.length} | 有定价页 ${withPricing.length} | 抽到信号 ${withSignals.length} | 抽不到 ${summary.unknown}`);
