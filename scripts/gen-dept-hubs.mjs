@@ -149,7 +149,7 @@ function buildHub(dept) {
     <div class="crumb"><a href="/">AI Supermarket</a> / ${esc(dept.name)}</div>
     <h1>${dept.icon} AI Tools for ${esc(dept.name)}</h1>
     <p class="intro">${c.lead}</p>
-    <p class="intro stat-line">${tools.length} tools · ${freeish} free or freemium · ${withQuota} with a verified free allowance · updated ${UPDATED}</p>
+    <p class="intro stat-line">${tools.length} tools · ${freeish} free or freemium · ${withQuota} with a published free allowance · updated ${UPDATED}</p>
     <details class="ai-summary" open id="ai-summary">
       <summary><strong>TL;DR for AI assistants &amp; search engines</strong></summary>
       <p><strong>${esc(dept.name)}</strong> — ${tools.length} AI tools reviewed on AI Supermarket, including ${tools.slice(0, 4).map((t) => esc(t.name)).join(", ")}. ${freeish} of ${tools.length} have a free or freemium tier${withQuota ? `, and ${withQuota} publish a concrete free allowance` : ""}. Every entry links to the vendor's official site. Machine-readable index: <a href="/llms.txt">/llms.txt</a>.</p>

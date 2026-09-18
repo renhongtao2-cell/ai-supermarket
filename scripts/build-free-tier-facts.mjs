@@ -23,7 +23,10 @@ const KEEP = [
 const STRONG = ["freePlan", "freeForever", "noCreditCard", "apiOnFree", "watermarkFree", "trialDays", "commercialUse"];
 
 /* ---------- freeQuota 归一化 ---------- */
-const UNIT = /([\d][\d,.]*)\s*(credits?|tokens?|words?|characters?|messages?|generations?|images?|requests?|minutes?|hours?|projects?|seats?|users?|videos?|exports?|scans?|pages?)/i;
+// ⚠️ 不要往单位里加 seats/users —— 那不是「免费额度」，是座位数或口碑数字。
+// 实测误收：Predis.ai「3097 users」实为好评数（原文 "Rated 5/5 by 3097 Users"）、
+// Brex「0 users per month」、Genie AI「1 user」、HouseCanary「1 user」、Beautiful.ai「3 users」。
+const UNIT = /([\d][\d,.]*)\s*(credits?|tokens?|words?|characters?|messages?|generations?|images?|requests?|minutes?|hours?|projects?|videos?|exports?|scans?|pages?)/i;
 
 function normalizeQuota(raw) {
   if (typeof raw !== "string") return null;
@@ -33,6 +36,10 @@ function normalizeQuota(raw) {
   const qty = m[1].replace(/[.,]$/, "");
   const unit = m[2].toLowerCase().replace(/s$/, "");
   if (!qty || !unit) return null;
+  // 数量必须是正整数。免费额度不会以 0 或小数给出，出现即说明抓错了：
+  // 0 → 无意义（Brex）；18.6 → 价格残片（Kai 的「18.6 messages per week」实为存量客户用量统计）。
+  if (!/^[\d,]+$/.test(qty)) return null;
+  if (parseFloat(qty.replace(/,/g, "")) <= 0) return null;
 
   let period = null;
   if (/per\s*month|monthly|\/\s*mo\b|\/\s*month\b/i.test(t)) period = "per month";
@@ -52,7 +59,7 @@ function normalizeQuota(raw) {
 const facts = {};
 const stats = {
   total: 0, cardContradiction: 0, watermarkContradiction: 0,
-  published: 0, skipped: 0, quotaRaw: 0, quotaOk: 0, quotaDropped: 0,
+  published: 0, skipped: 0, quotaRaw: 0, quotaOk: 0, quotaDropped: 0, quotaFixed: 0,
   excluded: 0, excludedKeys: 0,
   byReason: { strong: 0, trialOnly: 0, quotaOnly: 0 },
 };
@@ -69,6 +76,28 @@ const EXCLUDE = {
   // AI Dungeon「免费可玩」属实，但 freeQuota 从 $14.99 附近误匹配出「14 images」，
   // 只丢错误的额度，保留 freePlan。
   "AI Dungeon": { keys: ["freeQuota"], why: "freeQuota 误匹配（14 images 来自 $14.99 附近）" },
+  // 以下 6 条为 2026-09-18 复核发现：抽到的数字来自付费档 / 附加包 / 帮助文档 / 竞品对比，
+  // 不是免费额度。复核方法与原文证据见 scripts/audit-quota-context.mjs。
+  // 这些工具本身有免费档（freePlan 等信号保留），只是这个具体数字站不住 → 只丢 freeQuota。
+  "Intercom Fin": { keys: ["freeQuota"], why: "2,000 credits 出自 $99/月 的 Pro 附加包，非免费档" },
+  "Replit": { keys: ["freeQuota"], why: "60 projects 列在 Core $20/月 档位下，非免费档" },
+  "Asana AI": { keys: ["freeQuota"], why: "5 requests 属 $10.99/用户/月 的付费档内容" },
+  "Inworld AI": { keys: ["freeQuota"], why: "原文该处是竞品对比表，找不到免费额度语境" },
+  "Apollo.io": { keys: ["freeQuota"], why: "10,000 credits 出自帮助文档「记录选择上限」举例，与免费额度无关" },
+  "ElevenLabs": { keys: ["freeQuota"], why: "无依据：原文该处讲 12 个月资助计划，'3' 实为 '33M Characters' 的一部分" },
+  "Topaz Video AI": { keys: ["freeQuota"], why: "200 credits 出自 $19/月 Creator 付费档，整页无 free/trial 语境（距离为「无」）" },
+};
+
+// 人工校正表：抽取器单位/数字抓错，但正确值能从原文确认 → 写正确值，而不是丢掉这条真事实。
+const QUOTA_FIX = {
+  // 原文（Copilot Free）："$0 USD per user / month ... What's included 2,000 completions per month"。
+  // 抽取器把 completions 认成了 minutes —— 同页另有 GitHub Actions 的「2,000 CI/CD minutes/month」，
+  // 属于另一个产品，被混进来了。
+  "GitHub Copilot": "2,000 completions per month",
+  // 原文："use our free-forever plan with 60 minutes of video processing time refreshed monthly"。
+  // 抽取器把周期丢成 "with no time limit"（看到 free-forever 就归到无期限），
+  // 但同一句写着 refreshed monthly → 实际是每月刷新。
+  "Opus Clip": "60 minutes per month",
 };
 
 for (const r of audit.results) {
@@ -101,6 +130,9 @@ for (const r of audit.results) {
     else { delete s.freeQuota; stats.quotaDropped++; }
   }
 
+  // 人工校正（覆盖抽取结果；值已是最终形态，不再过归一化）
+  if (QUOTA_FIX[r.name]) { s.freeQuota = QUOTA_FIX[r.name]; stats.quotaFixed++; }
+
   const keep = {};
   for (const k of KEEP) if (s[k] !== undefined && s[k] !== false && s[k] !== null) keep[k] = s[k];
 
@@ -125,7 +157,7 @@ fs.writeFileSync(
 console.log("signal keys seen:", [...keyUnion].sort().join(", "));
 console.log(JSON.stringify(stats, null, 2));
 console.log(`published: ${stats.published} / ${stats.total}  (${Math.round(stats.published / stats.total * 100)}%)`);
-console.log(`freeQuota 归一化: ${stats.quotaOk} 成功 / ${stats.quotaDropped} 丢弃 / 共 ${stats.quotaRaw}`);
+console.log(`freeQuota 归一化: ${stats.quotaOk} 成功 / ${stats.quotaDropped} 丢弃 / ${stats.quotaFixed} 人工校正 / 共 ${stats.quotaRaw}`);
 const names = Object.keys(facts);
 console.log("\nsample:");
 names.slice(0, 10).forEach((n) => console.log("  " + n + " = " + JSON.stringify(facts[n])));
