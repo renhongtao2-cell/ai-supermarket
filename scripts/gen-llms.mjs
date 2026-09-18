@@ -2,12 +2,15 @@
 // 运行: node scripts/gen-llms.mjs
 import fs from "fs";
 import path from "path";
+import { UPDATED } from "./site-meta.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const raw = fs.readFileSync(path.join(ROOT, "js", "data.js"), "utf8");
 const { DEPARTMENTS, TOOLS } = new Function(raw + "\n;return { DEPARTMENTS, TOOLS };")();
 const SITE = "https://ai.toolboxes.top";
-const today = new Date().toISOString().slice(0, 10);
+// 日期统一取自 site-meta.mjs。原先这里是 new Date()，导致 llms.txt 比其它页面新一天，
+// 同一个站出现两个「最后更新」日期。别改回动态日期（见 site-meta.mjs 注释）。
+const today = UPDATED;
 const pricingLabel = p => ({ free: "Free", freemium: "Freemium", paid: "Paid" }[p] || p);
 
 const count = id => TOOLS.filter(t => t.dept === id).length;

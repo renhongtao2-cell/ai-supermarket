@@ -9,11 +9,11 @@
 // 运行：node scripts/consolidate-catalog.mjs [--dry]
 import fs from "fs";
 import path from "path";
+import { UPDATED } from "./site-meta.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SITE = "https://ai.toolboxes.top";
 const DRY = process.argv.includes("--dry");
-const UPDATED = "2026-09-17";
 
 const { DEPARTMENTS, TOOLS } = new Function(
   fs.readFileSync(path.join(ROOT, "js", "data.js"), "utf8") + "\n;return { DEPARTMENTS, TOOLS };"

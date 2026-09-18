@@ -9,10 +9,10 @@
 // 运行：node scripts/gen-dept-hubs.mjs
 import fs from "fs";
 import path from "path";
+import { UPDATED } from "./site-meta.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SITE = "https://ai.toolboxes.top";
-const UPDATED = "2026-09-17";
 
 /* ---------- 数据 ---------- */
 const raw = fs.readFileSync(path.join(ROOT, "js", "data.js"), "utf8");
@@ -101,6 +101,14 @@ function buildHub(dept) {
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
     .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(desc)}">`)
     .replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${SITE}/departments/${dept.id}">`)
+    // GEO：声明机器可读索引（llms.txt）。
+    // 必须加在这里，不能靠 add-llms-link.mjs 后处理 —— 那个脚本虽然覆盖 departments/，
+    // 但本脚本每次部署都会重写全部部门页，后处理加的行会被下次部署擦掉（实测 21 个部门页全丢）。
+    // 判定用 HEAD（模板常量）而非 head（正在构建中的变量，此刻还在 TDZ 里，引用会抛错）。
+    .replace(/^([ \t]*)<link rel="canonical"[^>]*>$/m, (m, ind) =>
+      /rel="alternate"[^>]*llms\.txt/.test(HEAD)
+        ? m
+        : `${m}\n${ind}<link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt index for AI engines">`)
     .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(dept.name + " AI Tools — Compared | AI Supermarket")}">`)
     .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${esc(desc)}">`)
     .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${SITE}/departments/${dept.id}">`)

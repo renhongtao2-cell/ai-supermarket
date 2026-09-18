@@ -10,10 +10,10 @@
 // 运行：node scripts/gen-cross-pages.mjs
 import fs from "fs";
 import path from "path";
+import { UPDATED } from "./site-meta.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SITE = "https://ai.toolboxes.top";
-const UPDATED = "2026-09-17";
 
 const { DEPARTMENTS, TOOLS } = new Function(
   fs.readFileSync(path.join(ROOT, "js", "data.js"), "utf8") + "\n;return { DEPARTMENTS, TOOLS };"
@@ -76,6 +76,11 @@ function rewriteHead(chromeObj, { title, desc, canonPath, jsonLd }) {
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
     .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(desc)}">`)
     .replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${SITE}${canonPath}">`)
+    // GEO：每页都声明机器可读索引（幂等，缺失才补）
+    .replace(/^([ \t]*)<link rel="canonical"[^>]*>$/m, (m, ind) =>
+      /rel="alternate"[^>]*llms\.txt/.test(chromeObj.HEAD)
+        ? m
+        : `${m}\n${ind}<link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt index for AI engines">`)
     .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(title)}">`)
     .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${esc(desc)}">`)
     .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${SITE}${canonPath}">`);
