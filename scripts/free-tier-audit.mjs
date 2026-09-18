@@ -253,7 +253,17 @@ const SIGNALS = [
   { key: 'watermarkFree',    label: '免费版无水印', re: /\b(no|without)\s+(a\s+)?watermark\b|\bwatermark[-\s]?free\b/i },
   { key: 'watermark',        label: '免费版带水印', re: /\bwatermark\b/i },
   { key: 'apiOnFree',        label: '免费版含 API', re: /\b(api|api\s*access)\b[^.]{0,40}\bfree\b|\bfree\b[^.]{0,30}\bapi\s*(access|key)\b/i },
-  { key: 'commercialUse',    label: '免费版可商用', re: /\bcommercial\s*(use|license)\b[^.]{0,30}\b(free|included)\b|\bfree\b[^.]{0,30}\bcommercial\s*use\b/i },
+  // ❌ commercialUse 已移除（2026-09-18）。原因：这个信号**本质上是档位级信息，而抽取是整页级**的，
+  // 无论正则怎么写都会出错。三条实测铁证：
+  //   1. Framer AI：页面明写 "Our Free plan is ideal for **non-commercial use**"，
+  //      却因 "non-commercial use" 里含 "commercial use" 被判成「免费版可商用」→ 发布了一条错事实。
+  //   2. Pika：免费档是 "Commercial license: **Not included**"，但同页 Creator/Fancy 档写着
+  //      "Commercial license **Included**" → 整页匹配必然命中付费档那一列。
+  //      （加了否定守卫也没用：守卫只挡得住 "Not included"，挡不住「同页另有付费档 Included」。）
+  //   3. Murf AI / Predis.ai：页面上的 "Yes, you can use it for commercial uses" 是**通用问答**，
+  //      而 Murf 自己在免费档说明里把 commercial rights 列为付费功能。
+  // 结论：宁缺勿错 —— 免费档能否商用这个判断留给人工，抽取器不再输出。
+  // 想恢复的话：必须做到「按档位分块后再判定」，不能靠整页正则。
 ];
 
 function extract(text) {
@@ -342,11 +352,29 @@ if (FROM_CACHE) {
         via: home.via || null, note: home.note || null,
       });
       // 原文落盘，供离线复核（避免复核时重新访问网站）
+      //
+      // ⚠️ 只在「新原文更长」时才覆盖 —— 否则一次劣质抓取会静默污染整个数据集。
+      // 实测事故：chatgpt.txt 被一次抓取失败的运行写成了 633 字节的 SPA 外壳
+      // （文件头 "抓取通道: -" 就是那次失败的痕迹），把先前浏览器渲染出的完整定价页盖掉了。
+      // 后果很隐蔽：审计 JSON 里 ChatGPT 仍有 freePlan/apiOnFree（来自那次好抓取），
+      // 但缓存里已经没有对应原文 → 之后任何 `--from-cache` 重抽都会把这些信号抽没。
+      // 判据用「更长即更丰富」：同域同页的渲染结果，长的那份几乎总是包含了短的那份。
       if (combined.length > 200) {
         fs.mkdirSync(TEXT_DIR, { recursive: true });
         const slug = tool.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-        fs.writeFileSync(path.join(TEXT_DIR, slug + '.txt'),
-          `# ${tool.name}\nURL: ${tool.url}\n声明定价: ${tool.pricing}\n抓取通道: ${home.via || '-'}\n定价页: ${pricing?.url || '-'}\n\n${combined}\n`, 'utf8');
+        const cachePath = path.join(TEXT_DIR, slug + '.txt');
+        let prevLen = 0;
+        try {
+          const prev = fs.readFileSync(cachePath, 'utf8');
+          const cut = prev.indexOf('\n\n');
+          prevLen = cut === -1 ? 0 : prev.length - cut - 2;
+        } catch { /* 首次抓取，无旧缓存 */ }
+        if (combined.length >= prevLen) {
+          fs.writeFileSync(cachePath,
+            `# ${tool.name}\nURL: ${tool.url}\n声明定价: ${tool.pricing}\n抓取通道: ${home.via || '-'}\n定价页: ${pricing?.url || '-'}\n\n${combined}\n`, 'utf8');
+        } else {
+          console.log(`  ⚠ ${tool.name} 本次原文更短（${combined.length} < 缓存 ${prevLen}），保留旧缓存`);
+        }
       }
       done++;
       if (done % 5 === 0 || done === pool.length) console.log(`  ${done}/${pool.length} ...`);

@@ -18,9 +18,13 @@ const audit = JSON.parse(
 
 const KEEP = [
   "freePlan", "freeForever", "freeTrial", "trialDays",
-  "noCreditCard", "apiOnFree", "watermarkFree", "freeQuota", "commercialUse",
+  "noCreditCard", "apiOnFree", "watermarkFree", "freeQuota",
 ];
-const STRONG = ["freePlan", "freeForever", "noCreditCard", "apiOnFree", "watermarkFree", "trialDays", "commercialUse"];
+// ⚠️ commercialUse 已移除（2026-09-18）：它是档位级信息，抽取却是整页级，必然出错。
+// 实测 Framer AI 免费档页面明写 "Our Free plan is ideal for non-commercial use"，
+// 却因 "non-commercial use" 含 "commercial use" 被判成「免费版可商用」并发布上线。
+// Pika 同类（免费档 Not included，但同页付费档 Included）。详见 free-tier-audit.mjs 的 SIGNALS 注释。
+const STRONG = ["freePlan", "freeForever", "noCreditCard", "apiOnFree", "watermarkFree", "trialDays"];
 
 /* ---------- freeQuota 归一化 ---------- */
 // ⚠️ 不要往单位里加 seats/users —— 那不是「免费额度」，是座位数或口碑数字。
@@ -100,7 +104,14 @@ const EXCLUDE = {
   // 这类条目一旦额度抽错，整条就是假的，必须逐条验：
   "Bardeen": { keys: ["freeQuota"], why: "'+100 credits/month' 挂在 Basic $10/月 付费档下，免费档额度未知" },
   "Stable Diffusion": { keys: ["freeQuota"], why: "同域误配：'1000 credits' 出自 stability.ai Brand Studio 的试用（Trial ends after credits used），非免费档；且原文另有 '1,000+ images per minute' 属 AWS Bedrock 案例" },
-  "Pika": { keys: ["freeQuota"], why: "'15 credits Free' 是 Pikaffects 单项特效的计价表（同表另有 18/20/35/65 credits Paid），不是免费档额度" },
+  // Pika：原排除理由成立；2026-09-18 用浏览器重抓定价页后有了更硬的证据 ——
+  // 现价页免费档明写 "Free 0credits / month · packs only"（只能另买点数包），本无免费额度可发。
+  // ⚠️ 这次重抓还暴露了一个更重要的教训：**旧缓存会过期**。旧缓存里 Pika 是
+  // "80 monthly video credits / Basic" 的档位结构（Basic/Standard/Fancy），
+  // 与现价页（Free/Starter/Creator/Fancy，900/3150/8550）完全对不上 ——
+  // 我原本差点把「80 credits/月」加进去，那会是一条基于过期缓存的新错事实。
+  // 结论：「对着缓存核实通过」≠「线上是对的」，高价值/易变的条目必须重抓确认。
+  "Pika": { keys: ["freeQuota"], why: "'15 credits Free' 是 Pikaffects 单项特效计价表；且现价页免费档为 0 credits（packs only），本无免费额度" },
 };
 
 // 人工校正表：抽取器单位/数字抓错，但正确值能从原文确认 → 写正确值，而不是丢掉这条真事实。
@@ -198,6 +209,14 @@ const VERIFIED_QUOTA = {
   "Scenario": "50 credits",
   // "Seamless.AI is free for up to 50 credits." / 定价表 Free 档："1 User 50 Credits"
   "Seamless.AI": "50 credits",
+
+  // ——— 2026-09-18 第四批：免费档区块法已挖干，改用「整页 free 语境 + 数字单位」宽扫 + 重抓确认 ———
+  // 定价表原文："Basic For those who want to give it a try Free Get started ... 300 monthly transcription minutes"
+  // 对比表佐证："Meeting & recording transcription monthly limit (no rollover) 300 minutes per user"
+  "Otter.ai": "300 transcription minutes per month",
+  // 定价页原文（Grow 档）："Keyword search Start for free 10K search requests /month included then $0.50 per additional 1K"
+  // FAQ 佐证："What is included in the free tier of Algolia Grow and Grow Plus? … 10,000 Search Requests … 100,000 Records"
+  "Algolia": "10,000 search requests per month",
 };
 
 for (const r of audit.results) {
