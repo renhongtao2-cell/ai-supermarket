@@ -86,6 +86,15 @@ const EXCLUDE = {
   "Apollo.io": { keys: ["freeQuota"], why: "10,000 credits 出自帮助文档「记录选择上限」举例，与免费额度无关" },
   "ElevenLabs": { keys: ["freeQuota"], why: "无依据：原文该处讲 12 个月资助计划，'3' 实为 '33M Characters' 的一部分" },
   "Topaz Video AI": { keys: ["freeQuota"], why: "200 credits 出自 $19/月 Creator 付费档，整页无 free/trial 语境（距离为「无」）" },
+  // 以下 8 条为 2026-09-18 逐条人工复核（读原文上下文）后剔除：
+  "HubSpot": { keys: ["freeQuota"], why: "1,000 messages 出自功能对比表，匹配处无 free 语境，无法确认属免费档" },
+  "ClickUp Brain": { keys: ["freeQuota"], why: "10,000 credits 出自 '$10 per 10,000 credits' 的购买价，非免费额度" },
+  "Regie.ai": { keys: ["freeQuota"], why: "5,000 credits 属 Pro $49/月 档（免费档另计）" },
+  "Sudowrite": { keys: ["freeQuota"], why: "225,000 credits 属 $10/月 付费档，页面只提供 free trial" },
+  "Framer AI": { keys: ["freeQuota"], why: "15,000 credits 是各档位对比里的最高档，非免费档" },
+  "Notion AI": { keys: ["freeQuota"], why: "1,000 credits 出自 '$10 per 1,000 credits' 的价格行，非免费额度" },
+  "Julius AI": { keys: ["freeQuota"], why: "24,000 credits 属 Plus $16/月 档（且原文为 per year，被丢成一次性）" },
+  "Bolt.new": { keys: ["freeQuota"], why: "无法核实：定价页是 SPA，浏览器抓取仍拿不到额度内容，'300,000 tokens' 在原文中不存在" },
 };
 
 // 人工校正表：抽取器单位/数字抓错，但正确值能从原文确认 → 写正确值，而不是丢掉这条真事实。
@@ -98,6 +107,15 @@ const QUOTA_FIX = {
   // 抽取器把周期丢成 "with no time limit"（看到 free-forever 就归到无期限），
   // 但同一句写着 refreshed monthly → 实际是每月刷新。
   "Opus Clip": "60 minutes per month",
+  // 原文："It includes 10 minutes of video per month, 9 stock avatars…"（免费档说明）。
+  // 抽取器丢了周期。
+  "Synthesia": "10 minutes per month",
+  // 原文："The free plan includes a daily grant of 5 build credits (up to 30 a month), plus monthly grants
+  // of 20 Cloud credits." 抽取器抓到的是同段里更小的子项「4 credits usable by AI features」，
+  // 会让人误以为免费档只给 4 个额度 → 换成主额度。
+  "Lovable": "30 build credits per month",
+  // 原文定价页：Free $0 → "50 message credits/month"。抽取器抓到的 700 是 Hobby $40/月 档的值。
+  "Chatbase": "50 message credits per month",
 };
 
 for (const r of audit.results) {
