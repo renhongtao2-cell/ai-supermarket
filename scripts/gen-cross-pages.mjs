@@ -10,6 +10,7 @@
 // 运行：node scripts/gen-cross-pages.mjs
 import fs from "fs";
 import path from "path";
+import { injectContentNav, CONTENT_LINKS } from "./site-nav.mjs";
 import { UPDATED } from "./site-meta.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -44,8 +45,10 @@ function chrome(file) {
     FOOTER: tpl.slice(iFoot),
   };
 }
-const DEPT_CHROME = chrome("departments/marketing.html");
-const ABOUT_CHROME = chrome("about.html");
+const _nav = (c) => ({ ...c, FOOTER: injectContentNav(c.FOOTER) });
+// 内容页入口注入页脚：生成时注入，不靠后处理（否则会被下次部署擦掉）
+const DEPT_CHROME = _nav(chrome("departments/marketing.html"));
+const ABOUT_CHROME = _nav(chrome("about.html"));
 
 const EXTRA_CSS = `
     .hub{max-width:900px;margin:0 auto;padding:0 20px 10px}
@@ -108,6 +111,15 @@ const otherDepts = (exclude) => `<div class="other-depts">
     <h2 style="font-size:18px;margin-bottom:10px">Browse departments</h2>
     ${DEPARTMENTS.filter((d) => d.id !== exclude).map((d) => `<a href="/departments/${d.id}">${d.icon} ${esc(d.name)}</a>`).join("\n    ")}
     <a href="/">🏪 All ${TOOLS.length} tools</a>
+  </div>`;
+
+/* 内容页互链：4 个内容页各自链向另外 3 个。
+   清单从 site-nav.mjs 复用 —— 加新内容页只改那一处，不会出现两份清单对不上。 */
+const relatedBlock = (selfPath) => `<div class="panel">
+    <h3>Related</h3>
+    <ul>${CONTENT_LINKS.filter((l) => l.href !== selfPath)
+      .map((l) => `<li><a href="${l.href}">${esc(l.label)}</a> — ${esc(l.desc)}</li>`)
+      .join("")}</ul>
   </div>`;
 
 const hero = (h1, lead, statLine, summary) => `<div class="dept-hero">
@@ -225,6 +237,8 @@ const freeBody = `${hero(
     <p style="margin:0;font-size:15px">Many tools are freemium with a generous free allowance — ${quotaCount} of them publish a specific limit. See <a href="/best/ai-tools-with-free-tier">AI tools with a free tier, and what you actually get</a> for the concrete numbers.</p>
   </div>
 
+  ${relatedBlock("/best/free-ai-tools")}
+
   <p class="stat-line" style="margin-top:26px">Reviewed ${UPDATED}. "Free" reflects the vendor's own pricing page at review time; free products can be changed or withdrawn. Independent directory — not affiliated with the tools listed.</p>
 </div>
 ${otherDepts(null)}`;
@@ -328,6 +342,8 @@ const tierBody = `${hero(
 
   <h2>When a free tier is the wrong choice</h2>
   <p>Free tiers are designed to convert you, which means they are usually fine for evaluation and awkward for production. Three signals that you have outgrown one: you are rationing usage and therefore avoiding the tool, the allowance resets at a moment that does not match your workflow, or you need an API key for automation. At that point the paid plan is cheaper than the workaround.</p>
+
+  ${relatedBlock("/best/ai-tools-with-free-tier")}
 
   <p class="stat-line" style="margin-top:26px">Allowances read from vendor pricing pages and reviewed ${UPDATED}. Vendors change limits without notice — confirm before committing a workflow. Independent directory — not affiliated with the tools listed.</p>
 </div>
@@ -578,6 +594,8 @@ const cmpBody = `${hero(
     <p style="margin:0;font-size:15px">Every allowance on this page was read from the vendor's published pricing page, not inferred. Vendors that state a free plan without publishing a figure are recorded as such. Full list: <a href="/best/ai-tools-with-free-tier">AI tools with a free tier</a>.</p>
   </div>
 
+  ${relatedBlock("/best/free-tier-comparison")}
+
   <p class="stat-line" style="margin-top:26px">Allowances read from vendor pricing pages and reviewed ${UPDATED}. Vendors change limits without notice — confirm before committing a workflow. Independent directory — not affiliated with the tools listed.</p>
 </div>
 ${otherDepts(null)}`;
@@ -668,6 +686,8 @@ const guideBody = `${hero(
     <h3>Start from a department</h3>
     <p style="margin:0;font-size:15px">Each of the ${DEPARTMENTS.length} department guides applies these questions to a specific field, with the tools compared side by side and the domain-specific pitfalls listed. <a href="/">Browse all departments</a>.</p>
   </div>
+
+  ${relatedBlock("/guides/how-to-choose-an-ai-tool")}
 
   <p class="stat-line" style="margin-top:26px">Reviewed ${UPDATED}. This guide is general information, not professional advice — for legal, medical, financial or HR decisions the regulatory context on each department page applies. Independent directory — not affiliated with the tools listed.</p>
 </div>

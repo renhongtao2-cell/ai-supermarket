@@ -179,6 +179,51 @@ console.log("\n[6] HTML 标签平衡（已剥离 style/script 内容）");
   if (!bad) ok(`${files.length} 个页面标签全部平衡`);
 }
 
+console.log("\n[7] 内容页入链：首页 + 部门页必须链到内容页");
+{
+  // 背景（2026-09-18 实测）：首页与 21 个部门页曾经对 4 个内容页**零出链**，
+  // 全站权重最高的两个来源完全不往那 36 条硬事实上导权重，对比页只有 1 条入链。
+  // 这类问题不会报错、不会 404，只是页面默默拿不到权重 —— 必须用断言盯住。
+  const CONTENT = [
+    "/best/free-tier-comparison",
+    "/best/ai-tools-with-free-tier",
+    "/best/free-ai-tools",
+    "/guides/how-to-choose-an-ai-tool",
+  ];
+  const sources = ["index.html", ...DEPARTMENTS.map((d) => `departments/${d.id}.html`)];
+  let bad = 0;
+  for (const f of sources) {
+    if (!fs.existsSync(path.join(ROOT, f))) continue;
+    const h = read(f);
+    const missing = CONTENT.filter((u) => !h.includes(`href="${u}"`));
+    if (missing.length) { fail(`${f}: 缺少 ${missing.length} 个内容页入链 (${missing.join(", ")})`); bad++; }
+  }
+  if (!bad) ok(`${sources.length} 个页面（首页 + ${DEPARTMENTS.length} 部门）全部链到 4 个内容页`);
+}
+
+console.log("\n[8] 内联样式新鲜度：每个活页的内联 CSS 必须等于 css/style.css");
+{
+  // 背景（2026-09-18 实测）：活页没有外部 <link>，样式全靠内联块。version-assets.mjs
+  // 曾因 tool/ 目录已删除而在写盘前 ENOENT 崩溃，部署脚本把它当 warning 吞掉继续发布
+  // —— 结果 CSS 改动一轮没生效，页脚第 4 栏被挤到第二行，全程零报错。
+  // 这里做兜底断言：即使有人绕过流水线直接 wrangler deploy，也会被拦下。
+  const css = fs.readFileSync(path.join(ROOT, "css", "style.css"), "utf8").trim();
+  const files = ["index.html", "about.html", "privacy.html"];
+  for (const dir of ["departments", "best", "guides"]) {
+    const abs = path.join(ROOT, dir);
+    if (!fs.existsSync(abs)) continue;
+    for (const f of fs.readdirSync(abs)) if (f.endsWith(".html")) files.push(path.join(dir, f));
+  }
+  let stale = 0;
+  for (const f of files) {
+    const h = read(f);
+    const m = h.match(/<style>\/\* asm-inline-css \*\/\n([\s\S]*?)\n<\/style>/);
+    if (!m) { fail(`${f}: 找不到内联样式块（version-assets.mjs 没跑？）`); stale++; continue; }
+    if (m[1].trim() !== css) { fail(`${f}: 内联样式与 css/style.css 不一致（改完 CSS 没跑 version-assets）`); stale++; }
+  }
+  if (!stale) ok(`${files.length} 个活页内联样式全部与 css/style.css 一致`);
+}
+
 /* ---------- 汇总 ---------- */
 console.log("\n" + "─".repeat(60));
 if (fails.length) {

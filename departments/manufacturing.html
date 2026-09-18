@@ -781,9 +781,11 @@ button {
   padding-top: 44px;
 }
 
+/* 4 栏：品牌 + Popular Departments + Store Info + Free Tier Data（内容页入口）。
+   加第 4 栏时忘了同步这里 → 新栏被挤到下一行，整块页脚错位。 */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
   gap: 32px;
   padding-bottom: 36px;
 }
@@ -959,7 +961,8 @@ button {
 
   .pricing-filters { flex-direction: row; gap: 16px; flex-wrap: wrap; }
 
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  /* 品牌占满一行，下面 3 个链接栏等宽（别用 1fr 1fr：第 3 栏会孤零零掉到第三行） */
+  .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .footer-brand { grid-column: 1 / -1; }
 }
 
@@ -1462,6 +1465,15 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
   </div>
 
   <footer class="site-footer">
+    <div class="container" data-content-nav="1" style="padding:20px 20px 6px;border-top:1px solid rgba(128,128,128,.18);margin-top:18px">
+      <p style="margin:0 0 9px;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.55">Free tier data &amp; guides</p>
+      <ul style="margin:0;padding:0;list-style:none;font-size:14.5px;line-height:1.7;opacity:.85">
+        <li><a href="/best/free-tier-comparison" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">Free tier comparison</a> — 36 allowances grouped by unit and renewal</li>
+        <li><a href="/best/ai-tools-with-free-tier" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">Tools with a free tier</a> — the published allowance for each tool</li>
+        <li><a href="/best/free-ai-tools" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">Genuinely free tools</a> — no paid gate at all</li>
+        <li><a href="/guides/how-to-choose-an-ai-tool" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">How to choose an AI tool</a> — buying guide</li>
+      </ul>
+    </div>
     <div class="container footer-bottom">
       <p>© 2026 <a href="/" style="color:inherit">AI Supermarket</a> · <a href="/about" style="color:inherit">About</a> · <a href="/privacy" style="color:inherit">Privacy Policy</a></p>
       <p class="footer-disclaimer">Independent directory — not affiliated with the tools listed. All trademarks belong to their respective owners.</p>

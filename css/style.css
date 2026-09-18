@@ -760,9 +760,11 @@ button {
   padding-top: 44px;
 }
 
+/* 4 栏：品牌 + Popular Departments + Store Info + Free Tier Data（内容页入口）。
+   加第 4 栏时忘了同步这里 → 新栏被挤到下一行，整块页脚错位。 */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
   gap: 32px;
   padding-bottom: 36px;
 }
@@ -938,7 +940,8 @@ button {
 
   .pricing-filters { flex-direction: row; gap: 16px; flex-wrap: wrap; }
 
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  /* 品牌占满一行，下面 3 个链接栏等宽（别用 1fr 1fr：第 3 栏会孤零零掉到第三行） */
+  .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .footer-brand { grid-column: 1 / -1; }
 }
 

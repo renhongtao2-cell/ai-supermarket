@@ -788,9 +788,11 @@ button {
   padding-top: 44px;
 }
 
+/* 4 栏：品牌 + Popular Departments + Store Info + Free Tier Data（内容页入口）。
+   加第 4 栏时忘了同步这里 → 新栏被挤到下一行，整块页脚错位。 */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
   gap: 32px;
   padding-bottom: 36px;
 }
@@ -966,7 +968,8 @@ button {
 
   .pricing-filters { flex-direction: row; gap: 16px; flex-wrap: wrap; }
 
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  /* 品牌占满一行，下面 3 个链接栏等宽（别用 1fr 1fr：第 3 栏会孤零零掉到第三行） */
+  .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .footer-brand { grid-column: 1 / -1; }
 }
 
@@ -8161,6 +8164,15 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
           <a href="#top">Back to top</a>
         </nav>
       </div>
+      <div class="footer-col" data-content-nav="1">
+        <h4>Free Tier Data</h4>
+        <nav class="footer-links">
+          <a href="/best/free-tier-comparison">Free tier comparison</a>
+          <a href="/best/ai-tools-with-free-tier">Tools with a free tier</a>
+          <a href="/best/free-ai-tools">Genuinely free tools</a>
+          <a href="/guides/how-to-choose-an-ai-tool">Choosing a tool</a>
+        </nav>
+      </div>
     </div>
     <div class="container footer-bottom">
       <p>© <span id="year">2026</span> AI Supermarket. All rights reserved.</p>
@@ -8185,7 +8197,7 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
 
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="js/data.js?v=34cfacd2"></script>
-  <script src="js/app.js?v=34cfacd2"></script>
+  <script src="js/data.js?v=c1809e10"></script>
+  <script src="js/app.js?v=c1809e10"></script>
 </body>
 </html>

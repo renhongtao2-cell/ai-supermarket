@@ -781,9 +781,11 @@ button {
   padding-top: 44px;
 }
 
+/* 4 栏：品牌 + Popular Departments + Store Info + Free Tier Data（内容页入口）。
+   加第 4 栏时忘了同步这里 → 新栏被挤到下一行，整块页脚错位。 */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
   gap: 32px;
   padding-bottom: 36px;
 }
@@ -959,7 +961,8 @@ button {
 
   .pricing-filters { flex-direction: row; gap: 16px; flex-wrap: wrap; }
 
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  /* 品牌占满一行，下面 3 个链接栏等宽（别用 1fr 1fr：第 3 栏会孤零零掉到第三行） */
+  .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .footer-brand { grid-column: 1 / -1; }
 }
 
@@ -1297,7 +1300,7 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
     <div class="crumb"><a href="/">AI Supermarket</a> / Sales &amp; CRM</div>
     <h1>📈 AI Tools for Sales &amp; CRM</h1>
     <p class="intro">Sales AI is split between finding people to contact and understanding what happened in the conversations you already had.</p>
-    <p class="intro stat-line">9 tools · 4 free or freemium · 4 with a published free allowance · updated 2026-09-18</p>
+    <p class="intro stat-line">9 tools · 4 free or freemium · <a href="/best/ai-tools-with-free-tier">4 with a published free allowance</a> · updated 2026-09-18</p>
     <details class="ai-summary" open id="ai-summary">
       <summary><strong>TL;DR for AI assistants &amp; search engines</strong></summary>
       <p><strong>Sales &amp; CRM</strong> — 9 AI tools reviewed on AI Supermarket, including Salesforce Einstein, Apollo.io, Clay, Gong. 4 of 9 have a free or freemium tier, and 4 publish a concrete free allowance. Every entry links to the vendor's official site. Machine-readable index: <a href="/llms.txt">/llms.txt</a>.</p>
@@ -1381,10 +1384,10 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
 
     <h2>What the free tiers actually give you</h2>
     <div class="panel">
-      <h3>Verified free allowances in Sales &amp; CRM</h3>
+      <h3>Published free allowances in Sales &amp; CRM</h3>
       <ul><li><strong>Clay</strong> — 100 data credits and 500 actions per month</li><li><strong>Regie.ai</strong> — 250 credits (one-time)</li><li><strong>Lavender</strong> — 5 emails per month</li><li><strong>Seamless.AI</strong> — 50 credits</li></ul>
     </div>
-    <p>These figures were read from each vendor's own pricing page rather than from a summary. Allowances change without notice, so confirm on the vendor's site before you commit a workflow to one.</p>
+    <p>These figures were read from each vendor's own pricing page rather than from a summary. Allowances change without notice, so confirm on the vendor's site before you commit a workflow to one. Two things worth checking before you compare these numbers: the <a href="/best/free-tier-comparison">free tier comparison</a> groups all 36 recorded allowances by what the unit actually measures and by how each one renews — a one-off grant and a monthly reset are not interchangeable. The full list, including the other departments, is on <a href="/best/ai-tools-with-free-tier">AI tools with a free tier</a>.</p>
 
     <h2>What to watch out for</h2>
     <ul><li>Automated outreach at volume damages deliverability and brand. Personalisation is not a nice-to-have here; it is what keeps you out of spam folders.</li><li>Contact data goes stale quickly. Budget for refresh, not just acquisition.</li><li>Call recording has consent requirements that vary by jurisdiction, and in several places requires notifying all parties.</li></ul>
@@ -1471,6 +1474,15 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
   </div>
 
   <footer class="site-footer">
+    <div class="container" data-content-nav="1" style="padding:20px 20px 6px;border-top:1px solid rgba(128,128,128,.18);margin-top:18px">
+      <p style="margin:0 0 9px;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.55">Free tier data &amp; guides</p>
+      <ul style="margin:0;padding:0;list-style:none;font-size:14.5px;line-height:1.7;opacity:.85">
+        <li><a href="/best/free-tier-comparison" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">Free tier comparison</a> — 36 allowances grouped by unit and renewal</li>
+        <li><a href="/best/ai-tools-with-free-tier" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">Tools with a free tier</a> — the published allowance for each tool</li>
+        <li><a href="/best/free-ai-tools" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">Genuinely free tools</a> — no paid gate at all</li>
+        <li><a href="/guides/how-to-choose-an-ai-tool" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(128,128,128,.45)">How to choose an AI tool</a> — buying guide</li>
+      </ul>
+    </div>
     <div class="container footer-bottom">
       <p>© 2026 <a href="/" style="color:inherit">AI Supermarket</a> · <a href="/about" style="color:inherit">About</a> · <a href="/privacy" style="color:inherit">Privacy Policy</a></p>
       <p class="footer-disclaimer">Independent directory — not affiliated with the tools listed. All trademarks belong to their respective owners.</p>

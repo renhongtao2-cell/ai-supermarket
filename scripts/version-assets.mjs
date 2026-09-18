@@ -23,8 +23,15 @@ const MARKER = "<style>/* asm-inline-css */";
 const inlineStyle = `${MARKER}\n${css}\n</style>`;
 
 const files = ["index.html", "about.html", "privacy.html"];
-for (const dir of ["departments", "tool"]) {
-  for (const f of fs.readdirSync(path.join(ROOT, dir))) {
+// ⚠️ 目录清单必须与「实际存在的活页目录」一致：
+//   - tool/ 已按 consolidate-catalog 的方案删除。曾把它写死在这里，导致
+//     readdirSync ENOENT → 整个脚本在写盘前崩溃 → 部署脚本只当 warning 吞掉，
+//     于是所有页面带着**旧内联样式**上线，且没有任何报错。
+//   - best/ guides/ 是内容页，同样要内联（它们没有外部 <link>，样式只能靠内联块）。
+for (const dir of ["departments", "best", "guides"]) {
+  const abs = path.join(ROOT, dir);
+  if (!fs.existsSync(abs)) continue;
+  for (const f of fs.readdirSync(abs)) {
     if (f.endsWith(".html")) files.push(path.join(dir, f));
   }
 }
@@ -68,4 +75,19 @@ for (const rel of files) {
     changed++;
   }
 }
-console.log(`css inlined + js v=${jsVersion} — ${changed}/${files.length} pages updated`);
+// 自检：内联块必须与 css/style.css 逐字一致。
+// 目的：把「页面带着旧样式上线」从静默事故变成硬错误。本脚本历史上曾在写盘前
+// 因 ENOENT 崩溃，被部署脚本当 warning 吞掉，结果 CSS 改动整整一轮没生效。
+let stale = 0;
+for (const rel of files) {
+  const h = fs.readFileSync(path.join(ROOT, rel), "utf8");
+  if (!h.includes(inlineStyle)) {
+    console.error(`  ✗ ${rel}: 内联样式与 css/style.css 不一致`);
+    stale++;
+  }
+}
+if (stale) {
+  console.error(`version-assets: ${stale}/${files.length} 个页面样式未同步，拒绝继续`);
+  process.exit(1);
+}
+console.log(`css inlined + js v=${jsVersion} — ${changed}/${files.length} pages updated（全部已校验）`);

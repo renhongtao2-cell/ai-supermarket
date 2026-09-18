@@ -86,14 +86,20 @@ function clearStage(dir) {
     // consolidate-catalog 负责 sitemap 与 _redirects，必须晚于数据变更。
     autoSync("gen-dept-hubs.mjs");
     autoSync("gen-cross-pages.mjs");
+    // 首页的内容页入口 —— index.html 不被生成器全量重写，所以由 CLI 幂等注入。
+    // 部门页/内容页的入口在各自生成器里注入（后处理会被下次部署擦掉）。
+    autoSync("site-nav.mjs");
     autoSync("sync-static-cards.mjs");
     autoSync("regen-seo-blocks.mjs");
     autoSync("gen-llms.mjs");
     autoSync("consolidate-catalog.mjs");
+    // 样式内联是硬依赖：活页没有外部 <link>，内联块没更新 = 线上还是旧样式。
+    // 这里必须中止。曾经写成 warning 并继续部署，导致 CSS 改动整整一轮静默失效。
     try {
       execSync("node scripts/version-assets.mjs", { cwd: ROOT, stdio: "inherit" });
     } catch (e) {
-      console.warn("version-assets.mjs failed, deploying without refresh:", e.message);
+      console.error("version-assets.mjs 失败，页面样式未同步，中止部署。");
+      process.exit(1);
     }
     // 内容闸门：广告代码 / canonical 自指 / 字数下限 / 无死链 / 301 目标存在
     try {

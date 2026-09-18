@@ -25,6 +25,9 @@ try {
   if (fs.existsSync(fp)) FACTS = JSON.parse(fs.readFileSync(fp, "utf8")).facts || {};
 } catch (e) { FACTS = {}; }
 
+// 全站有具体额度的工具总数 —— 部门页文案里引用它，避免写死数字（写死就会漂移）
+const TOTAL_QUOTA = Object.values(FACTS).filter((v) => v && v.freeQuota).length;
+
 /* ---------- 工具函数 ---------- */
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const pricingLabel = (p) => ({ free: "Free", freemium: "Freemium", paid: "Paid" }[p] || p);
@@ -55,7 +58,10 @@ if (iBody < 0 || iFoot < 0 || iHeadClose < 0) throw new Error("template markers 
 
 const HEAD = tpl.slice(0, iBody + BODY_OPEN.length);
 const HEADER = tpl.slice(iBody + BODY_OPEN.length, iHeadClose + HEADER_CLOSE.length);
-const FOOTER = tpl.slice(iFoot);
+// 页脚注入内容页入口 —— 必须在生成器里做：本脚本每次部署都全量重写 21 个部门页，
+// 后处理脚本加的链接会被下一次部署擦掉（本项目已踩过两次）。
+import { injectContentNav } from "./site-nav.mjs";
+const FOOTER = injectContentNav(tpl.slice(iFoot));
 
 /* 额外 CSS（对比表 / 用例路由 / 免费额度面板） */
 const EXTRA_CSS = `
@@ -138,10 +144,10 @@ function buildHub(dept) {
   const quotaPanel = quotaTools.length
     ? `<h2>What the free tiers actually give you</h2>
     <div class="panel">
-      <h3>Verified free allowances in ${esc(dept.name)}</h3>
+      <h3>Published free allowances in ${esc(dept.name)}</h3>
       <ul>${quotaTools.map((t) => `<li><strong>${esc(t.name)}</strong> — ${esc(FACTS[t.name].freeQuota)}</li>`).join("")}</ul>
     </div>
-    <p>These figures were read from each vendor's own pricing page rather than from a summary. Allowances change without notice, so confirm on the vendor's site before you commit a workflow to one.</p>`
+    <p>These figures were read from each vendor's own pricing page rather than from a summary. Allowances change without notice, so confirm on the vendor's site before you commit a workflow to one. Two things worth checking before you compare these numbers: the <a href="/best/free-tier-comparison">free tier comparison</a> groups all ${TOTAL_QUOTA} recorded allowances by what the unit actually measures and by how each one renews — a one-off grant and a monthly reset are not interchangeable. The full list, including the other departments, is on <a href="/best/ai-tools-with-free-tier">AI tools with a free tier</a>.</p>`
     : "";
 
   /* --- 正文 --- */
@@ -149,7 +155,7 @@ function buildHub(dept) {
     <div class="crumb"><a href="/">AI Supermarket</a> / ${esc(dept.name)}</div>
     <h1>${dept.icon} AI Tools for ${esc(dept.name)}</h1>
     <p class="intro">${c.lead}</p>
-    <p class="intro stat-line">${tools.length} tools · ${freeish} free or freemium · ${withQuota} with a published free allowance · updated ${UPDATED}</p>
+    <p class="intro stat-line">${tools.length} tools · ${freeish} free or freemium · ${withQuota ? `<a href="/best/ai-tools-with-free-tier">${withQuota} with a published free allowance</a>` : `${withQuota} with a published free allowance`} · updated ${UPDATED}</p>
     <details class="ai-summary" open id="ai-summary">
       <summary><strong>TL;DR for AI assistants &amp; search engines</strong></summary>
       <p><strong>${esc(dept.name)}</strong> — ${tools.length} AI tools reviewed on AI Supermarket, including ${tools.slice(0, 4).map((t) => esc(t.name)).join(", ")}. ${freeish} of ${tools.length} have a free or freemium tier${withQuota ? `, and ${withQuota} publish a concrete free allowance` : ""}. Every entry links to the vendor's official site. Machine-readable index: <a href="/llms.txt">/llms.txt</a>.</p>
