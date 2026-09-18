@@ -43,6 +43,7 @@ const PAGES = [
   ...DEPARTMENTS.map((d) => ({ file: `departments/${d.id}.html`, url: `/departments/${d.id}`, min: 700, kind: "dept" })),
   { file: "best/free-ai-tools.html", url: "/best/free-ai-tools", min: 700, kind: "best" },
   { file: "best/ai-tools-with-free-tier.html", url: "/best/ai-tools-with-free-tier", min: 700, kind: "best" },
+  { file: "best/free-tier-comparison.html", url: "/best/free-tier-comparison", min: 700, kind: "best" },
   { file: "guides/how-to-choose-an-ai-tool.html", url: "/guides/how-to-choose-an-ai-tool", min: 700, kind: "guide" },
   { file: "about.html", url: "/about", min: 400, kind: "static" },
   { file: "privacy.html", url: "/privacy", min: 300, kind: "static" },
@@ -88,6 +89,7 @@ console.log("\n[3] 无活页链接到已删除的 /tool/ 路径");
     "js/app.js", "js/data.js",
     ...DEPARTMENTS.map((d) => `departments/${d.id}.html`),
     "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html",
+    "best/free-tier-comparison.html",
     "guides/how-to-choose-an-ai-tool.html",
   ];
   let bad = 0;
@@ -147,6 +149,7 @@ console.log("\n[6] HTML 标签平衡（已剥离 style/script 内容）");
     "index.html", "about.html", "privacy.html", "404.html",
     ...DEPARTMENTS.map((d) => `departments/${d.id}.html`),
     "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html",
+    "best/free-tier-comparison.html",
     "guides/how-to-choose-an-ai-tool.html",
   ];
   let bad = 0;

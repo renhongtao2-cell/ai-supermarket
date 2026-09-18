@@ -93,6 +93,7 @@ const urls = [
   { loc: "/", pri: "1.0", freq: "weekly" },
   ...DEPARTMENTS.map((d) => ({ loc: `/departments/${d.id}`, pri: "0.9", freq: "monthly" })),
   { loc: "/best/ai-tools-with-free-tier", pri: "0.8", freq: "monthly" },
+  { loc: "/best/free-tier-comparison", pri: "0.8", freq: "monthly" },
   { loc: "/best/free-ai-tools", pri: "0.8", freq: "monthly" },
   { loc: "/guides/how-to-choose-an-ai-tool", pri: "0.8", freq: "monthly" },
   { loc: "/about", pri: "0.4", freq: "yearly" },

@@ -321,6 +321,11 @@ const tierBody = `${hero(
     <p style="margin:0;font-size:15px">If you would rather not manage an allowance at all, ${freeTools.length} tools in this directory are free with no paid gate. See <a href="/best/free-ai-tools">genuinely free AI tools</a>.</p>
   </div>
 
+  <div class="panel">
+    <h3>Comparing two of these numbers? Read the units first</h3>
+    <p style="margin:0;font-size:15px">The table above is a list, not a comparison — 500 credits and 500 minutes are not the same thing. See the <a href="/best/free-tier-comparison">like-for-like free tier comparison</a>, which groups these ${quotaTools.length} allowances by what the unit actually measures and by how each one renews.</p>
+  </div>
+
   <h2>When a free tier is the wrong choice</h2>
   <p>Free tiers are designed to convert you, which means they are usually fine for evaluation and awkward for production. Three signals that you have outgrown one: you are rationing usage and therefore avoiding the tool, the allowance resets at a moment that does not match your workflow, or you need an API key for automation. At that point the paid plan is cheaper than the workaround.</p>
 
@@ -354,6 +359,255 @@ fs.writeFileSync(
       ],
     },
   }) + "\n" + DEPT_CHROME.HEADER + "\n" + tierBody + "\n" + DEPT_CHROME.FOOTER
+);
+
+/* ============================================================
+   3b. /best/free-tier-comparison —— 同类额度横向对比
+   ------------------------------------------------------------
+   为什么单独做一页：36 条额度单位五花八门（credits / minutes / characters /
+   requests / orders…），平铺在一张表里根本没法比 —— 500 credits 和 500 minutes
+   不可比。这一页按「单位族」分组，让同类只跟同类站一起；
+   再按「续期方式」切一刀（能不能重置比数字大小更决定可用性）。
+   数据全部来自 free-tier-facts.json 的 freeQuota，未经改写的原值照录。
+   ============================================================ */
+
+/* 单位族：先取「主单位」再归族。
+   ⚠️ 不能用「字符串里出现哪个单位词」来判定 —— 实测会错：
+   Originality.ai 的值是 "3 AI scans per day (up to 2,000 words each)"，
+   括号里的次要单位 "words" 会把它劫持到「文本量」族，而它真正的主单位是 scans。
+   所以只认**数字后第一个出现的单位词**。 */
+const UNIT_RE = /\b(credits?|tokens?|characters?|words?|minutes?|hours?|requests?|searches?|messages?|orders?|emails?|projects?|scans?|videos?|tasks?|interactions?|conversations?|spaces?|completions?)\b/i;
+const FAMILY_OF_UNIT = {
+  credit: "credits", token: "credits",
+  minute: "time", hour: "time",
+  character: "text", word: "text",
+  request: "turns", search: "turns", message: "turns", interaction: "turns",
+  conversation: "turns", completion: "turns", scan: "turns",
+  order: "objects", email: "objects", task: "objects", project: "objects",
+  video: "objects", space: "objects",
+};
+const unitOf = (v) => {
+  const m = v.match(UNIT_RE);
+  return m ? m[1].toLowerCase().replace(/s$/, "") : null;
+};
+const familyOf = (v) => FAMILY_OF_UNIT[unitOf(v)] || "other";
+
+const FAMILIES = [
+  {
+    id: "credits", title: "Credits and points",
+    blurb: "Vendor-defined units. A credit is whatever the vendor says it is — on one platform 1,000 credits is ten generations, on another it is a thousand. Compare these against each other, never against minutes or words.",
+  },
+  {
+    id: "time", title: "Time",
+    blurb: "Minutes of audio or video the free tier will process. This is the most directly comparable family on the page, because a minute is a minute.",
+  },
+  {
+    id: "text", title: "Text volume",
+    blurb: "Words and characters. Useful for writing tools where the limit is the amount of copy you can put through, not the number of actions you can take.",
+  },
+  {
+    id: "turns", title: "Requests and turns",
+    blurb: "API calls, search requests, chat exchanges and scanned items. These bound how much automation or conversation you get, and they are usually the limit that bites first in production.",
+  },
+  {
+    id: "objects", title: "Outputs and objects",
+    blurb: "Finished items — videos, projects, processed orders, analysed emails. The limit is stated in the unit of the work itself, which makes it the easiest family to reason about.",
+  },
+];
+
+/* 续期方式：决定「能不能长期靠它干活」，比数字大小更关键 */
+const PERIODS = {
+  month:       { rank: 1, label: "Resets monthly",        note: "The only kind you can build a habit on." },
+  day:         { rank: 2, label: "Resets daily",          note: "Small but frequent — good for steady light use." },
+  forever:     { rank: 3, label: "No time limit",         note: "Does not expire, but does not refill either." },
+  lifetime:    { rank: 4, label: "One-off, never expires",note: "A fixed grant with no expiry date." },
+  "one-time":  { rank: 5, label: "One-off grant",         note: "Runs out and does not come back." },
+  trial:       { rank: 6, label: "Trial only",            note: "Ends on a clock, not on usage." },
+  unspecified: { rank: 7, label: "Renewal not stated",    note: "The vendor does not say whether or how it renews." },
+};
+
+function periodOf(v) {
+  if (/one-time/i.test(v)) return "one-time";
+  if (/lifetime/i.test(v)) return "lifetime";
+  if (/free forever|no time limit/i.test(v)) return "forever";
+  if (/trial/i.test(v)) return "trial";
+  if (/per month|monthly/i.test(v)) return "month";
+  if (/per day|daily/i.test(v)) return "day";
+  return "unspecified";
+}
+const qtyOf = (v) => parseFloat(((v.match(/[\d][\d,]*/) || ["0"])[0]).replace(/,/g, "")) || 0;
+
+const quotaParsed = quotaTools.map((t) => {
+  const raw = FACTS[t.name].freeQuota;
+  return { tool: t, raw, fam: familyOf(raw), unit: unitOf(raw), period: periodOf(raw), qty: qtyOf(raw) };
+});
+
+const byFam = Object.fromEntries(FAMILIES.map((f) => [f.id, quotaParsed.filter((q) => q.fam === f.id)]));
+const byPeriod = {};
+for (const q of quotaParsed) byPeriod[q.period] = (byPeriod[q.period] || 0) + 1;
+
+// 自检：归不了族的额度说明 UNIT_RE / FAMILY_OF_UNIT 需要补词。
+// 不能静默丢掉 —— 否则新加一条额度时它会从页面上凭空消失，没人会发现。
+{
+  const orphans = quotaParsed.filter((q) => q.fam === "other");
+  if (orphans.length) {
+    console.warn(`⚠ ${orphans.length} 条额度未归入单位族（请补 UNIT_RE / FAMILY_OF_UNIT）：`);
+    orphans.forEach((q) => console.warn(`    ${q.tool.name} = ${q.raw}`));
+  }
+  const sum = FAMILIES.reduce((n, f) => n + byFam[f.id].length, 0);
+  if (sum !== quotaParsed.length) {
+    throw new Error(`单位族行数合计 ${sum} ≠ 额度总数 ${quotaParsed.length} —— 有额度会从页面上消失`);
+  }
+}
+
+// 每族内：先按续期排序（月度最优先），再按数量从大到小 —— 同类同续期才真正可比
+const famRows = (id) =>
+  (byFam[id] || [])
+    .slice()
+    .sort((a, b) => PERIODS[a.period].rank - PERIODS[b.period].rank || b.qty - a.qty)
+    .map((q) => `<tr>
+        <td>${link(q.tool)}<br><span style="opacity:.6;font-size:12.5px">${esc(hostOf(q.tool.url))}</span></td>
+        <td><a href="/departments/${q.tool.dept}">${deptIcon[q.tool.dept]} ${esc(deptName[q.tool.dept])}</a></td>
+        <td><strong>${esc(q.raw)}</strong></td>
+        <td>${PERIODS[q.period].label}</td>
+      </tr>`)
+    .join("\n      ");
+
+// 每族的「同类里给得最多」—— 只在可续期的档里挑（一次性/trial 不参与，否则会误导）
+const famLeader = (id) => {
+  const pool = (byFam[id] || []).filter((q) => q.period === "month" || q.period === "day");
+  if (pool.length < 2) return null;
+  const best = pool.slice().sort((a, b) => b.qty - a.qty)[0];
+  return best;
+};
+
+const famTables = FAMILIES.map((f) => {
+  const rows = famRows(f.id);
+  if (!rows) return "";
+  const lead = famLeader(f.id);
+  const leadLine = lead
+    ? `<p class="stat-line">Highest recurring allowance in this family: <strong>${esc(lead.tool.name)}</strong> — ${esc(lead.raw)}.</p>`
+    : "";
+  return `<h2>${esc(f.title)} <span style="font-weight:400;opacity:.6;font-size:15px">${byFam[f.id].length} tools</span></h2>
+  <p>${esc(f.blurb)}</p>
+  ${leadLine}
+  <table class="cmp">
+    <thead><tr><th>Tool</th><th>Department</th><th>Free allowance</th><th>Renewal</th></tr></thead>
+    <tbody>
+      ${rows}
+    </tbody>
+  </table>`;
+}).join("\n\n  ");
+
+// 续期方式汇总表
+const periodRows = Object.entries(PERIODS)
+  .filter(([k]) => byPeriod[k])
+  .sort((a, b) => a[1].rank - b[1].rank)
+  .map(([k, p]) => `<tr>
+        <td><strong>${p.label}</strong></td>
+        <td>${byPeriod[k]}</td>
+        <td>${esc(p.note)}</td>
+      </tr>`)
+  .join("\n      ");
+
+const recurring = quotaParsed.filter((q) => q.period === "month" || q.period === "day").length;
+const oneOff = quotaParsed.filter((q) => q.period === "one-time" || q.period === "lifetime" || q.period === "forever").length;
+const trialOnly = quotaParsed.filter((q) => q.period === "trial").length;
+
+// 按部门：同一用途里谁给得最多
+const deptGroups = {};
+for (const q of quotaParsed) (deptGroups[q.tool.dept] = deptGroups[q.tool.dept] || []).push(q);
+const deptRows = Object.entries(deptGroups)
+  .sort((a, b) => b[1].length - a[1].length)
+  .map(([d, arr]) => `<tr>
+        <td><a href="/departments/${d}">${deptIcon[d]} ${esc(deptName[d])}</a></td>
+        <td>${arr.length}</td>
+        <td>${arr.map((q) => `${esc(q.tool.name)} <span style="opacity:.7">(${esc(q.raw)})</span>`).join(" · ")}</td>
+      </tr>`)
+  .join("\n      ");
+
+const cmpBody = `${hero(
+  "⚖️ Free Tier Comparison — Like-for-Like, Not a List",
+  `A flat list of free allowances is not a comparison. <strong>500 credits and 500 minutes are not the same thing</strong>, and a one-off grant is not a monthly reset. So we grouped the <strong>${quotaParsed.length} allowances</strong> we recorded by what the unit actually measures, then split each group by how it renews.`,
+  `${quotaParsed.length} allowances · ${FAMILIES.length} unit families · ${recurring} renew on a schedule · reviewed ${UPDATED}`,
+  `A like-for-like comparison of ${quotaParsed.length} AI tool free tiers on AI Supermarket, grouped by unit family (credits, time, text volume, requests, outputs) and by renewal (monthly, daily, one-off, trial). ${recurring} of the ${quotaParsed.length} allowances reset on a schedule; ${oneOff} are one-off or non-expiring grants; ${trialOnly} are trial-only. Machine-readable index: <a href="/llms.txt">/llms.txt</a>.`
+)}
+<div class="hub">
+  <h2>Why grouping by unit is the whole point</h2>
+  <p>The most common mistake when reading free-tier tables is comparing the numbers. A tool offering "10,000 credits" looks ten times more generous than one offering "1,000 credits" — until you find out that the first tool charges 200 credits per generation and the second charges 5. The unit is vendor-invented, and it is deliberately not standardised, because a bespoke unit makes it harder to compare against a competitor.</p>
+  <p>Where a unit is objective — minutes of audio, words of text, API requests — the comparison is real and you can trust it. Where it is vendor-defined — credits, points, tokens — the number tells you almost nothing on its own, and the honest thing to do is show it next to its family so at least the incomparability is visible rather than hidden.</p>
+  <p>So this page does not rank the ${quotaParsed.length} tools into a single "best free tier" list, because that ranking would be meaningless. It groups them so that the only rows sitting side by side are ones that can actually be judged against each other.</p>
+
+  <h2>The second axis: does it come back?</h2>
+  <p>How an allowance renews matters more than how large it is. A small monthly allowance supports a habit; a large one-off grant supports a single project and then leaves you stranded. Of the ${quotaParsed.length} allowances recorded here, <strong>${recurring} reset on a schedule</strong> (monthly or daily), <strong>${oneOff} are one-off or non-expiring grants</strong>, and <strong>${trialOnly} are trial-only</strong>.</p>
+  <table class="cmp">
+    <thead><tr><th>Renewal</th><th>Tools</th><th>What it means in practice</th></tr></thead>
+    <tbody>
+      ${periodRows}
+    </tbody>
+  </table>
+  <div class="panel">
+    <h3>The one-line rule</h3>
+    <p style="margin:0;font-size:15px">If you intend to use a tool continuously, only the <strong>${recurring} allowances that reset</strong> are candidates. A one-off grant is a demo with extra steps, however large the number looks.</p>
+  </div>
+
+  ${famTables}
+
+  <h2>By category — what is on offer within one kind of work</h2>
+  <p>Unit families answer "can I compare these two numbers". Categories answer a different question: "I need a tool for this kind of work, what does each free tier give me". Both views are on this page because they are useful at different moments in the same decision.</p>
+  <table class="cmp">
+    <thead><tr><th>Department</th><th>Tools with a stated allowance</th><th>Allowances</th></tr></thead>
+    <tbody>
+      ${deptRows}
+    </tbody>
+  </table>
+
+  <h2>What this page deliberately does not do</h2>
+  <ul>
+    <li><strong>It does not declare a winner.</strong> A winner across incompatible units would be an invention, not a finding.</li>
+    <li><strong>It does not normalise the numbers.</strong> Multiplying a daily allowance by thirty to manufacture a monthly figure would put a number on the page that no vendor ever published.</li>
+    <li><strong>It does not fill the gaps.</strong> Tools whose vendors state a free plan but publish no figure are listed on the <a href="/best/ai-tools-with-free-tier">free-tier page</a> without a number, rather than with a guess.</li>
+    <li><strong>It does not carry a "commercial use" column.</strong> That answer is per-plan and per-jurisdiction, and reading it off a marketing page reliably produces errors. Check the licence attached to the plan you are actually on.</li>
+  </ul>
+
+  <h2>Before you rely on any of these numbers</h2>
+  <p>Free tiers are the part of a pricing page most likely to change without notice, because they are a marketing lever rather than a revenue line. Every figure here was read from the vendor's own pricing page and reviewed ${UPDATED}; several were re-fetched to confirm, because cached copies go stale. Treat this as a starting point for your own check, not as a contract — and when a number decides your choice, open the vendor's pricing page yourself before you commit.</p>
+
+  <div class="panel">
+    <h3>Where these numbers come from</h3>
+    <p style="margin:0;font-size:15px">Every allowance on this page was read from the vendor's published pricing page, not inferred. Vendors that state a free plan without publishing a figure are recorded as such. Full list: <a href="/best/ai-tools-with-free-tier">AI tools with a free tier</a>.</p>
+  </div>
+
+  <p class="stat-line" style="margin-top:26px">Allowances read from vendor pricing pages and reviewed ${UPDATED}. Vendors change limits without notice — confirm before committing a workflow. Independent directory — not affiliated with the tools listed.</p>
+</div>
+${otherDepts(null)}`;
+
+fs.writeFileSync(
+  path.join(ROOT, "best", "free-tier-comparison.html"),
+  rewriteHead(DEPT_CHROME, {
+    title: `Free Tier Comparison — ${quotaParsed.length} AI Allowances, Grouped by Unit | AI Supermarket`,
+    desc: `A like-for-like comparison of ${quotaParsed.length} AI tool free tiers: grouped by unit family (credits, minutes, words, requests, outputs) and by renewal — monthly, daily, one-off or trial.`,
+    canonPath: "/best/free-tier-comparison",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@graph": [
+        crumbs("Free Tier Comparison", "/best/free-tier-comparison"),
+        {
+          "@type": "CollectionPage",
+          name: "Free Tier Comparison",
+          url: SITE + "/best/free-tier-comparison",
+          mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: quotaParsed.length,
+            itemListElement: quotaParsed.map((q, i) => ({
+              "@type": "ListItem", position: i + 1,
+              item: { "@type": "SoftwareApplication", name: q.tool.name, url: q.tool.url, description: q.tool.desc },
+            })),
+          },
+        },
+      ],
+    },
+  }) + "\n" + DEPT_CHROME.HEADER + "\n" + cmpBody + "\n" + DEPT_CHROME.FOOTER
 );
 
 /* ============================================================
@@ -511,7 +765,7 @@ fs.writeFileSync(
 );
 
 console.log("生成跨类目页 + about + privacy:");
-for (const f of ["about.html", "privacy.html", "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html", "guides/how-to-choose-an-ai-tool.html"]) {
+for (const f of ["about.html", "privacy.html", "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html", "best/free-tier-comparison.html", "guides/how-to-choose-an-ai-tool.html"]) {
   const h = fs.readFileSync(path.join(ROOT, f), "utf8");
   const w = h.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").split(/\s+/).filter((x) => x.length > 1).length;

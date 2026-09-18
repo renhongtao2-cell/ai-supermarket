@@ -34,6 +34,7 @@ const out = [
   `- [AI Supermarket](${SITE}/): browse and search all AI tools by department`,
   `- [How to choose an AI tool](${SITE}/guides/how-to-choose-an-ai-tool): buying guide — own-data testing, data terms, true cost, exit cost`,
   `- [AI tools with a free tier](${SITE}/best/ai-tools-with-free-tier): the concrete free allowance for each tool`,
+  `- [Free tier comparison](${SITE}/best/free-tier-comparison): the same allowances grouped by unit family (credits / time / text / requests / outputs) and by renewal (monthly / daily / one-off / trial) so only like-for-like rows sit together`,
   `- [Genuinely free AI tools](${SITE}/best/free-ai-tools): tools with no paid gate at all`,
   `- [About](${SITE}/about): curation policy and contact`,
   `- [Privacy Policy](${SITE}/privacy)`,
