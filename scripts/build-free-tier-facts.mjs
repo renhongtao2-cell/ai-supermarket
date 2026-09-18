@@ -59,7 +59,7 @@ function normalizeQuota(raw) {
 const facts = {};
 const stats = {
   total: 0, cardContradiction: 0, watermarkContradiction: 0,
-  published: 0, skipped: 0, quotaRaw: 0, quotaOk: 0, quotaDropped: 0, quotaFixed: 0, quotaVerified: 0,
+  published: 0, skipped: 0, quotaRaw: 0, quotaOk: 0, quotaDropped: 0, quotaFixed: 0, quotaVerified: 0, quotaUnverified: 0,
   excluded: 0, excludedKeys: 0,
   byReason: { strong: 0, trialOnly: 0, quotaOnly: 0 },
 };
@@ -91,10 +91,16 @@ const EXCLUDE = {
   "ClickUp Brain": { keys: ["freeQuota"], why: "10,000 credits 出自 '$10 per 10,000 credits' 的购买价，非免费额度" },
   "Regie.ai": { keys: ["freeQuota"], why: "5,000 credits 属 Pro $49/月 档（免费档另计）" },
   "Sudowrite": { keys: ["freeQuota"], why: "225,000 credits 属 $10/月 付费档，页面只提供 free trial" },
-  "Framer AI": { keys: ["freeQuota"], why: "15,000 credits 是各档位对比里的最高档，非免费档" },
+  // Framer AI 原在此列（15,000 credits 是最高档）。2026-09-18 用「免费档区块」抽取法
+  // 拿到了真正的免费档原句「Free Try for free $0 500 AI credits to try」→ 已移入 VERIFIED_QUOTA。
   "Notion AI": { keys: ["freeQuota"], why: "1,000 credits 出自 '$10 per 1,000 credits' 的价格行，非免费额度" },
   "Julius AI": { keys: ["freeQuota"], why: "24,000 credits 属 Plus $16/月 档（且原文为 per year，被丢成一次性）" },
   "Bolt.new": { keys: ["freeQuota"], why: "无法核实：定价页是 SPA，浏览器抓取仍拿不到额度内容，'300,000 tokens' 在原文中不存在" },
+  // 以下 3 条为 2026-09-18 第三批（定向短语复核）发现 —— 均为「只有 freeQuota、无免费档信号」的条目，
+  // 这类条目一旦额度抽错，整条就是假的，必须逐条验：
+  "Bardeen": { keys: ["freeQuota"], why: "'+100 credits/month' 挂在 Basic $10/月 付费档下，免费档额度未知" },
+  "Stable Diffusion": { keys: ["freeQuota"], why: "同域误配：'1000 credits' 出自 stability.ai Brand Studio 的试用（Trial ends after credits used），非免费档；且原文另有 '1,000+ images per minute' 属 AWS Bedrock 案例" },
+  "Pika": { keys: ["freeQuota"], why: "'15 credits Free' 是 Pikaffects 单项特效的计价表（同表另有 18/20/35/65 credits Paid），不是免费档额度" },
 };
 
 // 人工校正表：抽取器单位/数字抓错，但正确值能从原文确认 → 写正确值，而不是丢掉这条真事实。
@@ -116,6 +122,21 @@ const QUOTA_FIX = {
   "Lovable": "30 build credits per month",
   // 原文定价页：Free $0 → "50 message credits/month"。抽取器抓到的 700 是 Hobby $40/月 档的值。
   "Chatbase": "50 message credits per month",
+  // ——— 2026-09-18 第三批：值对了，但「性质」写错（一次性写成月度、试用写成常驻）———
+  // "Free Free forever. ... $0 /month 125 credits 125 one-time credits ... Includes 125 credits (one time)"
+  "Runway": "125 credits (one-time)",
+  // "Free For simple projects and getting to know Gamma Start for free Free includes: 400 credits at signup"
+  "Gamma": "400 credits (one-time)",
+  // "Free $0/month Free forever Get Free Features: 5 projects ... 100 AI Tokens (one-time)"
+  // 抽取器把 "Free forever" 归成了 "with no time limit"，读起来像项目永不过期 —— 改回档位名。
+  "Kittl": "5 projects (free forever)",
+  // "we offer a 7-day free trial with a limit of 2,500 words" —— 是试用上限，不是常驻免费档
+  "Anyword": "2,500 words (7-day trial)",
+  // "You get 10 credits to generate ads ... during your free trial" —— 同上
+  "AdCreative.ai": "10 credits (7-day trial)",
+  // "Check up to 2,000 words with 3 Free AI Scans Per Day" / "run up to 3 free AI scans daily"
+  // 抽取器抓了「每次扫描的词数上限」，那才是限制项 → 换成真正的免费额度（每日扫描次数）。
+  "Originality.ai": "3 AI scans per day (up to 2,000 words each)",
 };
 
 // 人工核实表：这些工具**有**免费档，但自动抽取稳定抓错（抓到付费档/对比表/营销文案）。
@@ -144,6 +165,39 @@ const VERIFIED_QUOTA = {
   "Genie AI": "100,000 tokens",
   // "Free To test out the platform ... $0/mo 100/month Interaction Quota"
   "Convai": "100 interactions per month",
+
+  // ——— 2026-09-18 第二批：改用「免费档区块」抽取法（scripts/extract-free-blocks.mjs）———
+  // 不再猜数字，而是锚定免费档标题（Free $0 / Free forever / Always free），照抄厂商自己写的区块。
+  // 下面每条都回原文核对过（.workbuddy/free-tier-text/<slug>.txt），证据原句见注释。
+  // "Free Free forever, no CC required. $0/m ... Generate 10k characters per month"
+  "Rytr": "10,000 characters per month",
+  // "FREE $0 /month ex. tax. ... Fast Tokens 150 / day Token Bank 150"
+  "Leonardo.Ai": "150 fast tokens per day",
+  // "Plans Free Start building in Clay for free. ... 500 actions/mo ... 100 data credits/mo"
+  "Clay": "100 data credits and 500 actions per month",
+  // "Basic Free Forever $0 /mo ... Analyze 5 emails/month Personalize 5 emails/month"
+  "Lavender": "5 emails per month",
+  // "Reviews & UGC has a limited free plan (up to 50 monthly orders)"
+  "Yotpo": "50 orders per month",
+  // "Free Free Forever ... Free to use 1 Active Space 2 Users"
+  "Matterport": "1 active space (2 users)",
+  // "Free For individuals starting out $0 $0 Free forever ... 400 mins of storage/team 20 AI credits"
+  "Fireflies.ai": "20 AI credits",
+  // FAQ："The free plan typically provides access to basic features and a limited 10-minute voice generation time"
+  "Murf AI": "10 minutes of voice generation",
+  // "Free Try for free $0 500 AI credits to try Free Framer domain 1 GB bandwidth"
+  "Framer AI": "500 AI credits (one-time)",
+
+  // ——— 2026-09-18 第三批：这 4 条自动抽取的结果经定向复核后确认正确，一并纳入人工表 ———
+  // 纳入的目的是「结构性收口」：见文件末尾的硬闸 —— 未进人工表的 freeQuota 一律不发布。
+  // "Free Free for everyone $0 For students and hobbyists ... 2 projects 10 free templates"
+  "Uizard": "2 projects",
+  // "Free $ 0 /mo Up to 1,000 credits/mo ... Free includes: 1,000 credits/month"
+  "Make": "1,000 credits per month",
+  // "There's a free tier with 50 credits so you can explore image generation and public models"
+  "Scenario": "50 credits",
+  // "Seamless.AI is free for up to 50 credits." / 定价表 Free 档："1 User 50 Credits"
+  "Seamless.AI": "50 credits",
 };
 
 for (const r of audit.results) {
@@ -181,6 +235,16 @@ for (const r of audit.results) {
   // 人工核实（补上抽取器抓不出来的值）
   if (VERIFIED_QUOTA[r.name]) { s.freeQuota = VERIFIED_QUOTA[r.name]; stats.quotaVerified++; }
 
+  // 🚦 硬闸：freeQuota 只允许来自人工表（QUOTA_FIX / VERIFIED_QUOTA）。
+  // 理由：实测自动抽取的额度错误率约 1/3 —— 数字来自付费档、价格行、口碑数，
+  // 甚至压缩 JS 和电话号码（Bardeen 的 100 出自 `o.length>100`，Seamless.AI 的 50 出自 +1(614)665-0450）。
+  // 额度是页面上最容易被用户当真的一句话，错一条的代价远大于少一条。
+  // 要放开某条：先用 extract-free-blocks.mjs 取原文块人工确认，再写进 VERIFIED_QUOTA。
+  if (s.freeQuota !== undefined && !QUOTA_FIX[r.name] && !VERIFIED_QUOTA[r.name]) {
+    delete s.freeQuota;
+    stats.quotaUnverified++;
+  }
+
   const keep = {};
   for (const k of KEEP) if (s[k] !== undefined && s[k] !== false && s[k] !== null) keep[k] = s[k];
 
@@ -206,6 +270,10 @@ console.log("signal keys seen:", [...keyUnion].sort().join(", "));
 console.log(JSON.stringify(stats, null, 2));
 console.log(`published: ${stats.published} / ${stats.total}  (${Math.round(stats.published / stats.total * 100)}%)`);
 console.log(`freeQuota: 自动 ${stats.quotaOk} / 丢弃 ${stats.quotaDropped} / 人工校正 ${stats.quotaFixed} / 人工核实 ${stats.quotaVerified} / 共 ${stats.quotaRaw}`);
+console.log(`  ↳ 被硬闸拦下（未经人工核实的自动值）: ${stats.quotaUnverified}`);
+if (stats.quotaUnverified > 0) {
+  console.log("  ⚠️ 有自动值被拦下。若其中有确认无误的，请写进 VERIFIED_QUOTA（附原文证据）。");
+}
 const names = Object.keys(facts);
 console.log("\nsample:");
 names.slice(0, 10).forEach((n) => console.log("  " + n + " = " + JSON.stringify(facts[n])));
