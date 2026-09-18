@@ -59,7 +59,7 @@ function normalizeQuota(raw) {
 const facts = {};
 const stats = {
   total: 0, cardContradiction: 0, watermarkContradiction: 0,
-  published: 0, skipped: 0, quotaRaw: 0, quotaOk: 0, quotaDropped: 0, quotaFixed: 0,
+  published: 0, skipped: 0, quotaRaw: 0, quotaOk: 0, quotaDropped: 0, quotaFixed: 0, quotaVerified: 0,
   excluded: 0, excludedKeys: 0,
   byReason: { strong: 0, trialOnly: 0, quotaOnly: 0 },
 };
@@ -118,6 +118,34 @@ const QUOTA_FIX = {
   "Chatbase": "50 message credits per month",
 };
 
+// 人工核实表：这些工具**有**免费档，但自动抽取稳定抓错（抓到付费档/对比表/营销文案）。
+// 值由人工读厂商定价页确认，每条附证据原句，便于将来复核。
+// 与 QUOTA_FIX 的区别：QUOTA_FIX 是「纠正已抽出的错值」，这里是「补上抽不出来的值」。
+const VERIFIED_QUOTA = {
+  // "All other seats (Collab, Dev, and View) and users on the Starter plan receive 500 credits/month."
+  "Figma AI": "500 credits per month",
+  // "Free £0.00/month ... Video generation: 3 videos per month, Videos up to 1 minute"
+  "HeyGen": "3 videos per month",
+  // "Free $0 per month Build for free ... 3 Projects in Studio 10k credits per month"
+  // （抽取器此前抓到的是 Starter 档的 20 Projects，已剔除）
+  "ElevenLabs": "10,000 credits per month",
+  // 对比表："Starter / Always free / Minutes in Relaxed Queue: 10 Minutes"
+  "LALAL.AI": "10 minutes",
+  // "Free $0/month ... 7 message/day limit"
+  "v0": "7 messages per day",
+  // "Free Free forever $0/month ... Zap workflows, Tables, and Forms included (100 tasks per month)."
+  "Zapier": "100 tasks per month",
+  // "Free $0 For trying RegieGO before you commit. 250 credits to get started (one-time)"
+  // （页面上另有 10,000 free credits 是限时优惠码 WELCOME10K，不是常驻免费档）
+  "Regie.ai": "250 credits (one-time)",
+  // "Lyro AI Agent conversations: Your first 50 conversations are free (lifetime)."
+  "Tidio Lyro": "50 conversations (lifetime)",
+  // "Free From $0 per month ... 100K tokens is enough to try 1 document in Genie."
+  "Genie AI": "100,000 tokens",
+  // "Free To test out the platform ... $0/mo 100/month Interaction Quota"
+  "Convai": "100 interactions per month",
+};
+
 for (const r of audit.results) {
   stats.total++;
   const s = { ...(r.signals || {}) };
@@ -150,6 +178,8 @@ for (const r of audit.results) {
 
   // 人工校正（覆盖抽取结果；值已是最终形态，不再过归一化）
   if (QUOTA_FIX[r.name]) { s.freeQuota = QUOTA_FIX[r.name]; stats.quotaFixed++; }
+  // 人工核实（补上抽取器抓不出来的值）
+  if (VERIFIED_QUOTA[r.name]) { s.freeQuota = VERIFIED_QUOTA[r.name]; stats.quotaVerified++; }
 
   const keep = {};
   for (const k of KEEP) if (s[k] !== undefined && s[k] !== false && s[k] !== null) keep[k] = s[k];
@@ -175,7 +205,7 @@ fs.writeFileSync(
 console.log("signal keys seen:", [...keyUnion].sort().join(", "));
 console.log(JSON.stringify(stats, null, 2));
 console.log(`published: ${stats.published} / ${stats.total}  (${Math.round(stats.published / stats.total * 100)}%)`);
-console.log(`freeQuota 归一化: ${stats.quotaOk} 成功 / ${stats.quotaDropped} 丢弃 / ${stats.quotaFixed} 人工校正 / 共 ${stats.quotaRaw}`);
+console.log(`freeQuota: 自动 ${stats.quotaOk} / 丢弃 ${stats.quotaDropped} / 人工校正 ${stats.quotaFixed} / 人工核实 ${stats.quotaVerified} / 共 ${stats.quotaRaw}`);
 const names = Object.keys(facts);
 console.log("\nsample:");
 names.slice(0, 10).forEach((n) => console.log("  " + n + " = " + JSON.stringify(facts[n])));
