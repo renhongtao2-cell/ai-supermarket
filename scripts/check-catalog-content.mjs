@@ -274,6 +274,26 @@ console.log("\n[9] 联盟合规：页脚披露 + rel=sponsored 与注册表一�
   }
 }
 
+console.log("\n[10] 部署白名单覆盖：sitemap 里的每个页面都会真的上线");
+{
+  // 症状：本地生成成功、闸门全过，但线上 404 —— 因为 prepare-deploy-dir 的顶层文件
+  // 是逐个授权的，新加一个顶层 .html 不写进去就永远不会上传。这个漏检只有实测才发现，
+  // 所以在这里做成硬断言。
+  const src = read("scripts/prepare-deploy-dir.mjs");
+  const catalogBlock = (src.match(/catalog:\s*\{[\s\S]*?\n\s*\},\n/) || [])[0] || "";
+  const wlFiles = [...(catalogBlock.match(/files:\s*\[([\s\S]*?)\]/) || [, ""])[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  const wlDirs = [...(catalogBlock.match(/dirs:\s*\[([\s\S]*?)\]/) || [, ""])[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+
+  if (!wlFiles.length) fail("解析不出 prepare-deploy-dir.mjs 的 catalog 白名单");
+  else {
+    const missing = PAGES
+      .map((p) => p.file)
+      .filter((f) => !wlFiles.includes(f) && !wlDirs.some((d) => f.startsWith(d + "/")));
+    if (missing.length) fail(`部署白名单漏了 ${missing.length} 个页面（本地有、线上 404）：${missing.join(", ")}`);
+    else ok(`${PAGES.length} 个页面全部在部署白名单内（${wlFiles.length} 个顶层文件 + ${wlDirs.length} 个目录）`);
+  }
+}
+
 /* ---------- 汇总 ---------- */
 console.log("\n" + "─".repeat(60));
 if (fails.length) {

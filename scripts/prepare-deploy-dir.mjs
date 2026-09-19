@@ -20,7 +20,7 @@ const SITES = {
     src: ROOT,
     out: path.join(ROOT, ".deploy"),
     files: [
-      "index.html", "about.html", "privacy.html", "404.html",
+      "index.html", "about.html", "privacy.html", "affiliate-disclosure.html", "404.html",
       "sitemap.xml", "robots.txt", "ads.txt", "_headers", "_redirects",
       "og-image.png", "llms.txt",
     ],
