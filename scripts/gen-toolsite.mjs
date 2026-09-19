@@ -641,6 +641,112 @@ video::cue(.speaker) { color: #ffd479; }</pre>
 <h2>Do you need a player library?</h2>
 <p>Not for basic captions. Native <code>&lt;track&gt;</code> support in modern browsers handles loading, the caption menu, timing and styling on its own. Reach for a JavaScript player library when you need adaptive bitrate streaming, DRM, or caption rendering that must look identical on every platform — not simply to display subtitles.</p>`,
   },
+  {
+    slug: "fix-subtitles-out-of-sync",
+    h1: "How to Fix Subtitles That Are Out of Sync",
+    title: "How to Fix Subtitles That Are Out of Sync (Offset vs Drift)",
+    desc: "Diagnose why subtitles are out of sync and fix them: constant offset, progressive drift from a frame-rate mismatch, playback speed changes, or a section that slipped mid-file.",
+    lead: "Almost every sync problem is one of four patterns, and each has a different fix. Ten seconds of diagnosis saves an hour of nudging timestamps that will not help.",
+    body: `
+<h2>First, find out which problem you have</h2>
+<p>Pick a line near the <strong>start</strong> of the video and note how far off it is. Then pick one near the <strong>end</strong> and do the same. Those two numbers tell you everything.</p>
+<table>
+<thead><tr><th>Symptom</th><th>Diagnosis</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Both cues off by the same amount</td><td>Constant offset</td><td><a href="/tools/shift-subtitles">Shift</a> the whole track once</td></tr>
+<tr><td>Error grows through the file</td><td>Frame-rate drift</td><td><a href="/tools/resync-subtitles">Resample</a> by a ratio</td></tr>
+<tr><td>Everything off after a certain point</td><td>Section slip</td><td>Split, fix the tail, rejoin</td></tr>
+<tr><td>Picture and sound disagree too</td><td>Not a subtitle problem</td><td>Fix the video first</td></tr>
+</tbody>
+</table>
+
+<h2>Pattern 1: constant offset</h2>
+<p>The most common case. Every cue is wrong by the same amount — usually because the subtitle file was made against a different cut of the video, or the source has an intro the captions do not account for.</p>
+<p>To measure it, pause on a line you can identify, note the real time, and subtract the cue's timestamp. A line spoken at 00:01:30 whose cue reads 00:01:28 needs <code>+2</code>. Apply it once with the <a href="/tools/shift-subtitles">shift tool</a> and the whole track lines up.</p>
+
+<h2>Pattern 2: progressive drift</h2>
+<p>The first cue is nearly right, the last is badly wrong, and the error grows steadily. No single offset can fix this — shifting until the middle lines up makes both ends worse.</p>
+<p>Drift means the subtitle file's frame rate differs from the video's. The classic pair is <strong>23.976 fps against 25 fps</strong>, the difference between NTSC-derived and PAL-derived masters. Over a two-hour film that is roughly four seconds of error by the end.</p>
+<p>The fix is to <em>scale</em> every timestamp, not move it. The <a href="/tools/resync-subtitles">resync tool</a> has the common conversions as presets:</p>
+<ul>
+<li>23.976 &rarr; 25 fps: multiply by 1.04271</li>
+<li>25 &rarr; 23.976 fps: multiply by 0.95904</li>
+<li>24 &rarr; 25 fps: multiply by 1.04167</li>
+<li>Video plays at 1.1&times; speed: multiply by 0.90909</li>
+</ul>
+
+<h3>Why 23.976 is not 24</h3>
+<p>Historical accident. NTSC colour was fitted to existing black-and-white broadcasts by slowing the frame rate by 0.1%, giving 23.976 rather than 24. That 0.1% is invisible over a few seconds and ruinous over two hours — which is exactly the signature of drift.</p>
+
+<h2>Pattern 3: a section slipped</h2>
+<p>Sync is fine for the first half and wrong for the second. Usually a scene was cut or an intro removed after the captions were made.</p>
+<p>A single ratio will not fix this either, because the error is a step, not a slope. Split the file at the break, fix the tail on its own, then rejoin the parts with the <a href="/tools/merge-subtitles">merge tool</a>.</p>
+
+<h2>Pattern 4: the video itself is wrong</h2>
+<p>If audio and picture disagree with each other, subtitles are not the problem. Correct the audio delay first, then resync the captions against the corrected video — otherwise you tune them to a fault that will be fixed later.</p>
+
+<h2>Working out the correction without guessing</h2>
+<p>Do not nudge and re-check. Measure once:</p>
+<ol>
+<li>Find a cue near the start and one near the end.</li>
+<li>Note the real spoken time for each, from the video.</li>
+<li>Subtract each cue's timestamp from its real time.</li>
+<li>If the two differences match, it is an offset. If they differ and grow, it is drift.</li>
+</ol>
+<p>For drift, divide the real time by the cue time at the <em>end</em> of the file. That quotient is your ratio — and it is more accurate than picking a named frame-rate preset, because it accounts for whatever actually happened to your file.</p>
+
+<h2>After the fix</h2>
+<p>Check three places: the first cue, a cue at the midpoint, and the last one. If all three sit right, the track is correct. Then run the file through <a href="/tools/clean-subtitles">Clean subtitles</a> if it carries markup you do not want, and keep the original — resampling is reversible only if you still have the source.</p>`,
+  },
+  {
+    slug: "subtitle-reading-speed",
+    h1: "How Long Should Subtitles Stay on Screen",
+    title: "Subtitle Reading Speed and On-Screen Time: Practical Limits",
+    desc: "How long a subtitle should stay up, what characters-per-second means, the limits used by major platforms, and how to audit your own file in a spreadsheet.",
+    lead: "A subtitle can be perfectly timed and still unreadable. Reading speed, minimum duration and line length are what separate captions you can follow from captions you fight.",
+    body: `
+<h2>Characters per second, and why it matters</h2>
+<p>Reading speed for subtitles is measured in <strong>CPS</strong> — characters per second, counted over the cue's on-screen duration. A 60-character line shown for two seconds is 30 CPS, which is too fast for comfortable reading in most languages.</p>
+<p>The widely used ceiling is around <strong>20 CPS</strong> for adult audiences, with children's content targeting closer to 13–15. Some broadcast specs allow bursts up to 25 CPS for short stretches, but sustained speed above 20 is the single most common complaint in caption quality reports.</p>
+
+<h2>The other three limits</h2>
+<ul>
+<li><strong>Minimum duration.</strong> A cue should stay up at least about 1 second (some specs say 5/6 second). Anything shorter flickers — viewers register movement but cannot read it.</li>
+<li><strong>Maximum duration.</strong> Most guidance caps a cue at roughly 6–7 seconds, not because of reading speed but because a static line starts to look like a bug or a stray graphic.</li>
+<li><strong>Line length.</strong> Around 32–42 characters per line, maximum two lines. Longer lines force the eye to travel further and make the cue feel faster than its CPS suggests.</li>
+</ul>
+
+<h2>What the major platforms ask for</h2>
+<table>
+<thead><tr><th>Context</th><th>Reading speed</th><th>Minimum</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Netflix-style delivery</td><td>~20 CPS</td><td>~5/6 s</td><td>Two lines max, ~42 characters per line</td></tr>
+<tr><td>Broadcast (UK-style)</td><td>~17–20 CPS</td><td>~1 s</td><td>Strict speaker-label and punctuation rules</td></tr>
+<tr><td>Children's content</td><td>~13–15 CPS</td><td>~1 s</td><td>Slower by design</td></tr>
+<tr><td>User-generated video</td><td>No enforced limit</td><td>—</td><td>Auto-captions frequently exceed 20 CPS</td></tr>
+</tbody>
+</table>
+<p>Treat these as targets rather than laws. The specs that matter are the ones in your delivery contract; these figures are what to aim for when nobody has told you otherwise.</p>
+
+<h2>How to audit your own file</h2>
+<p>Reading the numbers cue by cue is tedious, so export the file and let a spreadsheet do the sorting. The <a href="/tools/srt-to-csv">subtitles to CSV</a> tool writes one row per cue with its duration in milliseconds, which makes the audit mechanical:</p>
+<ol>
+<li>Convert the file to CSV.</li>
+<li>Add a column dividing the character count of the text by <code>duration_ms / 1000</code>.</li>
+<li>Sort descending — the top rows are your problem cues.</li>
+<li>Sort <code>duration_ms</code> ascending to find cues that flash past.</li>
+</ol>
+<p>In practice most files have a handful of offenders rather than a systemic problem, and fixing the worst ten cues noticeably improves how the whole track feels.</p>
+
+<h2>Fixing a cue that is too fast</h2>
+<p>You have two levers: shorten the text or lengthen the time. Which is correct depends on the material.</p>
+<p>If the speaker was genuinely fast and the pause after the line is long, extend the cue's end time — but respect the next cue's start, because overlapping cues are worse than fast ones. If the line is simply verbose, edit it down. Professional subtitling is <em>condensing</em>, not transcribing; dropping filler and collapsing clauses is normal and expected.</p>
+<p>Only resync the whole track when the problem is systematic. If most cues are fast, the file was probably timed against a different reading speed standard, and stretching every cue proportionally is quicker than editing each one.</p>
+
+<h2>Reading speed is not the same as comprehension</h2>
+<p>CPS is a proxy. A cue at 18 CPS with two dense clauses can be harder than one at 22 CPS with plain wording, and names, numbers and unfamiliar terms all cost more time than their character count suggests. Use the numbers to find candidates, then read the worst ones yourself.</p>
+<p>If you are captioning for a language other than English, the 20 CPS figure is a starting point, not a constant — languages differ substantially in how much information a character carries, and several broadcast specs publish separate limits per language.</p>`,
+  },
 ];
 const guideBySlug = Object.fromEntries(GUIDES.map((g) => [g.slug, g]));
 

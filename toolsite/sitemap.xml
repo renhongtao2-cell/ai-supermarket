@@ -73,6 +73,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://toolboxes.top/guides/fix-subtitles-out-of-sync</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolboxes.top/guides/subtitle-reading-speed</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://toolboxes.top/about</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>yearly</changefreq>
