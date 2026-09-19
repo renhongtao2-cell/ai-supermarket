@@ -23,6 +23,8 @@ const files = [
   "guides/add-subtitles-to-html5-video.html",
   "guides/fix-subtitles-out-of-sync.html",
   "guides/subtitle-reading-speed.html",
+  "guides/translate-subtitles.html",
+  "guides/subtitles-not-showing.html",
   "about.html",
   "privacy.html",
   "404.html",

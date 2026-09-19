@@ -946,6 +946,118 @@ video::cue(.speaker) { color: #ffd479; }</pre>
 <p>CPS is a proxy. A cue at 18 CPS with two dense clauses can be harder than one at 22 CPS with plain wording, and names, numbers and unfamiliar terms all cost more time than their character count suggests. Use the numbers to find candidates, then read the worst ones yourself.</p>
 <p>If you are captioning for a language other than English, the 20 CPS figure is a starting point, not a constant — languages differ substantially in how much information a character carries, and several broadcast specs publish separate limits per language.</p>`,
   },
+  {
+    slug: "translate-subtitles",
+    h1: "How to Translate a Subtitle File",
+    title: "How to Translate a Subtitle File (Without Breaking the Timing)",
+    desc: "A working method for translating SRT or VTT files: export to a spreadsheet, translate per cue, condense to fit the reading speed, then check timing and encoding before delivery.",
+    lead: "Translating subtitles is not translating a document. Every line has to fit inside a time window that was set by someone speaking a different language — so the workflow matters more than the wording.",
+    body: `
+<h2>Start from the right file</h2>
+<p>Translate the <strong>original-language subtitle file</strong>, never a re-export from a video editor, and never an auto-generated transcript that has not been corrected. Whatever is wrong upstream — misheard words, missing punctuation, cues split mid-sentence — you will faithfully propagate into every language.</p>
+<p>Before you begin, clean the source. Strip sound-effect cues, speaker labels and markup you do not want to carry across, using <a href="/tools/clean-subtitles">Clean subtitles</a>. Confirm the timings are right: if the source is out of sync, translate it first and fix sync afterwards on every language at once, rather than fixing each translation separately.</p>
+
+<h2>Three ways to do the work</h2>
+<table>
+<thead><tr><th>Method</th><th>Best when</th><th>Watch out for</th></tr></thead>
+<tbody>
+<tr><td>Subtitle editor (dedicated software)</td><td>You are translating and re-timing in one pass</td><td>Requires the translator to learn the tool</td></tr>
+<tr><td>Spreadsheet via CSV</td><td>A translator with no subtitle experience is doing the wording</td><td>Someone must re-import and re-check timing</td></tr>
+<tr><td>Machine translation, then human post-edit</td><td>Large volume, tight deadline</td><td>Raw output ignores line length and reading speed entirely</td></tr>
+</tbody>
+</table>
+<p>For most teams the spreadsheet route is the pragmatic one, because it separates the two jobs: a translator handles wording, a captioner handles timing.</p>
+
+<h2>The spreadsheet route, step by step</h2>
+<ol>
+<li>Open the source file in the <a href="/tools/srt-to-csv">subtitles to CSV converter</a> and download the CSV. You get one row per cue, with start time, end time, duration in milliseconds and text.</li>
+<li>Send the CSV to the translator. Ask them to fill a new column and to <strong>keep the row count identical</strong> — one cue in, one cue out.</li>
+<li>Paste the translated column back over the text column, preserving row order. Sorting or filtering during translation is the single most common way this workflow breaks.</li>
+<li>Rebuild the subtitle file, then run it through the <a href="/tools/subtitle-timing-check">timing checker</a> before you look at anything else.</li>
+</ol>
+<p>The duration column in that CSV is more useful than it looks. Sort by it and the shortest cues are the ones most likely to be unreadable in the target language, because a translation is rarely shorter than the original.</p>
+
+<h2>Condense — do not translate literally</h2>
+<p>English at a comfortable pace is roughly 12\u201320 characters per second. Many target languages need 25\u201340% more characters to say the same thing. If you translate each cue literally, a large share of them will exceed what a viewer can read in the time available.</p>
+<p>This is why subtitling is <em>condensing</em>. Drop filler, collapse two clauses into one, prefer a shorter synonym, and let a repeated name become a pronoun once context is established. A translation that reads naturally at speed is better than one that is complete but unreadable.</p>
+<p>Keep the two conventions that carry meaning: a maximum of two lines per cue, and roughly 40\u201342 characters per line. Break a line at a natural phrase boundary, never in the middle of a name or a number. See <a href="/guides/subtitle-reading-speed">subtitle reading speed</a> for the numbers behind both.</p>
+
+<h2>What not to translate</h2>
+<ul>
+<li><strong>On-screen text</strong> is translated only if it is dialogue; a sign, a headline or a UI label is usually rendered as a caption describing it rather than translated word for word.</li>
+<li><strong>Names</strong> stay in their original form unless an established translated form exists.</li>
+<li><strong>Song lyrics</strong> are conventionally translated rather than transliterated, and marked with a music note at the start and end of the sung section.</li>
+<li><strong>Sound effects</strong> \u2014 <code>[door slams]</code> \u2014 are translated, because they are part of the accessibility contract, not the dialogue.</li>
+</ul>
+
+<h2>Check before you deliver</h2>
+<p>Run three checks on the finished file. First, the <a href="/tools/subtitle-timing-check">timing checker</a> at the reading-speed limit your delivery target uses. Second, encoding: save as <strong>UTF-8</strong>, and if an existing file shows characters like <code>Caf\u00c3\u00a9</code>, repair it with the <a href="/tools/fix-subtitle-encoding">encoding repair tool</a> rather than retyping anything. Third, format \u2014 convert to what the destination actually accepts, usually <a href="/tools/srt-to-vtt">WebVTT</a> for the web and SubRip everywhere else.</p>
+<p>Then watch two minutes of the video with the translated track on. Automated checks catch numbers; they do not catch a translation that is technically fine and reads badly.</p>
+
+<h2>Delivering several languages</h2>
+<p>One file per language, named consistently \u2014 <code>film.en.srt</code>, <code>film.de.srt</code>, <code>film.ja.srt</code> \u2014 with language codes matching what the player or platform expects. Do not merge translations into a single file: players handle multiple languages as multiple tracks, and a merged file forces one language on every viewer.</p>`,
+  },
+  {
+    slug: "subtitles-not-showing",
+    h1: "Why Your Subtitles Aren't Showing Up",
+    title: "Subtitles Not Showing Up: A Diagnostic Checklist",
+    desc: "Subtitles not appearing? Work through the causes in order — wrong format, filename mismatch, track disabled, malformed file, encoding damage, or timing outside the video.",
+    lead: "Players fail silently with subtitles: no error, no warning, just nothing on screen. This walks the causes in the order most likely to be yours, so you stop guessing.",
+    body: `
+<h2>Work through the causes in this order</h2>
+<p>Resist the urge to re-download the file. Nearly every case is one of seven causes, and they are cheap to rule out one at a time.</p>
+<table>
+<thead><tr><th>Symptom</th><th>Most likely cause</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Nothing, ever, in any player</td><td>Wrong format or empty file</td><td>Convert; check the file has cues</td></tr>
+<tr><td>Works in VLC, not on the web</td><td>SubRip instead of WebVTT</td><td><a href="/tools/srt-to-vtt">Convert to VTT</a></td></tr>
+<tr><td>Works on desktop, not on TV</td><td>Filename or encoding</td><td>Match the video filename; save UTF-8</td></tr>
+<tr><td>Appears, then stops halfway</td><td>Malformed section or section slip</td><td>Clean, then check sync</td></tr>
+<tr><td>Garbled characters but visible</td><td>Encoding damage</td><td><a href="/tools/fix-subtitle-encoding">Repair encoding</a></td></tr>
+<tr><td>Visible only at the very start</td><td>Timing shorter than the video</td><td>Re-time the track</td></tr>
+<tr><td>Only some viewers see it</td><td>Track not enabled by default</td><td>Mark it default, or tell them to enable it</td></tr>
+</tbody>
+</table>
+
+<h2>1. The format does not match the destination</h2>
+<p>This is the most common cause by a wide margin. SubRip (<code>.srt</code>) is the universal <em>file</em> format, but an HTML5 <code>&lt;track&gt;</code> element accepts <strong>only WebVTT</strong>. Point a browser at an SRT and it will ignore it completely, with no console error. If your captions are on a web page, <a href="/tools/srt-to-vtt">convert to VTT</a> first.</p>
+<p>Upload boxes are stricter still. Some platforms accept only one format regardless of what their documentation implies. See <a href="/guides/subtitle-formats">subtitle file formats</a> for which one to send where.</p>
+
+<h2>2. The filename does not match</h2>
+<p>Desktop players and TVs load external subtitles by convention: the file sits beside the video and shares its name. <code>movie.mp4</code> looks for <code>movie.srt</code>. A file called <code>movie.eng.srt</code> or <code>subtitles.srt</code> will often be ignored, and the behaviour differs between players \u2014 which is exactly why this cause is so confusing.</p>
+<p>Rename to match the video exactly, or use the player's explicit "load subtitle file" menu item, which bypasses the convention entirely.</p>
+
+<h2>3. The track exists but is not enabled</h2>
+<p>With multiple language tracks, most players start with captions off unless one is marked default. On the web, that is the <code>default</code> attribute on the <code>&lt;track&gt;</code> element. In a media player, it is the subtitle or audio menu.</p>
+<p>Before changing anything, switch captions on manually. If they appear, the file was fine all along.</p>
+
+<h2>4. The file is empty, or the cues are malformed</h2>
+<p>Open it in a text editor. A subtitle file must have a timestamp line containing <code>--&gt;</code> for every cue, and a blank line between cues. WebVTT additionally needs the <code>WEBVTT</code> header and a blank line after it. A file missing the header parses as empty \u2014 valid-looking, zero cues.</p>
+<p>Run the file through <a href="/tools/clean-subtitles">Clean subtitles</a> to normalise spacing, drop empty cues and remove stray markup. If the output is still empty, the structure is broken and you should re-export from the original source.</p>
+
+<h2>5. The text is damaged, not missing</h2>
+<p>If captions appear but show <code>Caf\u00c3\u00a9</code>, <code>\u00e2\u0080\u0099</code> or Cyrillic-looking garbage, the file is fine \u2014 it was read with the wrong character encoding. The bytes are intact, so this is fully recoverable: <a href="/tools/fix-subtitle-encoding">repair the encoding</a>, then save the result as UTF-8.</p>
+<p>If you see plain question marks or empty boxes instead, the characters were already lost when the file was written and cannot be recovered by any tool.</p>
+
+<h2>6. The timing is outside the video</h2>
+<p>Subtitles that appear for the first twenty seconds and then vanish are usually a timing problem, not a playback problem. It happens when a track was timed against a different cut of the video, or when the subtitle file is shorter than the recording.</p>
+<p>Compare the last cue's timestamp with the video duration. If they differ by a constant amount, <a href="/tools/shift-subtitles">shift</a> the track. If the error grows through the file, it is a frame-rate mismatch and you need to <a href="/tools/resync-subtitles">resample</a> instead \u2014 see <a href="/guides/fix-subtitles-out-of-sync">fixing out-of-sync subtitles</a>.</p>
+
+<h2>7. Hardcoded versus soft subtitles</h2>
+<p>If captions are visible on every device, cannot be turned off and survive being uploaded anywhere, they are <strong>burned into the picture</strong>. No subtitle file will change them, and none needs to. Confusing the two leads people to chase a file problem that does not exist.</p>
+<p>Soft subtitles are a separate track the player renders. If you need to go from soft to hard, that is a video encoding step, not a subtitle editing one.</p>
+
+<h2>A sixty-second checklist</h2>
+<ol>
+<li>Open the file in a text editor \u2014 does it contain cues with <code>--&gt;</code> timestamps?</li>
+<li>Is the text readable, or garbled?</li>
+<li>Does the extension match the destination's requirement?</li>
+<li>Does the filename match the video, if it is being auto-loaded?</li>
+<li>Are captions switched on in the player?</li>
+<li>Does the last timestamp roughly match the video length?</li>
+</ol>
+<p>If all six pass and subtitles still do not appear, the problem is on the platform side \u2014 its upload may still be processing, or its caption settings may require the track to be published explicitly.</p>`,
+  },
 ];
 const guideBySlug = Object.fromEntries(GUIDES.map((g) => [g.slug, g]));
 

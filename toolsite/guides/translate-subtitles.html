@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SBV to SRT Converter — Free, No Upload | Subtitle Toolkit</title>
-<meta name="description" content="Free SBV to SRT converter running entirely in your browser. Turn YouTube .sbv caption downloads into standard SubRip subtitles. No upload, no signup.">
-<link rel="canonical" href="https://toolboxes.top/tools/sbv-to-srt">
-<meta property="og:title" content="SBV to SRT Converter — Free, No Upload | Subtitle Toolkit">
-<meta property="og:description" content="Free SBV to SRT converter running entirely in your browser. Turn YouTube .sbv caption downloads into standard SubRip subtitles. No upload, no signup.">
+<title>How to Translate a Subtitle File (Without Breaking the Timing)</title>
+<meta name="description" content="A working method for translating SRT or VTT files: export to a spreadsheet, translate per cue, condense to fit the reading speed, then check timing and encoding before delivery.">
+<link rel="canonical" href="https://toolboxes.top/guides/translate-subtitles">
+<meta property="og:title" content="How to Translate a Subtitle File (Without Breaking the Timing)">
+<meta property="og:description" content="A working method for translating SRT or VTT files: export to a spreadsheet, translate per cue, condense to fit the reading speed, then check timing and encoding before delivery.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toolboxes.top/tools/sbv-to-srt">
+<meta property="og:url" content="https://toolboxes.top/guides/translate-subtitles">
 <meta property="og:site_name" content="Subtitle Toolkit">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -172,9 +172,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"SBV to SRT Converter","url":"https://toolboxes.top/tools/sbv-to-srt","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Free SBV to SRT converter running entirely in your browser. Turn YouTube .sbv caption downloads into standard SubRip subtitles. No upload, no signup.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste your SBV content, or drop the .sbv file onto the box.","The conversion runs in JavaScript on your device — nothing is sent anywhere.","Copy the result or download it as an .srt file."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an .sbv file?","acceptedAnswer":{"@type":"Answer","text":"YouTube's own subtitle download format. It is simpler than SRT — no cue numbers, no arrow — which is convenient to generate but poorly supported by editing software."}},{"@type":"Question","name":"Why does my renamed file show no subtitles?","acceptedAnswer":{"@type":"Answer","text":"Because the extension does not change the contents. A file with SBV formatting and an .srt extension has no --&gt; separators, so SRT parsers find no cues and show nothing."}},{"@type":"Question","name":"Is the text changed in any way?","acceptedAnswer":{"@type":"Answer","text":"No. Only the timestamp format and cue numbering are rewritten. Line breaks inside a cue and any markup are preserved."}},{"@type":"Question","name":"Does this upload my captions?","acceptedAnswer":{"@type":"Answer","text":"No. Everything happens in JavaScript on your device, and the page keeps working with the network disconnected."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"SBV to SRT Converter","item":"https://toolboxes.top/tools/sbv-to-srt"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Translate a Subtitle File","description":"A working method for translating SRT or VTT files: export to a spreadsheet, translate per cue, condense to fit the reading speed, then check timing and encoding before delivery.","url":"https://toolboxes.top/guides/translate-subtitles","inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"How to Translate a Subtitle File","item":"https://toolboxes.top/guides/translate-subtitles"}]}]</script>
 </head>
-<body data-tool="sbv-to-srt">
+<body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
@@ -182,115 +182,59 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
     <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><a href="/tools/resync-subtitles">Resync Subtitles by Frame Rate or Speed</a><a href="/tools/sbv-to-srt">SBV to SRT</a><a href="/tools/merge-subtitles">Merge Subtitle Files</a><a href="/tools/srt-to-csv">Subtitles to CSV</a><a href="/tools/split-subtitles">Split Subtitle Files</a><a href="/tools/fix-subtitle-encoding">Fix Garbled Subtitles (Encoding Repair)</a><a href="/tools/subtitle-timing-check">Subtitle Checker</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
   </div>
 </header>
-<main id="main">
-<div class="wrap narrow">
-  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › SBV to SRT Converter</p>
-  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">SBV to SRT Converter</h1>
-  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.</p>
-
-  <div class="tool">
-    <div id="drop">
-      Drop a subtitle file here, or
-      <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
-    </div>
-    
-    <div class="panes">
-      <div class="pane">
-        <label for="in">Input — .srt / .vtt</label>
-        <textarea id="in" spellcheck="false" placeholder="1
-00:00:01,000 --> 00:00:04,000
-Paste your subtitle file here…"></textarea>
-      </div>
-      <div class="pane">
-        <label for="out">SRT output</label>
-        <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
-      </div>
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    <div class="row">
-      <button class="btn primary" id="copy">Copy result</button>
-      <button class="btn" id="download" data-name="output.srt">Download SRT</button>
-      <button class="btn" id="clear">Clear</button>
-    </div>
-    <div id="status" role="status" aria-live="polite"></div>
-  </div>
-
-  <div class="privacy">
-    <h4>Your file never leaves your device</h4>
-    <p>This tool is plain JavaScript. There is no upload step and no server-side processing, so confidential captions, unreleased content and client material stay on your machine.</p>
-  </div>
-
+<main id="main"><div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › Guides › How to Translate a Subtitle File</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">How to Translate a Subtitle File</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Translating subtitles is not translating a document. Every line has to fit inside a time window that was set by someone speaking a different language — so the workflow matters more than the wording.</p>
   <article>
-    <h2>What this does</h2>
-    <p>Captions downloaded from YouTube as <strong>.sbv</strong> use a compact format that most editors and players do not recognise: one line holding <code>start,end</code> as <code>h:mm:ss.mmm</code>, followed by the text, separated by blank lines. SubRip (.srt) is the format virtually everything else accepts, and this page converts between them locally.</p>
+<h2>Start from the right file</h2>
+<p>Translate the <strong>original-language subtitle file</strong>, never a re-export from a video editor, and never an auto-generated transcript that has not been corrected. Whatever is wrong upstream — misheard words, missing punctuation, cues split mid-sentence — you will faithfully propagate into every language.</p>
+<p>Before you begin, clean the source. Strip sound-effect cues, speaker labels and markup you do not want to carry across, using <a href="/tools/clean-subtitles">Clean subtitles</a>. Confirm the timings are right: if the source is out of sync, translate it first and fix sync afterwards on every language at once, rather than fixing each translation separately.</p>
 
-    <h2>How to use it</h2>
-    <ol><li>Paste your SBV content, or drop the <code>.sbv</code> file onto the box.</li><li>The conversion runs in JavaScript on your device — nothing is sent anywhere.</li><li>Copy the result or download it as an <code>.srt</code> file.</li></ol>
+<h2>Three ways to do the work</h2>
+<table>
+<thead><tr><th>Method</th><th>Best when</th><th>Watch out for</th></tr></thead>
+<tbody>
+<tr><td>Subtitle editor (dedicated software)</td><td>You are translating and re-timing in one pass</td><td>Requires the translator to learn the tool</td></tr>
+<tr><td>Spreadsheet via CSV</td><td>A translator with no subtitle experience is doing the wording</td><td>Someone must re-import and re-check timing</td></tr>
+<tr><td>Machine translation, then human post-edit</td><td>Large volume, tight deadline</td><td>Raw output ignores line length and reading speed entirely</td></tr>
+</tbody>
+</table>
+<p>For most teams the spreadsheet route is the pragmatic one, because it separates the two jobs: a translator handles wording, a captioner handles timing.</p>
 
-    <div class="note">
-      <h4>Good to know</h4>
-      <ul><li>SBV timestamps use a period before milliseconds; SRT uses a comma. The conversion rewrites every one.</li><li>Cue numbers are added automatically, starting at 1 and incrementing in order.</li><li>Blank-line separated blocks with no valid timestamp line are skipped rather than guessed at.</li><li>If your source is already WebVTT, use the <a href="/tools/vtt-to-srt">VTT to SRT converter</a> instead.</li></ul>
-    </div>
+<h2>The spreadsheet route, step by step</h2>
+<ol>
+<li>Open the source file in the <a href="/tools/srt-to-csv">subtitles to CSV converter</a> and download the CSV. You get one row per cue, with start time, end time, duration in milliseconds and text.</li>
+<li>Send the CSV to the translator. Ask them to fill a new column and to <strong>keep the row count identical</strong> — one cue in, one cue out.</li>
+<li>Paste the translated column back over the text column, preserving row order. Sorting or filtering during translation is the single most common way this workflow breaks.</li>
+<li>Rebuild the subtitle file, then run it through the <a href="/tools/subtitle-timing-check">timing checker</a> before you look at anything else.</li>
+</ol>
+<p>The duration column in that CSV is more useful than it looks. Sort by it and the shortest cues are the ones most likely to be unreadable in the target language, because a translation is rarely shorter than the original.</p>
 
-    <h2>Why SBV files fail in most tools</h2>
-    <p>SBV has no cue numbers and no arrow between timestamps. It uses a comma to separate start from end, and allows a single-digit hour — <code>0:00:01.000</code> rather than SRT's <code>00:00:01,000</code>.</p>
-    <p>That difference is why an SBV file renamed to <code>.srt</code> usually loads as nothing at all. Parsers expect the <code>--&gt;</code> separator, do not find it, and silently drop every cue.</p>
-    <p>SubRip is the safer target because it is understood by desktop editors, mobile players, and the subtitle upload boxes of most video platforms. If you are unsure which format to produce, produce SRT.</p>
-    <p>Once converted, the file can be shifted, cleaned or resampled with the other tools here — they all read standard SRT.</p>
+<h2>Condense — do not translate literally</h2>
+<p>English at a comfortable pace is roughly 12–20 characters per second. Many target languages need 25–40% more characters to say the same thing. If you translate each cue literally, a large share of them will exceed what a viewer can read in the time available.</p>
+<p>This is why subtitling is <em>condensing</em>. Drop filler, collapse two clauses into one, prefer a shorter synonym, and let a repeated name become a pronoun once context is established. A translation that reads naturally at speed is better than one that is complete but unreadable.</p>
+<p>Keep the two conventions that carry meaning: a maximum of two lines per cue, and roughly 40–42 characters per line. Break a line at a natural phrase boundary, never in the middle of a name or a number. See <a href="/guides/subtitle-reading-speed">subtitle reading speed</a> for the numbers behind both.</p>
 
-    <h2>Worked example</h2>
-    <div class="example">
-      <div>
-        <h5>Input — .sbv</h5>
-        <pre>0:00:01.000,0:00:04.000
-Hello there.
+<h2>What not to translate</h2>
+<ul>
+<li><strong>On-screen text</strong> is translated only if it is dialogue; a sign, a headline or a UI label is usually rendered as a caption describing it rather than translated word for word.</li>
+<li><strong>Names</strong> stay in their original form unless an established translated form exists.</li>
+<li><strong>Song lyrics</strong> are conventionally translated rather than transliterated, and marked with a music note at the start and end of the sung section.</li>
+<li><strong>Sound effects</strong> — <code>[door slams]</code> — are translated, because they are part of the accessibility contract, not the dialogue.</li>
+</ul>
 
-0:00:04.200,0:00:07.000
-How are you?</pre>
-      </div>
-      <div>
-        <h5>Output — .srt</h5>
-        <pre>1
-00:00:01,000 --&gt; 00:00:04,000
-Hello there.
+<h2>Check before you deliver</h2>
+<p>Run three checks on the finished file. First, the <a href="/tools/subtitle-timing-check">timing checker</a> at the reading-speed limit your delivery target uses. Second, encoding: save as <strong>UTF-8</strong>, and if an existing file shows characters like <code>CafÃ©</code>, repair it with the <a href="/tools/fix-subtitle-encoding">encoding repair tool</a> rather than retyping anything. Third, format — convert to what the destination actually accepts, usually <a href="/tools/srt-to-vtt">WebVTT</a> for the web and SubRip everywhere else.</p>
+<p>Then watch two minutes of the video with the translated track on. Automated checks catch numbers; they do not catch a translation that is technically fine and reads badly.</p>
 
-2
-00:00:04,200 --&gt; 00:00:07,000
-How are you?</pre>
-      </div>
-    </div>
-    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">Commas between timestamps become <code>--&gt;</code>, periods before milliseconds become commas, and cue numbers are added.</p>
-
-    <h2>FAQ</h2>
-    <details class="faq"><summary>What is an .sbv file?</summary><div class="body">YouTube's own subtitle download format. It is simpler than SRT — no cue numbers, no arrow — which is convenient to generate but poorly supported by editing software.</div></details>
-    <details class="faq"><summary>Why does my renamed file show no subtitles?</summary><div class="body">Because the extension does not change the contents. A file with SBV formatting and an .srt extension has no <code>--&gt;</code> separators, so SRT parsers find no cues and show nothing.</div></details>
-    <details class="faq"><summary>Is the text changed in any way?</summary><div class="body">No. Only the timestamp format and cue numbering are rewritten. Line breaks inside a cue and any markup are preserved.</div></details>
-    <details class="faq"><summary>Does this upload my captions?</summary><div class="body">No. Everything happens in JavaScript on your device, and the page keeps working with the network disconnected.</div></details>
-
-    <h2>Troubleshooting</h2>
-    <ol class="tshoot">
-      <li><span class="sym">The output is empty</span><span class="fix">The blocks are not separated by blank lines, or the first line of each block is not a <code>h:mm:ss.mmm,h:mm:ss.mmm</code> pair. Re-export the captions and try again.</span></li>
-      <li><span class="sym">Only some cues converted</span><span class="fix">Blocks whose first line does not match the timestamp pattern are skipped by design. Check for stray text or merged lines above a cue.</span></li>
-      <li><span class="sym">Timestamps look wrong</span><span class="fix">SBV allows a one-digit hour. Long recordings exported with a two-digit hour still convert correctly — if times are off, confirm the source file's own timing first.</span></li>
-      <li><span class="sym">I have a .vtt file, not .sbv</span><span class="fix">Use the <a href="/tools/vtt-to-srt">VTT to SRT converter</a>. VTT and SBV look similar but have different header and separator rules.</span></li>
-    </ol>
-
-    <h2>Related tools</h2>
-    <div class="grid">
-      <a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a>
-    </div>
-  </article>
-  <div class="note">
-    <h4>Further reading</h4>
-    <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li><li><a href="/guides/fix-subtitles-out-of-sync">How to Fix Subtitles That Are Out of Sync</a></li><li><a href="/guides/subtitle-reading-speed">How Long Should Subtitles Stay on Screen</a></li><li><a href="/guides/translate-subtitles">How to Translate a Subtitle File</a></li><li><a href="/guides/subtitles-not-showing">Why Your Subtitles Aren&#39;t Showing Up</a></li></ul>
+<h2>Delivering several languages</h2>
+<p>One file per language, named consistently — <code>film.en.srt</code>, <code>film.de.srt</code>, <code>film.ja.srt</code> — with language codes matching what the player or platform expects. Do not merge translations into a single file: players handle multiple languages as multiple tracks, and a merged file forces one language on every viewer.</p></article>
+  <h2>Tools mentioned in this guide</h2>
+  <div class="grid">
+    <a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/resync-subtitles"><h3>Resync Subtitles by Frame Rate or Speed</h3><p>Fix subtitles that drift progressively out of sync by resampling them to your video&#39;s frame rate or playback speed.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/sbv-to-srt"><h3>SBV to SRT Converter</h3><p>Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/merge-subtitles"><h3>Merge Subtitle Files</h3><p>Combine two SRT or VTT files into one track, with the second file appended after the first.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-csv"><h3>Subtitles to CSV Converter</h3><p>Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/split-subtitles"><h3>Split Subtitle Files</h3><p>Cut one SRT or VTT track into two files at any timestamp, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/fix-subtitle-encoding"><h3>Fix Garbled Subtitles (Encoding Repair)</h3><p>Repair mojibake — subtitles showing Ã©, â€™ or Ð¿Ñ€Ð¸Ð²ÐµÑ‚ instead of real characters.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/subtitle-timing-check"><h3>Subtitle Timing Checker</h3><p>Audit an SRT or VTT file for cues that are too fast, too short, too long or overlapping.</p><div class="go">Open tool →</div></a>
   </div>
-  <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
+  <p class="updated">Last updated 2026-09-17. All tools run locally in your browser.</p>
 </div></main>
 <footer class="site">
   <div class="wrap">
