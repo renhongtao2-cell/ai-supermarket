@@ -16,6 +16,9 @@ Last updated: 2026-09-17
 - [SBV to SRT Converter](https://toolboxes.top/tools/sbv-to-srt): Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.
 - [Merge Subtitle Files](https://toolboxes.top/tools/merge-subtitles): Combine two SRT or VTT files into one track, with the second file appended after the first.
 - [Subtitles to CSV Converter](https://toolboxes.top/tools/srt-to-csv): Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.
+- [Split Subtitle Files](https://toolboxes.top/tools/split-subtitles): Cut one SRT or VTT track into two files at any timestamp, right in your browser.
+- [Fix Garbled Subtitles (Encoding Repair)](https://toolboxes.top/tools/fix-subtitle-encoding): Repair mojibake — subtitles showing Ã©, â€™ or Ð¿Ñ€Ð¸Ð²ÐµÑ‚ instead of real characters.
+- [Subtitle Timing Checker](https://toolboxes.top/tools/subtitle-timing-check): Audit an SRT or VTT file for cues that are too fast, too short, too long or overlapping.
 
 ## Key facts
 

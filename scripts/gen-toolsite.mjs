@@ -231,7 +231,7 @@ const TOOLS = [
       ["Markup like {\\an8} is still there",
        "Tick <em>Remove markup</em>. It strips HTML tags and ASS override codes, but leaves plain braces that are part of the dialogue itself."],
     ],
-    related: ["remove-timestamps", "shift-subtitles", "srt-to-vtt"],
+    related: ["remove-timestamps", "fix-subtitle-encoding", "subtitle-timing-check"],
   },
   {
     slug: "shift-subtitles",
@@ -286,7 +286,7 @@ const TOOLS = [
       ["The offset box rejects my value",
        "Enter a decimal number of seconds such as <code>2.5</code>, or whole milliseconds in the second box. Timecode strings like <code>00:00:02,500</code> are not accepted here."],
     ],
-    related: ["srt-to-vtt", "vtt-to-srt", "clean-subtitles"],
+    related: ["split-subtitles", "vtt-to-srt", "clean-subtitles"],
   },
   {
     slug: "resync-subtitles",
@@ -345,7 +345,7 @@ const TOOLS = [
       ["Cues overlap after resampling",
        "Stretching a track that already had tight gaps can push cues into each other. Clean or re-time the crowded section manually after resampling."],
     ],
-    related: ["shift-subtitles", "srt-to-vtt", "clean-subtitles"],
+    related: ["subtitle-timing-check", "shift-subtitles", "clean-subtitles"],
   },
   {
     slug: "sbv-to-srt",
@@ -461,7 +461,7 @@ const TOOLS = [
       ["Numbering restarts in the middle",
        "That happens when the second file was parsed as a separate track. Re-paste both files, ensuring there is no stray text between them."],
     ],
-    related: ["shift-subtitles", "srt-to-vtt", "clean-subtitles"],
+    related: ["split-subtitles", "shift-subtitles", "srt-to-csv"],
   },
   {
     slug: "srt-to-csv",
@@ -520,6 +520,205 @@ const TOOLS = [
        "That is correct CSV escaping. A quote inside a cue is written as <code>\"\"</code> and will display as a single quote once imported."],
     ],
     related: ["clean-subtitles", "remove-timestamps", "shift-subtitles"],
+  },
+  {
+    slug: "split-subtitles",
+    h1: "Split Subtitle Files",
+    tagline: "Cut one SRT or VTT track into two files at any timestamp, right in your browser.",
+    metaDesc:
+      "Free subtitle splitter that runs in your browser. Split an SRT or VTT file into two parts at any timestamp — CD1 and CD2, halves, or one scene. No upload, no signup.",
+    mode: "split",
+    intro:
+      "A single subtitle track that covers a two-hour film, a double-episode recording or a lecture is awkward to edit, review or hand to a translator. Splitting it means choosing a cut point and writing every cue before that point into one file and every cue after it into another — which is exactly what this page does, with nothing leaving your device.",
+    steps: [
+      "Paste your subtitle file into the box, or drop the <code>.srt</code> / <code>.vtt</code> file onto it.",
+      "Set the <strong>split point</strong> — seconds, <code>m:ss</code> or <code>h:mm:ss</code> all work.",
+      "Choose <strong>Part 1</strong> or <strong>Part 2</strong> and download it. Switch the dropdown to get the other half.",
+    ],
+    deep: {
+      h2: "What a correct split has to preserve",
+      body: [
+        "The obvious approach — cutting the text at a line boundary — breaks the file, because a cue is not a line. A cue is a number, a timing pair and one or more text lines, and cutting in the middle of that group leaves a file with a timestamp but no text, or text with no timestamp. This tool splits between cues, never inside one.",
+        "Timestamps are <strong>not</strong> re-based. Part 2 keeps the original time codes, so if you split a film at 45 minutes, the second file still starts at <code>00:45:00</code>. That is what you want when the two halves are played back to back against the same video, and it is why the two files remain interchangeable with the original.",
+        "If you need Part 2 to start at zero instead — because it will be attached to a separately exported video clip — run it through the <a href=\"/tools/shift-subtitles\">shift subtitles tool</a> afterwards and pull it back by the split point. Doing both in one step would silently corrupt the first half.",
+        "Cue numbers are reassigned from 1 in each part. SubRip numbers are cosmetic to most players, but continuous numbering makes a file diff cleanly and keeps editors from complaining.",
+        "The cut is made on a cue's <em>start</em> time. A cue that straddles the split point — started before it, ends after it — stays whole in Part 1 rather than being sliced in half, because a half cue is always worse than a slightly uneven split.",
+      ],
+    },
+    notes: [
+      "Both parts keep the input format: an SRT in gives two SRTs, a VTT in gives two VTTs.",
+      "A cue that straddles the split point is kept whole in Part 1, so the two parts never share a broken line.",
+      "Part 2 keeps the original time codes. Use <a href=\"/tools/shift-subtitles\">shift subtitles</a> if you need it to start at zero.",
+      "To split into more than two parts, split once, then split Part 2 again at the next point.",
+      "The two parts are independent files — you can merge them back later with the <a href=\"/tools/merge-subtitles\">merge tool</a> if the split point was wrong.",
+    ],
+    faq: [
+      ["Does Part 2 start at zero?",
+       "No, and that is deliberate. Part 2 keeps the original time codes so both halves line up with the same video. If you are attaching Part 2 to a separately cut video clip, run it through the <a href=\"/tools/shift-subtitles\">shift subtitles tool</a> afterwards."],
+      ["What happens to a cue that crosses the split point?",
+       "It stays in Part 1, intact. Splitting a cue would leave one half with text and no sensible timing, so the cut always lands between cues."],
+      ["Can I split into three or more parts?",
+       "Not in one step. Split at the first point, download Part 2, then paste it back in and split it at the next point. Repeat for as many parts as you need."],
+      ["Do both halves keep the same format?",
+       "Yes. The output follows the input, so an SRT produces two SRT files and a VTT produces two VTT files. Convert first with the <a href=\"/tools/srt-to-vtt\">SRT to VTT converter</a> if you need the other one."],
+      ["Is my file uploaded?",
+       "No. Parsing and splitting happen in JavaScript on your device. You can disconnect from the network after this page loads and the splitter keeps working."],
+    ],
+    example: {
+      inLabel: "Input — one file, split at 00:01:00",
+      outLabel: "Output — Part 1",
+      before:
+        "1\n00:00:10,000 --> 00:00:13,000\nFirst half of the film.\n\n2\n00:00:58,000 --> 00:01:02,000\nStill the first half.\n\n3\n00:01:05,000 --> 00:01:08,000\nNow the second half.",
+      after: "1\n00:00:10,000 --> 00:00:13,000\nFirst half of the film.\n\n2\n00:00:58,000 --> 00:01:02,000\nStill the first half.",
+      cap: "Cue 3 starts after the split point, so it moves to Part 2. Cue 2 straddles it — it started before — so it stays whole in Part 1.",
+    },
+    troubleshoot: [
+      ["Both parts are empty",
+       "No cues were recognised. Check that the file uses <code>--&gt;</code> between timestamps. A file renamed from SBV will not parse."],
+      ["Everything ended up in Part 1",
+       "The split point is later than the last cue. Try <code>45:00</code> instead of <code>45</code> — a bare number is read as seconds, so <code>45</code> means 45 seconds in, not 45 minutes."],
+      ["Everything ended up in Part 2",
+       "The split point is 0 or earlier than the first cue. Check the field contains a time, not a stray character."],
+      ["The download is named part2 but shows Part 1 content",
+       "The dropdown and the download name are set together, so re-select the part and download again. The name always matches what is in the output box."],
+      ["Part 2 plays at the wrong time",
+       "It intentionally keeps original timings. Pull it back to zero with the <a href=\"/tools/shift-subtitles\">shift subtitles tool</a> if the video it belongs to was cut separately."],
+    ],
+    related: ["merge-subtitles", "shift-subtitles", "srt-to-csv"],
+  },
+  {
+    slug: "fix-subtitle-encoding",
+    h1: "Fix Garbled Subtitles (Encoding Repair)",
+    tagline: "Repair mojibake — subtitles showing Ã©, â€™ or Ð¿Ñ€Ð¸Ð²ÐµÑ‚ instead of real characters.",
+    metaDesc:
+      "Free mojibake repair for subtitle files. Fixes text saved as UTF-8 but opened as Windows-1252 or Windows-1251. Runs entirely in your browser, no upload.",
+    mode: "fix-encoding",
+    intro:
+      "When a subtitle file shows <code>Caf\u00c3\u00a9</code> instead of <code>Caf\u00e9</code>, or <code>\u00d0\u00bf\u00d1\u20ac\u00d0\u00b8\u00d0\u00b2\u00d0\u00b5\u00d1\u201a</code> instead of Cyrillic text, the file itself is usually fine — it was simply read with the wrong character encoding. This page reverses that mistake and writes the characters back, locally.",
+    steps: [
+      "Paste the garbled text, or drop the file onto the box.",
+      "Choose what it was <strong>read as</strong>, or leave it on auto-detect.",
+      "Copy or download the repaired text and save it as UTF-8.",
+    ],
+    deep: {
+      h2: "Why subtitles turn into garbage",
+      body: [
+        "A subtitle file is a sequence of bytes. UTF-8 spells <code>\u00e9</code> as two bytes, <code>C3 A9</code>. An older editor that assumes a single-byte codepage reads those two bytes as two separate characters — <code>\u00c3</code> and <code>\u00a9</code> — and displays <code>Caf\u00c3\u00a9</code>. Nothing was lost; the bytes were just interpreted twice under different rules.",
+        "The repair is therefore mechanical: take each character, work out which <em>single byte</em> it must have been, then decode that byte sequence as UTF-8. No dictionary, no guessing, no language model — which is why it can run offline in a browser and produce a result you can verify character by character.",
+        "The two codepages that account for almost every real case are <strong>Windows-1252</strong> (Western European) and <strong>Windows-1251</strong> (Cyrillic). Auto-detect tries 1252 first and falls back to 1251, because the two produce visibly different garbage and the correct one always decodes cleanly while the wrong one usually hits an invalid byte sequence.",
+        "<strong>Double encoding</strong> happens when the mistake is made twice — a file that was already mojibake gets saved and misread again. The tell-tale is garbage that contains <code>\u00c3\u0082</code> or <code>\u00c3\u00a2\u20ac\u201d</code>. Tick the <em>doubly encoded</em> box to run the repair twice.",
+        "This tool refuses to guess. If the byte sequence it reconstructs is not valid UTF-8, or if the result is mostly control characters, it leaves your text alone rather than handing back something worse. A tool that always returns something would be a tool you could not trust.",
+      ],
+    },
+    notes: [
+      "This repairs <strong>misread UTF-8</strong>. If every non-ASCII character is a plain <code>?</code> or a box, the information was already destroyed and no repair can recover it.",
+      "The repair works on the whole text, so timestamps, cue numbers and <code>--&gt;</code> arrows are untouched.",
+      "Auto-detect tries Windows-1252 first, then Windows-1251. Pick one explicitly if you know where the file came from.",
+      "Save the result as <strong>UTF-8</strong>. Re-saving it in the old codepage re-creates the same problem.",
+      "If your player still shows garbage after this, the issue is the player's encoding setting, not the file — check whether it has a forced codepage option.",
+    ],
+    faq: [
+      ["Why does my subtitle file show Ã© instead of é?",
+       "Because the file's UTF-8 bytes were read as a single-byte codepage. <code>\u00e9</code> is stored as two bytes; read under Windows-1252 they become <code>\u00c3</code> and <code>\u00a9</code>. This page reverses exactly that step."],
+      ["Can it fix question marks and empty boxes?",
+       "No. A <code>?</code> means the character was already unrepresentable when the file was written, and the original byte is gone. This tool can only recover what is still in the file."],
+      ["Do I need to know which encoding was used?",
+       "Usually not — auto-detect covers the overwhelming majority. If the result still looks wrong, switch <em>Read as</em> to the other codepage and compare."],
+      ["What does 'doubly encoded' mean?",
+       "The misreading happened twice, so the garbage contains sequences like <code>\u00c3\u0082</code> or <code>\u00e2\u20ac\u201d</code> rather than a single layer. Ticking the box runs the repair two passes."],
+      ["Does it work on Cyrillic and other scripts?",
+       "Yes for Cyrillic via Windows-1251, and for anything else that was genuinely UTF-8 underneath — Greek, CJK, Arabic and emoji all repair the same way, because the bytes are the bytes."],
+      ["Is the file uploaded anywhere?",
+       "No. The repair is arithmetic on character codes, done in JavaScript in your browser. Confidential captions never leave your machine."],
+    ],
+    example: {
+      inLabel: "Input — misread as Windows-1252",
+      outLabel: "Output — repaired UTF-8",
+      before:
+        "Caf\u00c3\u00a9 ouvert jusqu'\u00c3\u00a0 minuit\nL'\u00c3\u00a9quipe vous attend \u00e2\u0080\u0094 ce soir.",
+      after: "Caf\u00e9 ouvert jusqu'\u00e0 minuit\nL'\u00e9quipe vous attend \u2014 ce soir.",
+      cap: "Two bytes per accented character become one character each. The em dash is three bytes in UTF-8, which is why it shows as three garbage characters before the repair.",
+    },
+    troubleshoot: [
+      ["Nothing changed",
+       "Either the text is already correct, or the damage is not mojibake. Look for <code>\u00c3</code>, <code>\u00c2</code>, <code>\u00e2\u20ac</code>, <code>\u00d0</code> or <code>\u00d1</code> — if none appear, no repair applies."],
+      ["Still garbled after repair",
+       "Switch <em>Read as</em> to the other codepage. Auto-detect tries Western first, so a Cyrillic file sometimes needs the explicit setting."],
+      ["Strange symbols appeared that were not there before",
+       "That is what a wrong guess looks like, so the tool should have refused. If you see this, the source was probably not UTF-8 to begin with — reload the page and try the other codepage."],
+      ["Only part of the file was fixed",
+       "Mixed-encoding files exist: one section saved as UTF-8, another as the old codepage. Repair each section separately and paste the results together."],
+      ["The player still shows garbage",
+       "The file is now correct but the player is forcing a codepage. Look for an encoding or subtitle codepage setting in the player and set it to UTF-8."],
+    ],
+    related: ["clean-subtitles", "srt-to-vtt", "vtt-to-srt"],
+  },
+  {
+    slug: "subtitle-timing-check",
+    h1: "Subtitle Timing Checker",
+    tagline: "Audit an SRT or VTT file for cues that are too fast, too short, too long or overlapping.",
+    metaDesc:
+      "Free subtitle QC checker. Flags unreadable reading speed (CPS), cues that are too short or too long, over-long lines and overlapping cues. Runs in your browser, no upload.",
+    mode: "check",
+    intro:
+      "A subtitle file can look perfect in an editor and still be unreadable on screen: cues that vanish before the eye can finish them, lines that run past the edge of the frame, two cues on screen at once. This checker measures every cue against the limits broadcasters and streaming platforms actually use and lists the ones that break them.",
+    steps: [
+      "Paste your subtitle file, or drop the <code>.srt</code> / <code>.vtt</code> file onto the box.",
+      "Adjust the limits if you are working to a specific style guide.",
+      "Read the report, then open the flagged timestamps in your editor and fix them.",
+    ],
+    deep: {
+      h2: "The four things that make subtitles unreadable",
+      body: [
+        "<strong>Reading speed</strong> is measured in characters per second (CPS). Most style guides land between 12 and 21 CPS; 20 is a common hard ceiling for streaming delivery. A cue at 30 CPS is technically valid and completely unreadable, which is why no player will ever warn you about it.",
+        "<strong>Minimum duration</strong> stops the opposite failure — a two-word cue that flashes for 300 milliseconds. Even a short line needs roughly 0.8 seconds on screen because the eye needs time to find the text at all, not just to read it. The usual floor is about five-sixths of a second.",
+        "<strong>Maximum duration</strong> catches the cue that nobody noticed was left on screen for twelve seconds. Viewers re-read a subtitle that never changes and assume it is broken, so seven seconds is a practical ceiling even when the dialogue continues.",
+        "<strong>Line length and line count</strong> are about layout rather than timing. Around 40\u201342 characters per line and two lines per cue is what fits comfortably on a phone in portrait. Wider than that and the player either wraps or clips, and neither is under your control after upload.",
+      ],
+    },
+    notes: [
+      "Characters per second counts every character including spaces, which is the convention used by most delivery specifications.",
+      "Formatting tags such as <code>&lt;i&gt;</code> and ASS overrides are stripped before measuring, so styling does not inflate the count.",
+      "An overlap is reported when the next cue starts before the current one ends. Sub-frame overlaps are ignored, because rounding produces them harmlessly.",
+      "The default limits match common streaming practice. Broadcast guides are often stricter — some sit at 16 or 17 CPS.",
+      "The report is a finding list, not a fix. Timing changes are yours to make; use the <a href=\"/tools/shift-subtitles\">shift</a> or <a href=\"/tools/resync-subtitles\">resync</a> tools when the whole track needs the same correction.",
+    ],
+    faq: [
+      ["What CPS should I aim for?",
+       "12\u201320 is comfortable, with 20 a common hard ceiling. Children's content and language-learning material sit lower, around 12\u201315. Fast dialogue that genuinely cannot fit is usually condensed rather than sped up."],
+      ["Why is my minimum duration flagged when the cue is one word?",
+       "Because the eye has to locate the text before it can read it. Even a single word needs roughly 0.8 seconds on screen, which is why the default floor is 833 ms."],
+      ["Does it count formatting tags?",
+       "No. HTML tags and ASS override codes are stripped before measuring, so a heavily styled cue is not penalised for its markup."],
+      ["Can it fix the problems it finds?",
+       "No, deliberately. Changing reading speed means rewriting the text, and changing durations means editing timings — both are judgement calls. The report tells you where to look."],
+      ["Are the reported overlaps real?",
+       "Only if they exceed one millisecond. Sub-frame overlaps come from rounding and are ignored, so anything reported is visible to a viewer."],
+      ["Is there a cue limit?",
+       "No. Nothing is uploaded, so the practical limit is browser memory. Files with several thousand cues are checked instantly."],
+    ],
+    example: {
+      inLabel: "Input — .srt",
+      outLabel: "Output — report",
+      before:
+        "1\n00:00:01,000 --> 00:00:02,200\nThe quick brown fox jumps over the extremely lazy dog tonight\n\n2\n00:00:02,100 --> 00:00:02,400\nHi.",
+      after:
+        "Subtitle timing report\n======================\n2 cues checked \u00b7 2 flagged (100%)\n\nToo fast      (> 20.0 CPS)                  1\nLine too long (> 42 chars)                  1\nToo short     (< 0.83s)                     1\nOverlapping cues                            1\n\n--- Flagged cues ---\n\n#0001  00:00:01,000 -> 00:00:02,200  (1.20s, 61.7 CPS)\n        The quick brown fox jumps over the extremely lazy dog tonight\n        ! too fast \u2014 61.7 CPS (max 20.0); line too long \u2014 61 chars (max 42)",
+      cap: "Cue 1 carries 74 characters in 1.2 seconds. Cue 2 is both too short and starts before cue 1 has ended — the report catches all three problems at once.",
+    },
+    troubleshoot: [
+      ["The report is empty",
+       "No cues were recognised. Check that the file uses <code>--&gt;</code> between timestamps — a plain transcript or an SBV file will not parse."],
+      ["Nothing is flagged but the subtitles still feel rushed",
+       "Raise the sensitivity by lowering the CPS limit. The default of 20 is a delivery ceiling, not a comfort target; many editors work to 16 or 17."],
+      ["Almost every cue is flagged",
+       "The file may be auto-generated caption output with no line balancing. Run it through the <a href=\"/tools/clean-subtitles\">clean subtitles tool</a> first, then re-check."],
+      ["Durations look wrong",
+       "The checker reads the timestamps as written. If the whole track is offset, fix it with the <a href=\"/tools/shift-subtitles\">shift tool</a> before checking."],
+      ["Counts do not add up to the flagged total",
+       "One cue can break several rules at once. The summary counts rule violations; the flagged list counts cues."],
+    ],
+    related: ["subtitle-timing-check", "resync-subtitles", "shift-subtitles"],
   },
 ];
 
@@ -769,6 +968,18 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     return ((h * 60 + mi) * 60 + se) * 1000 + ms;
   }
 
+  /* 宽松时间解析：接受 "90"（秒）、"45:00"、"1:02:03"、带毫秒也行。用于切分点输入。 */
+  function parseLooseTime(s) {
+    s = String(s == null ? "" : s).trim();
+    if (!s) return 0;
+    if (/^\d+(\.\d+)?$/.test(s)) return Math.round(parseFloat(s) * 1000);
+    var m = /^(?:(\d{1,3}):)?(\d{1,2}):(\d{1,2})(?:[.,](\d{1,3}))?$/.exec(s);
+    if (!m) return null;
+    var msStr = m[4] || "0";
+    while (msStr.length < 3) msStr += "0";
+    return ((parseInt(m[1] || 0, 10) * 60 + parseInt(m[2], 10)) * 60 + parseInt(m[3], 10)) * 1000 + parseInt(msStr, 10);
+  }
+
   function pad(n, w) { n = String(n); while (n.length < w) n = "0" + n; return n; }
 
   function fmtTime(ms, sep) {
@@ -921,6 +1132,225 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     return rows.join("\n");
   }
 
+  /* 切分：按时间点把一条轨分成两半。各自保留原始时间码（不重定时）。 */
+  function splitCues(text, atMs) {
+    var cues = parseCues(text), a = [], b = [];
+    for (var i = 0; i < cues.length; i++) {
+      (cues[i].start < atMs ? a : b).push(cues[i]);
+    }
+    return { a: a, b: b };
+  }
+
+  /* ---------- 乱码修复（mojibake） ----------
+     成因：UTF-8 字节被当成单字节编码（cp1252 / Latin-1 / cp1251）读了一遍。
+     修法：把每个字符还原成它当时那个字节，再按 UTF-8 重新解码。 */
+  var CP1252_REV = {
+    0x20AC: 0x80, 0x201A: 0x82, 0x0192: 0x83, 0x201E: 0x84, 0x2026: 0x85,
+    0x2020: 0x86, 0x2021: 0x87, 0x02C6: 0x88, 0x2030: 0x89, 0x0160: 0x8A,
+    0x2039: 0x8B, 0x0152: 0x8C, 0x017D: 0x8E, 0x2018: 0x91, 0x2019: 0x92,
+    0x201C: 0x93, 0x201D: 0x94, 0x2022: 0x95, 0x2013: 0x96, 0x2014: 0x97,
+    0x02DC: 0x98, 0x2122: 0x99, 0x0161: 0x9A, 0x203A: 0x9B, 0x0153: 0x9C,
+    0x017E: 0x9E, 0x0178: 0x9F
+  };
+  /* cp1251 0x80-0xBF 的字符表（用码点写，避免源文件编码问题） */
+  var CP1251_HI_CODES = [
+    0x0402, 0x0403, 0x201A, 0x0453, 0x201E, 0x2026, 0x2020, 0x2021,
+    0x20AC, 0x2030, 0x0409, 0x2039, 0x040A, 0x040C, 0x040B, 0x040F,
+    0x0452, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+    0x0098, 0x2122, 0x0459, 0x203A, 0x045A, 0x045C, 0x045B, 0x045F,
+    0x00A0, 0x040E, 0x045E, 0x0408, 0x00A4, 0x0490, 0x00A6, 0x00A7,
+    0x0401, 0x00A9, 0x0404, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x0407,
+    0x00B0, 0x00B1, 0x0406, 0x0456, 0x0491, 0x00B5, 0x00B6, 0x00B7,
+    0x0451, 0x2116, 0x0454, 0x00BB, 0x0458, 0x0405, 0x0455, 0x0457
+  ];
+  var cp1251RevCache = null;
+  function cp1251Rev() {
+    if (cp1251RevCache) return cp1251RevCache;
+    var m = {}, i;
+    for (i = 0; i < CP1251_HI_CODES.length; i++) m[CP1251_HI_CODES[i]] = 0x80 + i;
+    for (i = 0xC0; i <= 0xDF; i++) m[0x410 + (i - 0xC0)] = i;
+    for (i = 0xE0; i <= 0xFF; i++) m[0x430 + (i - 0xE0)] = i;
+    cp1251RevCache = m;
+    return m;
+  }
+
+  /* 严格 UTF-8 解码：遇到非法字节返回 null（宁可不修，也不猜） */
+  function utf8Decode(bytes) {
+    var out = "", i = 0;
+    while (i < bytes.length) {
+      var b = bytes[i], need, cp;
+      if (b < 0x80) { cp = b; need = 0; }
+      else if (b >= 0xC2 && b <= 0xDF) { cp = b & 0x1F; need = 1; }
+      else if (b >= 0xE0 && b <= 0xEF) { cp = b & 0x0F; need = 2; }
+      else if (b >= 0xF0 && b <= 0xF4) { cp = b & 0x07; need = 3; }
+      else return null;
+      if (i + need >= bytes.length) return null;
+      for (var k = 1; k <= need; k++) {
+        var c = bytes[i + k];
+        if ((c & 0xC0) !== 0x80) return null;
+        cp = (cp << 6) | (c & 0x3F);
+      }
+      out += String.fromCodePoint ? String.fromCodePoint(cp) : String.fromCharCode(cp);
+      i += need + 1;
+    }
+    return out;
+  }
+
+  /* 把一个字符串按指定单字节编码还原成字节流；出现无法表示的字符就放弃 */
+  function toBytes(str, src) {
+    var rev = src === "cp1251" ? cp1251Rev() : null;
+    var out = new Array(str.length);
+    for (var i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i), b;
+      if (code in CP1252_REV && src !== "cp1251") b = CP1252_REV[code];
+      else if (code <= 0xFF) b = code;
+      else if (rev && code in rev) b = rev[code];
+      else return null;
+      out[i] = b;
+    }
+    return out;
+  }
+
+  /* 结果可信度检查：控制字符（换行/tab 除外）占比过高 => 这不是修复，是二次破坏 */
+  function sane(s) {
+    var bad = 0, tot = 0;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      if (c === 10 || c === 13 || c === 9) continue;
+      tot++;
+      if (c < 0x20 || (c >= 0x7F && c <= 0x9F)) bad++;
+    }
+    return tot === 0 || bad / tot < 0.02;
+  }
+
+  /* 统计疑似 mojibake 的序列数量，用来判断「还有没有乱码」。
+     两条规则：
+     (1) 拉丁系 —— Ã/Â/â/Ð/Ñ 后面跟一个单字节编码的高位字符（UTF-8 首字节被拆开的痕迹）
+     (2) 西里尔系 —— Р/С（UTF-8 的 D0/D1 被当成 cp1251）后面跟 cp1251 高位表里的字符
+     第 (2) 条刻意只匹配真实俄语里几乎不会出现的组合，避免把正常俄文误判成乱码。 */
+  var MOJI_LAT_RE = /[\u00C3\u00C2\u00E2\u00D0\u00D1][\u0080-\u00BF\u20AC\u201A\u0192\u201E\u2026\u2020\u2021\u02C6\u2030\u0160\u2039\u0152\u017D\u2018\u2019\u201C\u201D\u2022\u2013\u2014\u02DC\u2122\u0161\u203A\u0153\u017E\u0178]/g;
+  var MOJI_CYR_RE = /[\u0420\u0421][\u0402\u0403\u201A\u0453\u201E\u2026\u2020\u2021\u20AC\u2030\u0409\u2039\u040A\u040C\u040B\u040F\u0452\u2018\u2019\u201C\u201D\u2022\u2013\u2014\u2122\u0459\u203A\u045A\u045C\u045B\u045F\u040E\u045E\u0408\u0490\u0401\u0404\u0407\u0406\u0456\u0491\u0451\u2116\u0454\u0458\u0405\u0455\u0457\u00A0\u00A4\u00A6\u00A7\u00A9\u00AB\u00AC\u00AE\u00B0\u00B1\u00B5\u00B6\u00B7\u00BB]/g;
+
+  function mojiCount(s) {
+    var a = String(s).match(MOJI_LAT_RE);
+    var b = String(s).match(MOJI_CYR_RE);
+    return (a ? a.length : 0) + (b ? b.length : 0);
+  }
+
+  function repairOnce(str, src) {
+    var bytes = toBytes(str, src);
+    if (!bytes) return null;
+    var out = utf8Decode(bytes);
+    if (out === null || !sane(out)) return null;
+    return out;
+  }
+
+  /* src: "auto" | "cp1252" | "cp1251"  twice: 双重编码（读错了两遍） */
+  function repairEncoding(text, src, twice) {
+    var passes = 0, cur = String(text), before = mojiCount(cur);
+    var order = src === "cp1251" ? ["cp1251", "cp1252"] : src === "cp1252" ? ["cp1252"] : ["cp1252", "cp1251"];
+    var rounds = twice ? 2 : 1;
+    for (var r = 0; r < rounds; r++) {
+      var got = null, used = null;
+      for (var i = 0; i < order.length; i++) {
+        var cand = repairOnce(cur, order[i]);
+        if (cand !== null && cand !== cur && mojiCount(cand) < mojiCount(cur)) {
+          got = cand; used = order[i];
+          break;
+        }
+      }
+      if (got === null) break;
+      cur = got; passes++;
+    }
+    return { text: cur, passes: passes, before: before, after: mojiCount(cur), source: src };
+  }
+
+  /* ---------- 节奏 / 可读性检查 ---------- */
+  function plainOf(t) {
+    return String(t).replace(/\{\\[^}]*\}/g, "").replace(/<[^>]*>/g, "");
+  }
+
+  function timingReport(text, o) {
+    var cues = parseCues(text);
+    if (!cues.length) return "";
+    var maxCps = o.maxCps > 0 ? o.maxCps : 20;
+    var minMs = o.minMs >= 0 ? o.minMs : 833;
+    var maxMs = o.maxMs > 0 ? o.maxMs : 7000;
+    var maxLine = o.maxLine > 0 ? o.maxLine : 42;
+    var maxLines = 2;
+
+    var issues = [], counts = { fast: 0, short: 0, long: 0, wide: 0, lines: 0, overlap: 0 };
+    var totalMs = 0, sumCps = 0, nCps = 0, minDur = Infinity, maxDur = 0;
+
+    for (var i = 0; i < cues.length; i++) {
+      var c = cues[i], dur = c.end - c.start;
+      var plain = plainOf(c.text);
+      var rows = plain.split("\n");
+      var chars = plain.replace(/\n/g, " ").length;
+      var hits = [];
+
+      if (dur > 0) {
+        var cps = chars / (dur / 1000);
+        sumCps += cps; nCps++;
+        if (cps > maxCps) { counts.fast++; hits.push("too fast — " + cps.toFixed(1) + " CPS (max " + maxCps.toFixed(1) + ")"); }
+      } else {
+        counts.short++; hits.push("zero or negative duration");
+      }
+      if (dur > 0 && dur < minMs) { counts.short++; hits.push("too short — " + (dur / 1000).toFixed(2) + "s (min " + (minMs / 1000).toFixed(2) + "s)"); }
+      if (dur > maxMs) { counts.long++; hits.push("on screen too long — " + (dur / 1000).toFixed(2) + "s (max " + (maxMs / 1000).toFixed(2) + "s)"); }
+      var widest = 0;
+      for (var k = 0; k < rows.length; k++) if (rows[k].length > widest) widest = rows[k].length;
+      if (widest > maxLine) { counts.wide++; hits.push("line too long — " + widest + " chars (max " + maxLine + ")"); }
+      if (rows.length > maxLines) { counts.lines++; hits.push(rows.length + " lines (max " + maxLines + ")"); }
+      var nxt = cues[i + 1];
+      if (nxt && nxt.start < c.end - 1) { counts.overlap++; hits.push("overlaps the next cue by " + ((c.end - nxt.start) / 1000).toFixed(2) + "s"); }
+
+      totalMs += Math.max(0, dur);
+      if (dur > 0) { if (dur < minDur) minDur = dur; if (dur > maxDur) maxDur = dur; }
+      if (hits.length) issues.push({ n: i + 1, start: c.start, end: c.end, dur: dur, text: plain, hits: hits });
+    }
+
+    var secs = function (ms) { return (ms / 1000).toFixed(2) + "s"; };
+    var L = [];
+    L.push("Subtitle timing report");
+    L.push("======================");
+    L.push(cues.length + " cues checked · " + issues.length + " flagged (" +
+      (cues.length ? Math.round((issues.length / cues.length) * 100) : 0) + "%)");
+    L.push("");
+    L.push("Average reading speed : " + (nCps ? (sumCps / nCps).toFixed(1) : "0.0") + " CPS");
+    L.push("Cue duration          : min " + (minDur === Infinity ? "n/a" : secs(minDur)) +
+      " · max " + secs(maxDur) + " · total on-screen " + secs(totalMs));
+    L.push("");
+    var padR = function (s, n) { s = String(s); while (s.length < n) s += " "; return s; };
+    var padL = function (s, n) { s = String(s); while (s.length < n) s = " " + s; return s; };
+    L.push(padR("Too fast      (> " + maxCps.toFixed(1) + " CPS)", 34) + padL(counts.fast, 5));
+    L.push(padR("Too short     (< " + (minMs / 1000).toFixed(2) + "s)", 34) + padL(counts.short, 5));
+    L.push(padR("On too long   (> " + (maxMs / 1000).toFixed(2) + "s)", 34) + padL(counts.long, 5));
+    L.push(padR("Line too long (> " + maxLine + " chars)", 34) + padL(counts.wide, 5));
+    L.push(padR("More than " + maxLines + " lines", 34) + padL(counts.lines, 5));
+    L.push(padR("Overlapping cues", 34) + padL(counts.overlap, 5));
+    L.push("");
+    if (!issues.length) {
+      L.push("Nothing flagged. Every cue is inside the limits above.");
+    } else {
+      L.push("--- Flagged cues ---");
+      L.push("");
+      var cap = Math.min(issues.length, 200);
+      for (var j = 0; j < cap; j++) {
+        var it = issues[j];
+        var num = String(it.n); while (num.length < 4) num = "0" + num;
+        L.push("#" + num + "  " + fmtTime(it.start, ",") + " -> " + fmtTime(it.end, ",") +
+          "  (" + secs(it.dur) + ", " + (it.dur > 0 ? (plainOf(it.text).replace(/\n/g, " ").length / (it.dur / 1000)).toFixed(1) : "0.0") + " CPS)");
+        var tr = it.text.split("\n");
+        for (var q = 0; q < tr.length; q++) L.push("        " + tr[q]);
+        L.push("        ! " + it.hits.join("; "));
+        L.push("");
+      }
+      if (issues.length > cap) L.push("... and " + (issues.length - cap) + " more. Fix the ones above and re-run.");
+    }
+    return L.join("\n");
+  }
+
   function sbvCues(text) {
     var blocks = String(text).replace(/\r\n?/g, "\n").split(/\n{2,}/);
     var cues = [];
@@ -957,11 +1387,20 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     };
     var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status"), ratio = $("ratio");
     var in2 = $("in2"), gap = $("gap");
+    var splitAt = $("split-at"), part = $("part");
+    var chkIds = ["chk-cps", "chk-min", "chk-max", "chk-line"];
 
     function readOpt(k, dflt) {
       var el = opts[k];
       if (!el) return dflt;
       return el.checked;
+    }
+
+    function numVal(id, dflt) {
+      var el = $(id);
+      if (!el) return dflt;
+      var v = parseFloat(el.value);
+      return isNaN(v) ? dflt : v;
     }
 
     function run() {
@@ -1002,6 +1441,57 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
         res = cues.length ? serialize(cues, vtt) : "";
       } else if (mode === "to-csv") {
         res = toCsv(text);
+      } else if (mode === "split") {
+        var atRaw = splitAt ? splitAt.value : "";
+        var atMs = parseLooseTime(atRaw);
+        if (atMs === null) atMs = 0;
+        var sp = splitCues(text, atMs);
+        var which = part ? part.value : "a";
+        var sel = which === "b" ? sp.b : sp.a;
+        res = sel.length ? serialize(sel, vtt) : "";
+        var dlBtn = $("download");
+        if (dlBtn) dlBtn.setAttribute("data-name", (which === "b" ? "part2" : "part1") + (vtt ? ".vtt" : ".srt"));
+        if (status) {
+          status.textContent = "Split at " + fmtTime(atMs, ",") +
+            " — part 1: " + sp.a.length + " cue" + (sp.a.length === 1 ? "" : "s") +
+            " · part 2: " + sp.b.length + " cue" + (sp.b.length === 1 ? "" : "s") +
+            (sp.a.length && sp.b.length ? "" : " — move the split point so both parts have cues");
+        }
+        output.value = res;
+        return;
+      } else if (mode === "fix-encoding") {
+        var srcSel = $("enc-src"), tw = $("enc-twice");
+        var rep = repairEncoding(text, srcSel ? srcSel.value : "auto", tw ? tw.checked : false);
+        res = rep.text;
+        if (status) {
+          if (!text.trim()) status.textContent = "";
+          else if (rep.passes === 0) {
+            status.textContent = rep.after === 0
+              ? "No mojibake patterns found — this text already decodes cleanly."
+              : "No safe repair found. Try the other \"read as\" setting, or check that the file really is UTF-8 misread as single-byte.";
+          } else {
+            status.textContent = "Repaired " + rep.passes + " encoding pass" + (rep.passes === 1 ? "" : "es") +
+              " (read as " + (rep.source === "auto" ? "auto-detected" : rep.source === "cp1251" ? "Windows-1251" : "Windows-1252") +
+              "). Remaining suspicious sequences: " + rep.after + ".";
+          }
+        }
+        output.value = res;
+        return;
+      } else if (mode === "check") {
+        res = timingReport(text, {
+          maxCps: numVal("chk-cps", 20), minMs: numVal("chk-min", 833),
+          maxMs: numVal("chk-max", 7000), maxLine: numVal("chk-line", 42)
+        });
+        if (status) {
+          var cn = parseCues(text).length;
+          var flagged = (res.match(/^#\d{4}/gm) || []).length;
+          status.textContent = cn
+            ? cn + " cue" + (cn === 1 ? "" : "s") + " checked · " + flagged + " flagged (" +
+              Math.round((flagged / cn) * 100) + "%)"
+            : "No subtitle cues found — check that the file uses \"-->\" between timestamps.";
+        }
+        output.value = res;
+        return;
       }
       output.value = res;
       if (status) {
@@ -1033,6 +1523,13 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     });
     if (in2) in2.addEventListener("input", run);
     if (gap) gap.addEventListener("input", run);
+    if (splitAt) splitAt.addEventListener("input", run);
+    if (part) part.addEventListener("change", run);
+    chkIds.forEach(function (id) { var el = $(id); if (el) el.addEventListener("input", run); });
+    ["enc-src", "enc-twice"].forEach(function (id) {
+      var el = $(id);
+      if (el) el.addEventListener(el.tagName === "SELECT" ? "change" : "change", run);
+    });
     Object.keys(opts).forEach(function (k) { if (opts[k]) opts[k].addEventListener("change", run); });
 
     /* file drop / pick */
@@ -1097,7 +1594,11 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     module.exports = {
       parseTime: parseTime, fmtTime: fmtTime, parseCues: parseCues,
       toVtt: toVtt, toSrt: toSrt, toPlainText: toPlainText,
-      cleanCues: cleanCues, shiftCues: shiftCues, serialize: serialize, looksVtt: looksVtt
+      cleanCues: cleanCues, shiftCues: shiftCues, serialize: serialize, looksVtt: looksVtt,
+      resyncCues: resyncCues, mergeCues: mergeCues, toCsv: toCsv, sbvCues: sbvCues,
+      splitCues: splitCues, parseLooseTime: parseLooseTime,
+      repairEncoding: repairEncoding, mojiCount: mojiCount, utf8Decode: utf8Decode,
+      timingReport: timingReport, plainOf: plainOf
     };
   }
 })();
@@ -1410,9 +1911,24 @@ function toolBody(t) {
   const isShift = t.slug === "shift-subtitles";
   const isResync = t.slug === "resync-subtitles";
   const isMerge = t.slug === "merge-subtitles";
+  const isSplit = t.slug === "split-subtitles";
+  const isEnc = t.slug === "fix-subtitle-encoding";
+  const isCheck = t.slug === "subtitle-timing-check";
   const isText = t.slug === "remove-timestamps";
-  const outName = isText ? "transcript.txt" : t.slug === "srt-to-csv" ? "subtitles.csv" : t.slug === "srt-to-vtt" ? "output.vtt" : "output.srt";
-  const outLabel = isText ? "Plain text" : t.slug === "srt-to-csv" ? "CSV output" : t.slug === "srt-to-vtt" ? "WebVTT output" : "SRT output";
+  const OUT_META = {
+    "remove-timestamps": ["transcript.txt", "Plain text"],
+    "srt-to-csv": ["subtitles.csv", "CSV output"],
+    "srt-to-vtt": ["output.vtt", "WebVTT output"],
+    "fix-subtitle-encoding": ["fixed.txt", "Repaired text"],
+    "subtitle-timing-check": ["timing-report.txt", "Timing report"],
+  };
+  const outMeta = OUT_META[t.slug] || ["output.srt", "SRT output"];
+  const outName = outMeta[0], outLabel = outMeta[1];
+  const placeholder = isEnc
+    ? "Paste the garbled text here — e.g. Caf\u00c3\u00a9 ouvert jusqu'\u00c3\u00a0 minuit"
+    : isCheck
+    ? "1\n00:00:01,000 --> 00:00:04,000\nPaste your subtitle file here\u2026"
+    : "1\n00:00:01,000 --> 00:00:04,000\nPaste your subtitle file here\u2026";
 
   return `
 <div class="wrap narrow">
@@ -1437,10 +1953,8 @@ function toolBody(t) {
     </div>` : ""}
     <div class="panes">
       <div class="pane">
-        <label for="in">Input — .srt / .vtt</label>
-        <textarea id="in" spellcheck="false" placeholder="1
-00:00:01,000 --> 00:00:04,000
-Paste your subtitle file here…"></textarea>
+        <label for="in">${isEnc ? "Input — garbled text" : "Input — .srt / .vtt"}</label>
+        <textarea id="in" spellcheck="false" placeholder="${placeholder}"></textarea>
       </div>
       <div class="pane">
         <label for="out">${esc(outLabel)}</label>
@@ -1472,6 +1986,27 @@ Paste your subtitle file here…"></textarea>
     </div>` : ""}
     ${isText ? `<div class="opts">
       <label><input type="checkbox" id="opt-dedupe" checked> Merge repeated lines</label>
+    </div>` : ""}
+    ${isSplit ? `<div class="opts">
+      <span class="field">Split at <input type="text" id="split-at" value="45:00" size="9" aria-label="Split point"> (seconds, <code>m:ss</code> or <code>h:mm:ss</code>)</span>
+      <span class="field">Output <select id="part" aria-label="Which part to output">
+        <option value="a">Part 1 — before the split</option>
+        <option value="b">Part 2 — from the split on</option>
+      </select></span>
+    </div>` : ""}
+    ${isEnc ? `<div class="opts">
+      <span class="field">Read as <select id="enc-src" aria-label="Encoding the file was misread as">
+        <option value="auto">Auto-detect</option>
+        <option value="cp1252">Western European (Windows-1252 / Latin-1)</option>
+        <option value="cp1251">Cyrillic (Windows-1251)</option>
+      </select></span>
+      <label><input type="checkbox" id="enc-twice"> Doubly encoded (read wrong twice)</label>
+    </div>` : ""}
+    ${isCheck ? `<div class="opts">
+      <span class="field">Max <input type="number" id="chk-cps" step="0.5" value="20" aria-label="Max characters per second"> characters/second</span>
+      <span class="field">Min <input type="number" id="chk-min" step="10" value="833" aria-label="Minimum cue duration"> ms per cue</span>
+      <span class="field">Max <input type="number" id="chk-max" step="100" value="7000" aria-label="Maximum cue duration"> ms per cue</span>
+      <span class="field">Max <input type="number" id="chk-line" step="1" value="42" aria-label="Max characters per line"> chars per line</span>
     </div>` : ""}
     <div class="row">
       <button class="btn primary" id="copy">Copy result</button>

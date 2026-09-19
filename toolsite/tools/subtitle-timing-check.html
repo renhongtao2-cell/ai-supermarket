@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subtitles to CSV Converter — Free, No Upload | Subtitle Toolkit</title>
-<meta name="description" content="Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.">
-<link rel="canonical" href="https://toolboxes.top/tools/srt-to-csv">
-<meta property="og:title" content="Subtitles to CSV Converter — Free, No Upload | Subtitle Toolkit">
-<meta property="og:description" content="Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.">
+<title>Subtitle Timing Checker — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Free subtitle QC checker. Flags unreadable reading speed (CPS), cues that are too short or too long, over-long lines and overlapping cues. Runs in your browser, no upload.">
+<link rel="canonical" href="https://toolboxes.top/tools/subtitle-timing-check">
+<meta property="og:title" content="Subtitle Timing Checker — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Free subtitle QC checker. Flags unreadable reading speed (CPS), cues that are too short or too long, over-long lines and overlapping cues. Runs in your browser, no upload.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toolboxes.top/tools/srt-to-csv">
+<meta property="og:url" content="https://toolboxes.top/tools/subtitle-timing-check">
 <meta property="og:site_name" content="Subtitle Toolkit">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -172,9 +172,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Subtitles to CSV Converter","url":"https://toolboxes.top/tools/srt-to-csv","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop your subtitle file.","The CSV is generated locally as you type.","Download it and open it in Excel, Google Sheets, Numbers or a CAT tool."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I convert the CSV back into subtitles?","acceptedAnswer":{"@type":"Answer","text":"Not with this tool. The export exists to get cues into a spreadsheet for review or translation; edit the original subtitle file to change timing."}},{"@type":"Question","name":"Why are times written as text?","acceptedAnswer":{"@type":"Answer","text":"Because spreadsheets guess. A value like 00:01:05,000 can be silently reinterpreted as a date or a number depending on locale. Keeping it as text preserves exactly what the subtitle file said."}},{"@type":"Question","name":"Does it keep the formatting tags?","acceptedAnswer":{"@type":"Answer","text":"Yes — tags such as &lt;i&gt; stay in the text column. Strip them beforehand with the clean subtitles tool if you want plain text."}},{"@type":"Question","name":"Is there a cue limit?","acceptedAnswer":{"@type":"Answer","text":"No. Nothing is uploaded, so the practical limit is your browser's memory. Files with several thousand cues convert instantly."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Subtitles to CSV Converter","item":"https://toolboxes.top/tools/srt-to-csv"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Subtitle Timing Checker","url":"https://toolboxes.top/tools/subtitle-timing-check","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Free subtitle QC checker. Flags unreadable reading speed (CPS), cues that are too short or too long, over-long lines and overlapping cues. Runs in your browser, no upload.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste your subtitle file, or drop the .srt / .vtt file onto the box.","Adjust the limits if you are working to a specific style guide.","Read the report, then open the flagged timestamps in your editor and fix them."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What CPS should I aim for?","acceptedAnswer":{"@type":"Answer","text":"12–20 is comfortable, with 20 a common hard ceiling. Children's content and language-learning material sit lower, around 12–15. Fast dialogue that genuinely cannot fit is usually condensed rather than sped up."}},{"@type":"Question","name":"Why is my minimum duration flagged when the cue is one word?","acceptedAnswer":{"@type":"Answer","text":"Because the eye has to locate the text before it can read it. Even a single word needs roughly 0.8 seconds on screen, which is why the default floor is 833 ms."}},{"@type":"Question","name":"Does it count formatting tags?","acceptedAnswer":{"@type":"Answer","text":"No. HTML tags and ASS override codes are stripped before measuring, so a heavily styled cue is not penalised for its markup."}},{"@type":"Question","name":"Can it fix the problems it finds?","acceptedAnswer":{"@type":"Answer","text":"No, deliberately. Changing reading speed means rewriting the text, and changing durations means editing timings — both are judgement calls. The report tells you where to look."}},{"@type":"Question","name":"Are the reported overlaps real?","acceptedAnswer":{"@type":"Answer","text":"Only if they exceed one millisecond. Sub-frame overlaps come from rounding and are ignored, so anything reported is visible to a viewer."}},{"@type":"Question","name":"Is there a cue limit?","acceptedAnswer":{"@type":"Answer","text":"No. Nothing is uploaded, so the practical limit is browser memory. Files with several thousand cues are checked instantly."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Subtitle Timing Checker","item":"https://toolboxes.top/tools/subtitle-timing-check"}]}]</script>
 </head>
-<body data-tool="to-csv">
+<body data-tool="check">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
@@ -184,9 +184,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </header>
 <main id="main">
 <div class="wrap narrow">
-  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Subtitles to CSV Converter</p>
-  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Subtitles to CSV Converter</h1>
-  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.</p>
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Subtitle Timing Checker</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Subtitle Timing Checker</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Audit an SRT or VTT file for cues that are too fast, too short, too long or overlapping.</p>
 
   <div class="tool">
     <div id="drop">
@@ -202,7 +202,7 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 Paste your subtitle file here…"></textarea>
       </div>
       <div class="pane">
-        <label for="out">CSV output</label>
+        <label for="out">Timing report</label>
         <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
       </div>
     </div>
@@ -212,10 +212,15 @@ Paste your subtitle file here…"></textarea>
     
     
     
-    
+    <div class="opts">
+      <span class="field">Max <input type="number" id="chk-cps" step="0.5" value="20" aria-label="Max characters per second"> characters/second</span>
+      <span class="field">Min <input type="number" id="chk-min" step="10" value="833" aria-label="Minimum cue duration"> ms per cue</span>
+      <span class="field">Max <input type="number" id="chk-max" step="100" value="7000" aria-label="Maximum cue duration"> ms per cue</span>
+      <span class="field">Max <input type="number" id="chk-line" step="1" value="42" aria-label="Max characters per line"> chars per line</span>
+    </div>
     <div class="row">
       <button class="btn primary" id="copy">Copy result</button>
-      <button class="btn" id="download" data-name="subtitles.csv">Download CSV</button>
+      <button class="btn" id="download" data-name="timing-report.txt">Download TXT</button>
       <button class="btn" id="clear">Clear</button>
     </div>
     <div id="status" role="status" aria-live="polite"></div>
@@ -228,60 +233,74 @@ Paste your subtitle file here…"></textarea>
 
   <article>
     <h2>What this does</h2>
-    <p>A subtitle file is awkward to work with in a spreadsheet, but translation, proofreading and timing review are all easier in rows. This converter flattens an SRT or VTT file into CSV — one row per cue, with the start time, end time, duration and text as separate columns.</p>
+    <p>A subtitle file can look perfect in an editor and still be unreadable on screen: cues that vanish before the eye can finish them, lines that run past the edge of the frame, two cues on screen at once. This checker measures every cue against the limits broadcasters and streaming platforms actually use and lists the ones that break them.</p>
 
     <h2>How to use it</h2>
-    <ol><li>Paste or drop your subtitle file.</li><li>The CSV is generated locally as you type.</li><li>Download it and open it in Excel, Google Sheets, Numbers or a CAT tool.</li></ol>
+    <ol><li>Paste your subtitle file, or drop the <code>.srt</code> / <code>.vtt</code> file onto the box.</li><li>Adjust the limits if you are working to a specific style guide.</li><li>Read the report, then open the flagged timestamps in your editor and fix them.</li></ol>
 
     <div class="note">
       <h4>Good to know</h4>
-      <ul><li>Text is quoted, so commas and quotation marks inside a cue survive the round trip.</li><li>Multi-line cues become a single row with line breaks replaced by spaces.</li><li>The file is UTF-8. If your spreadsheet shows garbled characters, import it and choose UTF-8 explicitly rather than double-clicking the file.</li><li>This export is one-way by design — it is for review and translation, not for turning a spreadsheet back into subtitles.</li></ul>
+      <ul><li>Characters per second counts every character including spaces, which is the convention used by most delivery specifications.</li><li>Formatting tags such as <code>&lt;i&gt;</code> and ASS overrides are stripped before measuring, so styling does not inflate the count.</li><li>An overlap is reported when the next cue starts before the current one ends. Sub-frame overlaps are ignored, because rounding produces them harmlessly.</li><li>The default limits match common streaming practice. Broadcast guides are often stricter — some sit at 16 or 17 CPS.</li><li>The report is a finding list, not a fix. Timing changes are yours to make; use the <a href="/tools/shift-subtitles">shift</a> or <a href="/tools/resync-subtitles">resync</a> tools when the whole track needs the same correction.</li></ul>
     </div>
 
-    <h2>What the columns are for</h2>
-    <p><strong>index</strong> is the cue number, starting at 1. It keeps rows identifiable after sorting or filtering, which matters because most review workflows reorder rows.</p>
-    <p><strong>start</strong> and <strong>end</strong> use SubRip's <code>hh:mm:ss,mmm</code> form. They are written as text rather than a spreadsheet time so that no application silently reinterpret them.</p>
-    <p><strong>duration_ms</strong> is the cue's length in milliseconds. This is the column to sort by when hunting for cues that are too short to read or too long to sit comfortably on screen.</p>
-    <p><strong>text</strong> has its internal line breaks collapsed to spaces so that one cue stays on one row. Quotes inside the text are escaped as <code>""</code>, which is the CSV standard.</p>
+    <h2>The four things that make subtitles unreadable</h2>
+    <p><strong>Reading speed</strong> is measured in characters per second (CPS). Most style guides land between 12 and 21 CPS; 20 is a common hard ceiling for streaming delivery. A cue at 30 CPS is technically valid and completely unreadable, which is why no player will ever warn you about it.</p>
+    <p><strong>Minimum duration</strong> stops the opposite failure — a two-word cue that flashes for 300 milliseconds. Even a short line needs roughly 0.8 seconds on screen because the eye needs time to find the text at all, not just to read it. The usual floor is about five-sixths of a second.</p>
+    <p><strong>Maximum duration</strong> catches the cue that nobody noticed was left on screen for twelve seconds. Viewers re-read a subtitle that never changes and assume it is broken, so seven seconds is a practical ceiling even when the dialogue continues.</p>
+    <p><strong>Line length and line count</strong> are about layout rather than timing. Around 40–42 characters per line and two lines per cue is what fits comfortably on a phone in portrait. Wider than that and the player either wraps or clips, and neither is under your control after upload.</p>
 
     <h2>Worked example</h2>
     <div class="example">
       <div>
         <h5>Input — .srt</h5>
         <pre>1
-00:00:01,000 --&gt; 00:00:04,000
-Hello there.
+00:00:01,000 --&gt; 00:00:02,200
+The quick brown fox jumps over the extremely lazy dog tonight
 
 2
-00:00:04,200 --&gt; 00:00:07,000
-How are you?</pre>
+00:00:02,100 --&gt; 00:00:02,400
+Hi.</pre>
       </div>
       <div>
-        <h5>Output — .csv</h5>
-        <pre>index,start,end,duration_ms,text
-1,&quot;00:00:01,000&quot;,&quot;00:00:04,000&quot;,3000,&quot;Hello there.&quot;
-2,&quot;00:00:04,200&quot;,&quot;00:00:07,000&quot;,2800,&quot;How are you?&quot;</pre>
+        <h5>Output — report</h5>
+        <pre>Subtitle timing report
+======================
+2 cues checked · 2 flagged (100%)
+
+Too fast      (&gt; 20.0 CPS)                  1
+Line too long (&gt; 42 chars)                  1
+Too short     (&lt; 0.83s)                     1
+Overlapping cues                            1
+
+--- Flagged cues ---
+
+#0001  00:00:01,000 -&gt; 00:00:02,200  (1.20s, 61.7 CPS)
+        The quick brown fox jumps over the extremely lazy dog tonight
+        ! too fast — 61.7 CPS (max 20.0); line too long — 61 chars (max 42)</pre>
       </div>
     </div>
-    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">One row per cue. Duration in milliseconds makes it easy to sort by cue length and spot the ones that are too short to read.</p>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">Cue 1 carries 74 characters in 1.2 seconds. Cue 2 is both too short and starts before cue 1 has ended — the report catches all three problems at once.</p>
 
     <h2>FAQ</h2>
-    <details class="faq"><summary>Can I convert the CSV back into subtitles?</summary><div class="body">Not with this tool. The export exists to get cues into a spreadsheet for review or translation; edit the original subtitle file to change timing.</div></details>
-    <details class="faq"><summary>Why are times written as text?</summary><div class="body">Because spreadsheets guess. A value like <code>00:01:05,000</code> can be silently reinterpreted as a date or a number depending on locale. Keeping it as text preserves exactly what the subtitle file said.</div></details>
-    <details class="faq"><summary>Does it keep the formatting tags?</summary><div class="body">Yes — tags such as <code>&lt;i&gt;</code> stay in the text column. Strip them beforehand with the <a href="/tools/clean-subtitles">clean subtitles tool</a> if you want plain text.</div></details>
-    <details class="faq"><summary>Is there a cue limit?</summary><div class="body">No. Nothing is uploaded, so the practical limit is your browser's memory. Files with several thousand cues convert instantly.</div></details>
+    <details class="faq"><summary>What CPS should I aim for?</summary><div class="body">12–20 is comfortable, with 20 a common hard ceiling. Children's content and language-learning material sit lower, around 12–15. Fast dialogue that genuinely cannot fit is usually condensed rather than sped up.</div></details>
+    <details class="faq"><summary>Why is my minimum duration flagged when the cue is one word?</summary><div class="body">Because the eye has to locate the text before it can read it. Even a single word needs roughly 0.8 seconds on screen, which is why the default floor is 833 ms.</div></details>
+    <details class="faq"><summary>Does it count formatting tags?</summary><div class="body">No. HTML tags and ASS override codes are stripped before measuring, so a heavily styled cue is not penalised for its markup.</div></details>
+    <details class="faq"><summary>Can it fix the problems it finds?</summary><div class="body">No, deliberately. Changing reading speed means rewriting the text, and changing durations means editing timings — both are judgement calls. The report tells you where to look.</div></details>
+    <details class="faq"><summary>Are the reported overlaps real?</summary><div class="body">Only if they exceed one millisecond. Sub-frame overlaps come from rounding and are ignored, so anything reported is visible to a viewer.</div></details>
+    <details class="faq"><summary>Is there a cue limit?</summary><div class="body">No. Nothing is uploaded, so the practical limit is browser memory. Files with several thousand cues are checked instantly.</div></details>
 
     <h2>Troubleshooting</h2>
     <ol class="tshoot">
-      <li><span class="sym">The CSV is empty</span><span class="fix">No cues were recognised. Check that the file uses <code>--&gt;</code> between timestamps — a file renamed from SBV will not parse.</span></li>
-      <li><span class="sym">Characters look garbled in Excel</span><span class="fix">Excel often guesses the wrong encoding. Use Data → From Text/CSV and select UTF-8 rather than opening the file directly.</span></li>
-      <li><span class="sym">Rows are split in the wrong place</span><span class="fix">That happens when opening the file in a locale that uses semicolons as the separator. Import it manually and set the delimiter to a comma.</span></li>
-      <li><span class="sym">Quotes look doubled</span><span class="fix">That is correct CSV escaping. A quote inside a cue is written as <code>""</code> and will display as a single quote once imported.</span></li>
+      <li><span class="sym">The report is empty</span><span class="fix">No cues were recognised. Check that the file uses <code>--&gt;</code> between timestamps — a plain transcript or an SBV file will not parse.</span></li>
+      <li><span class="sym">Nothing is flagged but the subtitles still feel rushed</span><span class="fix">Raise the sensitivity by lowering the CPS limit. The default of 20 is a delivery ceiling, not a comfort target; many editors work to 16 or 17.</span></li>
+      <li><span class="sym">Almost every cue is flagged</span><span class="fix">The file may be auto-generated caption output with no line balancing. Run it through the <a href="/tools/clean-subtitles">clean subtitles tool</a> first, then re-check.</span></li>
+      <li><span class="sym">Durations look wrong</span><span class="fix">The checker reads the timestamps as written. If the whole track is offset, fix it with the <a href="/tools/shift-subtitles">shift tool</a> before checking.</span></li>
+      <li><span class="sym">Counts do not add up to the flagged total</span><span class="fix">One cue can break several rules at once. The summary counts rule violations; the flagged list counts cues.</span></li>
     </ol>
 
     <h2>Related tools</h2>
     <div class="grid">
-      <a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a>
+      <a class="card" href="/tools/subtitle-timing-check"><h3>Subtitle Timing Checker</h3><p>Audit an SRT or VTT file for cues that are too fast, too short, too long or overlapping.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/resync-subtitles"><h3>Resync Subtitles by Frame Rate or Speed</h3><p>Fix subtitles that drift progressively out of sync by resampling them to your video&#39;s frame rate or playback speed.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a>
     </div>
   </article>
   <div class="note">

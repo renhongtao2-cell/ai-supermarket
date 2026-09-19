@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subtitles to CSV Converter — Free, No Upload | Subtitle Toolkit</title>
-<meta name="description" content="Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.">
-<link rel="canonical" href="https://toolboxes.top/tools/srt-to-csv">
-<meta property="og:title" content="Subtitles to CSV Converter — Free, No Upload | Subtitle Toolkit">
-<meta property="og:description" content="Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.">
+<title>Fix Garbled Subtitles (Encoding Repair) — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Free mojibake repair for subtitle files. Fixes text saved as UTF-8 but opened as Windows-1252 or Windows-1251. Runs entirely in your browser, no upload.">
+<link rel="canonical" href="https://toolboxes.top/tools/fix-subtitle-encoding">
+<meta property="og:title" content="Fix Garbled Subtitles (Encoding Repair) — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Free mojibake repair for subtitle files. Fixes text saved as UTF-8 but opened as Windows-1252 or Windows-1251. Runs entirely in your browser, no upload.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toolboxes.top/tools/srt-to-csv">
+<meta property="og:url" content="https://toolboxes.top/tools/fix-subtitle-encoding">
 <meta property="og:site_name" content="Subtitle Toolkit">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -172,9 +172,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Subtitles to CSV Converter","url":"https://toolboxes.top/tools/srt-to-csv","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop your subtitle file.","The CSV is generated locally as you type.","Download it and open it in Excel, Google Sheets, Numbers or a CAT tool."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I convert the CSV back into subtitles?","acceptedAnswer":{"@type":"Answer","text":"Not with this tool. The export exists to get cues into a spreadsheet for review or translation; edit the original subtitle file to change timing."}},{"@type":"Question","name":"Why are times written as text?","acceptedAnswer":{"@type":"Answer","text":"Because spreadsheets guess. A value like 00:01:05,000 can be silently reinterpreted as a date or a number depending on locale. Keeping it as text preserves exactly what the subtitle file said."}},{"@type":"Question","name":"Does it keep the formatting tags?","acceptedAnswer":{"@type":"Answer","text":"Yes — tags such as &lt;i&gt; stay in the text column. Strip them beforehand with the clean subtitles tool if you want plain text."}},{"@type":"Question","name":"Is there a cue limit?","acceptedAnswer":{"@type":"Answer","text":"No. Nothing is uploaded, so the practical limit is your browser's memory. Files with several thousand cues convert instantly."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Subtitles to CSV Converter","item":"https://toolboxes.top/tools/srt-to-csv"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Fix Garbled Subtitles (Encoding Repair)","url":"https://toolboxes.top/tools/fix-subtitle-encoding","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Free mojibake repair for subtitle files. Fixes text saved as UTF-8 but opened as Windows-1252 or Windows-1251. Runs entirely in your browser, no upload.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste the garbled text, or drop the file onto the box.","Choose what it was read as, or leave it on auto-detect.","Copy or download the repaired text and save it as UTF-8."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does my subtitle file show Ã© instead of é?","acceptedAnswer":{"@type":"Answer","text":"Because the file's UTF-8 bytes were read as a single-byte codepage. é is stored as two bytes; read under Windows-1252 they become Ã and ©. This page reverses exactly that step."}},{"@type":"Question","name":"Can it fix question marks and empty boxes?","acceptedAnswer":{"@type":"Answer","text":"No. A ? means the character was already unrepresentable when the file was written, and the original byte is gone. This tool can only recover what is still in the file."}},{"@type":"Question","name":"Do I need to know which encoding was used?","acceptedAnswer":{"@type":"Answer","text":"Usually not — auto-detect covers the overwhelming majority. If the result still looks wrong, switch Read as to the other codepage and compare."}},{"@type":"Question","name":"What does 'doubly encoded' mean?","acceptedAnswer":{"@type":"Answer","text":"The misreading happened twice, so the garbage contains sequences like Ã or â€” rather than a single layer. Ticking the box runs the repair two passes."}},{"@type":"Question","name":"Does it work on Cyrillic and other scripts?","acceptedAnswer":{"@type":"Answer","text":"Yes for Cyrillic via Windows-1251, and for anything else that was genuinely UTF-8 underneath — Greek, CJK, Arabic and emoji all repair the same way, because the bytes are the bytes."}},{"@type":"Question","name":"Is the file uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The repair is arithmetic on character codes, done in JavaScript in your browser. Confidential captions never leave your machine."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Fix Garbled Subtitles (Encoding Repair)","item":"https://toolboxes.top/tools/fix-subtitle-encoding"}]}]</script>
 </head>
-<body data-tool="to-csv">
+<body data-tool="fix-encoding">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
@@ -184,9 +184,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </header>
 <main id="main">
 <div class="wrap narrow">
-  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Subtitles to CSV Converter</p>
-  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Subtitles to CSV Converter</h1>
-  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.</p>
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Fix Garbled Subtitles (Encoding Repair)</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Fix Garbled Subtitles (Encoding Repair)</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Repair mojibake — subtitles showing Ã©, â€™ or Ð¿Ñ€Ð¸Ð²ÐµÑ‚ instead of real characters.</p>
 
   <div class="tool">
     <div id="drop">
@@ -196,13 +196,11 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
     
     <div class="panes">
       <div class="pane">
-        <label for="in">Input — .srt / .vtt</label>
-        <textarea id="in" spellcheck="false" placeholder="1
-00:00:01,000 --> 00:00:04,000
-Paste your subtitle file here…"></textarea>
+        <label for="in">Input — garbled text</label>
+        <textarea id="in" spellcheck="false" placeholder="Paste the garbled text here — e.g. CafÃ© ouvert jusqu'Ã  minuit"></textarea>
       </div>
       <div class="pane">
-        <label for="out">CSV output</label>
+        <label for="out">Repaired text</label>
         <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
       </div>
     </div>
@@ -211,11 +209,18 @@ Paste your subtitle file here…"></textarea>
     
     
     
-    
+    <div class="opts">
+      <span class="field">Read as <select id="enc-src" aria-label="Encoding the file was misread as">
+        <option value="auto">Auto-detect</option>
+        <option value="cp1252">Western European (Windows-1252 / Latin-1)</option>
+        <option value="cp1251">Cyrillic (Windows-1251)</option>
+      </select></span>
+      <label><input type="checkbox" id="enc-twice"> Doubly encoded (read wrong twice)</label>
+    </div>
     
     <div class="row">
       <button class="btn primary" id="copy">Copy result</button>
-      <button class="btn" id="download" data-name="subtitles.csv">Download CSV</button>
+      <button class="btn" id="download" data-name="fixed.txt">Download TXT</button>
       <button class="btn" id="clear">Clear</button>
     </div>
     <div id="status" role="status" aria-live="polite"></div>
@@ -228,60 +233,58 @@ Paste your subtitle file here…"></textarea>
 
   <article>
     <h2>What this does</h2>
-    <p>A subtitle file is awkward to work with in a spreadsheet, but translation, proofreading and timing review are all easier in rows. This converter flattens an SRT or VTT file into CSV — one row per cue, with the start time, end time, duration and text as separate columns.</p>
+    <p>When a subtitle file shows <code>CafÃ©</code> instead of <code>Café</code>, or <code>Ð¿Ñ€Ð¸Ð²ÐµÑ‚</code> instead of Cyrillic text, the file itself is usually fine — it was simply read with the wrong character encoding. This page reverses that mistake and writes the characters back, locally.</p>
 
     <h2>How to use it</h2>
-    <ol><li>Paste or drop your subtitle file.</li><li>The CSV is generated locally as you type.</li><li>Download it and open it in Excel, Google Sheets, Numbers or a CAT tool.</li></ol>
+    <ol><li>Paste the garbled text, or drop the file onto the box.</li><li>Choose what it was <strong>read as</strong>, or leave it on auto-detect.</li><li>Copy or download the repaired text and save it as UTF-8.</li></ol>
 
     <div class="note">
       <h4>Good to know</h4>
-      <ul><li>Text is quoted, so commas and quotation marks inside a cue survive the round trip.</li><li>Multi-line cues become a single row with line breaks replaced by spaces.</li><li>The file is UTF-8. If your spreadsheet shows garbled characters, import it and choose UTF-8 explicitly rather than double-clicking the file.</li><li>This export is one-way by design — it is for review and translation, not for turning a spreadsheet back into subtitles.</li></ul>
+      <ul><li>This repairs <strong>misread UTF-8</strong>. If every non-ASCII character is a plain <code>?</code> or a box, the information was already destroyed and no repair can recover it.</li><li>The repair works on the whole text, so timestamps, cue numbers and <code>--&gt;</code> arrows are untouched.</li><li>Auto-detect tries Windows-1252 first, then Windows-1251. Pick one explicitly if you know where the file came from.</li><li>Save the result as <strong>UTF-8</strong>. Re-saving it in the old codepage re-creates the same problem.</li><li>If your player still shows garbage after this, the issue is the player's encoding setting, not the file — check whether it has a forced codepage option.</li></ul>
     </div>
 
-    <h2>What the columns are for</h2>
-    <p><strong>index</strong> is the cue number, starting at 1. It keeps rows identifiable after sorting or filtering, which matters because most review workflows reorder rows.</p>
-    <p><strong>start</strong> and <strong>end</strong> use SubRip's <code>hh:mm:ss,mmm</code> form. They are written as text rather than a spreadsheet time so that no application silently reinterpret them.</p>
-    <p><strong>duration_ms</strong> is the cue's length in milliseconds. This is the column to sort by when hunting for cues that are too short to read or too long to sit comfortably on screen.</p>
-    <p><strong>text</strong> has its internal line breaks collapsed to spaces so that one cue stays on one row. Quotes inside the text are escaped as <code>""</code>, which is the CSV standard.</p>
+    <h2>Why subtitles turn into garbage</h2>
+    <p>A subtitle file is a sequence of bytes. UTF-8 spells <code>é</code> as two bytes, <code>C3 A9</code>. An older editor that assumes a single-byte codepage reads those two bytes as two separate characters — <code>Ã</code> and <code>©</code> — and displays <code>CafÃ©</code>. Nothing was lost; the bytes were just interpreted twice under different rules.</p>
+    <p>The repair is therefore mechanical: take each character, work out which <em>single byte</em> it must have been, then decode that byte sequence as UTF-8. No dictionary, no guessing, no language model — which is why it can run offline in a browser and produce a result you can verify character by character.</p>
+    <p>The two codepages that account for almost every real case are <strong>Windows-1252</strong> (Western European) and <strong>Windows-1251</strong> (Cyrillic). Auto-detect tries 1252 first and falls back to 1251, because the two produce visibly different garbage and the correct one always decodes cleanly while the wrong one usually hits an invalid byte sequence.</p>
+    <p><strong>Double encoding</strong> happens when the mistake is made twice — a file that was already mojibake gets saved and misread again. The tell-tale is garbage that contains <code>Ã</code> or <code>Ã¢€”</code>. Tick the <em>doubly encoded</em> box to run the repair twice.</p>
+    <p>This tool refuses to guess. If the byte sequence it reconstructs is not valid UTF-8, or if the result is mostly control characters, it leaves your text alone rather than handing back something worse. A tool that always returns something would be a tool you could not trust.</p>
 
     <h2>Worked example</h2>
     <div class="example">
       <div>
-        <h5>Input — .srt</h5>
-        <pre>1
-00:00:01,000 --&gt; 00:00:04,000
-Hello there.
-
-2
-00:00:04,200 --&gt; 00:00:07,000
-How are you?</pre>
+        <h5>Input — misread as Windows-1252</h5>
+        <pre>CafÃ© ouvert jusqu&#39;Ã  minuit
+L&#39;Ã©quipe vous attend â ce soir.</pre>
       </div>
       <div>
-        <h5>Output — .csv</h5>
-        <pre>index,start,end,duration_ms,text
-1,&quot;00:00:01,000&quot;,&quot;00:00:04,000&quot;,3000,&quot;Hello there.&quot;
-2,&quot;00:00:04,200&quot;,&quot;00:00:07,000&quot;,2800,&quot;How are you?&quot;</pre>
+        <h5>Output — repaired UTF-8</h5>
+        <pre>Café ouvert jusqu&#39;à minuit
+L&#39;équipe vous attend — ce soir.</pre>
       </div>
     </div>
-    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">One row per cue. Duration in milliseconds makes it easy to sort by cue length and spot the ones that are too short to read.</p>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">Two bytes per accented character become one character each. The em dash is three bytes in UTF-8, which is why it shows as three garbage characters before the repair.</p>
 
     <h2>FAQ</h2>
-    <details class="faq"><summary>Can I convert the CSV back into subtitles?</summary><div class="body">Not with this tool. The export exists to get cues into a spreadsheet for review or translation; edit the original subtitle file to change timing.</div></details>
-    <details class="faq"><summary>Why are times written as text?</summary><div class="body">Because spreadsheets guess. A value like <code>00:01:05,000</code> can be silently reinterpreted as a date or a number depending on locale. Keeping it as text preserves exactly what the subtitle file said.</div></details>
-    <details class="faq"><summary>Does it keep the formatting tags?</summary><div class="body">Yes — tags such as <code>&lt;i&gt;</code> stay in the text column. Strip them beforehand with the <a href="/tools/clean-subtitles">clean subtitles tool</a> if you want plain text.</div></details>
-    <details class="faq"><summary>Is there a cue limit?</summary><div class="body">No. Nothing is uploaded, so the practical limit is your browser's memory. Files with several thousand cues convert instantly.</div></details>
+    <details class="faq"><summary>Why does my subtitle file show Ã© instead of é?</summary><div class="body">Because the file's UTF-8 bytes were read as a single-byte codepage. <code>é</code> is stored as two bytes; read under Windows-1252 they become <code>Ã</code> and <code>©</code>. This page reverses exactly that step.</div></details>
+    <details class="faq"><summary>Can it fix question marks and empty boxes?</summary><div class="body">No. A <code>?</code> means the character was already unrepresentable when the file was written, and the original byte is gone. This tool can only recover what is still in the file.</div></details>
+    <details class="faq"><summary>Do I need to know which encoding was used?</summary><div class="body">Usually not — auto-detect covers the overwhelming majority. If the result still looks wrong, switch <em>Read as</em> to the other codepage and compare.</div></details>
+    <details class="faq"><summary>What does 'doubly encoded' mean?</summary><div class="body">The misreading happened twice, so the garbage contains sequences like <code>Ã</code> or <code>â€”</code> rather than a single layer. Ticking the box runs the repair two passes.</div></details>
+    <details class="faq"><summary>Does it work on Cyrillic and other scripts?</summary><div class="body">Yes for Cyrillic via Windows-1251, and for anything else that was genuinely UTF-8 underneath — Greek, CJK, Arabic and emoji all repair the same way, because the bytes are the bytes.</div></details>
+    <details class="faq"><summary>Is the file uploaded anywhere?</summary><div class="body">No. The repair is arithmetic on character codes, done in JavaScript in your browser. Confidential captions never leave your machine.</div></details>
 
     <h2>Troubleshooting</h2>
     <ol class="tshoot">
-      <li><span class="sym">The CSV is empty</span><span class="fix">No cues were recognised. Check that the file uses <code>--&gt;</code> between timestamps — a file renamed from SBV will not parse.</span></li>
-      <li><span class="sym">Characters look garbled in Excel</span><span class="fix">Excel often guesses the wrong encoding. Use Data → From Text/CSV and select UTF-8 rather than opening the file directly.</span></li>
-      <li><span class="sym">Rows are split in the wrong place</span><span class="fix">That happens when opening the file in a locale that uses semicolons as the separator. Import it manually and set the delimiter to a comma.</span></li>
-      <li><span class="sym">Quotes look doubled</span><span class="fix">That is correct CSV escaping. A quote inside a cue is written as <code>""</code> and will display as a single quote once imported.</span></li>
+      <li><span class="sym">Nothing changed</span><span class="fix">Either the text is already correct, or the damage is not mojibake. Look for <code>Ã</code>, <code>Â</code>, <code>â€</code>, <code>Ð</code> or <code>Ñ</code> — if none appear, no repair applies.</span></li>
+      <li><span class="sym">Still garbled after repair</span><span class="fix">Switch <em>Read as</em> to the other codepage. Auto-detect tries Western first, so a Cyrillic file sometimes needs the explicit setting.</span></li>
+      <li><span class="sym">Strange symbols appeared that were not there before</span><span class="fix">That is what a wrong guess looks like, so the tool should have refused. If you see this, the source was probably not UTF-8 to begin with — reload the page and try the other codepage.</span></li>
+      <li><span class="sym">Only part of the file was fixed</span><span class="fix">Mixed-encoding files exist: one section saved as UTF-8, another as the old codepage. Repair each section separately and paste the results together.</span></li>
+      <li><span class="sym">The player still shows garbage</span><span class="fix">The file is now correct but the player is forcing a codepage. Look for an encoding or subtitle codepage setting in the player and set it to UTF-8.</span></li>
     </ol>
 
     <h2>Related tools</h2>
     <div class="grid">
-      <a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a>
+      <a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a>
     </div>
   </article>
   <div class="note">

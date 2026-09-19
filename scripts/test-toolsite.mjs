@@ -178,5 +178,115 @@ eq("CRLF handled", C.parseCues(SRT.replace(/\n/g, "\r\n")).length, 3);
 ok("no trailing blank lines", !C.toSrt(SRT).endsWith("\n\n"));
 ok("ends with single newline", C.toSrt(SRT).endsWith("\n"));
 
+console.log("\n--- parseLooseTime (split point input) ---");
+eq("bare seconds", C.parseLooseTime("90"), 90000);
+eq("decimal seconds", C.parseLooseTime("2.5"), 2500);
+eq("m:ss", C.parseLooseTime("45:00"), 2700000);
+eq("h:mm:ss", C.parseLooseTime("1:02:03"), 3723000);
+eq("with millis", C.parseLooseTime("00:01:00,500"), 60500);
+eq("empty -> 0", C.parseLooseTime(""), 0);
+eq("garbage -> null", C.parseLooseTime("later"), null);
+
+console.log("\n--- split subtitles ---");
+const SPLIT_SRC = `1
+00:00:10,000 --> 00:00:13,000
+First half.
+
+2
+00:00:58,000 --> 00:01:02,000
+Straddles the cut.
+
+3
+00:01:05,000 --> 00:01:08,000
+Second half.
+`;
+const sp = C.splitCues(SPLIT_SRC, 60000);
+eq("part1 count", sp.a.length, 2);
+eq("part2 count", sp.b.length, 1);
+eq("part1 last text", sp.a[1].text, "Straddles the cut.");
+eq("part2 first text", sp.b[0].text, "Second half.");
+eq("part2 keeps original timing", sp.b[0].start, 65000);
+eq("part1 serializes", C.serialize(sp.a, false).includes("00:00:10,000 --> 00:00:13,000"), true);
+eq("part2 count when cut at 0", C.splitCues(SPLIT_SRC, 0).b.length, 3);
+eq("part1 empty when cut at 0", C.splitCues(SPLIT_SRC, 0).a.length, 0);
+
+console.log("\n--- mojibake repair (encoding) ---");
+const MOJI = "Caf\u00c3\u00a9 ouvert jusqu'\u00c3\u00a0 minuit";
+const r1 = C.repairEncoding(MOJI, "auto", false);
+eq("western repair applied", r1.passes, 1);
+eq("western repair text", r1.text, "Caf\u00e9 ouvert jusqu'\u00e0 minuit");
+eq("western repair clears mojibake", r1.after, 0);
+const MOJI_EM = "L'\u00c3\u00a9quipe vous attend \u00e2\u0080\u0094 ce soir.";
+eq("em dash repaired", C.repairEncoding(MOJI_EM, "cp1252", false).text, "L'\u00e9quipe vous attend \u2014 ce soir.");
+// UTF-8 "привет" misread as cp1252
+const MOJI_RU = "\u00d0\u00bf\u00d1\u20ac\u00d0\u00b8\u00d0\u00b2\u00d0\u00b5\u00d1\u201a";
+eq("cyrillic repair", C.repairEncoding(MOJI_RU, "auto", false).text, "\u043f\u0440\u0438\u0432\u0435\u0442");
+// UTF-8 "привет" misread as cp1251 → "РїСЂРёРІРµС‚"
+const MOJI_RU2 = "\u0420\u0457\u0421\u0402\u0420\u0451\u0420\u0406\u0420\u00b5\u0421\u201a";
+eq("cp1251 misread repair", C.repairEncoding(MOJI_RU2, "cp1251", false).text, "\u043f\u0440\u0438\u0432\u0435\u0442");
+// already-correct text must be left alone
+const GOOD = "Caf\u00e9 d\u00e9j\u00e0 vu";
+const r2 = C.repairEncoding(GOOD, "auto", false);
+eq("clean text untouched", r2.text, GOOD);
+eq("clean text -> 0 passes", r2.passes, 0);
+ok("plain ascii is a no-op", C.repairEncoding("Hello there.", "auto", false).text === "Hello there.");
+// double-encoded: "Café" → "CafÃ©" → "CafÃƒÂ©" — needs two passes
+const MOJI2 = "Caf\u00c3\u0192\u00c2\u00a9";
+eq("double-encoded needs 2 passes", C.repairEncoding(MOJI2, "cp1252", true).text, "Caf\u00e9");
+eq("double-encoded, 1 pass is not enough", C.repairEncoding(MOJI2, "cp1252", false).text, "Caf\u00c3\u00a9");
+// two passes on already-clean text must be harmless
+const ONCE = C.repairEncoding(MOJI, "cp1252", false).text;
+ok("double pass is stable on clean input", C.repairEncoding(ONCE, "auto", true).text === ONCE);
+// timestamps survive a repair
+const MOJI_SRT = "1\n00:00:01,000 --> 00:00:04,000\nCaf\u00c3\u00a9";
+ok("timestamps survive repair", C.repairEncoding(MOJI_SRT, "auto", false).text.includes("00:00:01,000 --> 00:00:04,000"));
+eq("mojibake detector counts", C.mojiCount("Caf\u00c3\u00a9") > 0, true);
+eq("mojibake detector ignores clean text", C.mojiCount("Caf\u00e9"), 0);
+eq("utf8Decode rejects invalid bytes", C.utf8Decode([0xE9, 0x20]), null);
+eq("utf8Decode accepts valid sequence", C.utf8Decode([0xC3, 0xA9]), "\u00e9");
+
+console.log("\n--- timing / readability report ---");
+const FAST = `1
+00:00:01,000 --> 00:00:02,200
+The quick brown fox jumps over the extremely lazy dog tonight
+
+2
+00:00:02,100 --> 00:00:02,400
+Hi.
+`;
+const rep = C.timingReport(FAST, { maxCps: 20, minMs: 833, maxMs: 7000, maxLine: 42 });
+ok("report header present", rep.startsWith("Subtitle timing report"));
+ok("flags too fast", /Too fast/.test(rep) && /too fast/.test(rep));
+ok("flags line too long", /line too long/.test(rep));
+ok("flags too short", /too short/.test(rep));
+ok("flags overlap", /overlaps the next cue/.test(rep));
+ok("flags both cues", (rep.match(/^#\d{4}/gm) || []).length === 2);
+ok("reports cue count", rep.includes("2 cues checked"));
+const CLEAN_SRT = `1
+00:00:01,000 --> 00:00:04,000
+A perfectly reasonable line.
+
+2
+00:00:05,000 --> 00:00:08,000
+And another one here.
+`;
+const rep2 = C.timingReport(CLEAN_SRT, { maxCps: 20, minMs: 833, maxMs: 7000, maxLine: 42 });
+ok("clean file -> nothing flagged", rep2.includes("Nothing flagged"));
+ok("clean file -> no cue entries", !/^#\d{4}/m.test(rep2));
+eq("empty input -> empty report", C.timingReport("no cues here", {}), "");
+// stricter limit must flag more
+ok("lower CPS limit flags more", (C.timingReport(CLEAN_SRT, { maxCps: 3, minMs: 833, maxMs: 7000, maxLine: 42 }).match(/^#\d{4}/gm) || []).length === 2);
+// markup must not inflate the character count
+const STYLED = "1\n00:00:01,000 --> 00:00:04,000\n<i>Short styled line</i>\n";
+ok("markup stripped before measuring", C.timingReport(STYLED, { maxCps: 20, minMs: 833, maxMs: 7000, maxLine: 42 }).includes("Nothing flagged"));
+
+console.log("\n--- resync / merge / csv (regression) ---");
+eq("resync x1.04271", C.resyncCues(SRT, 1.04271)[2].start, 65586);
+eq("merge appends after last cue", C.mergeCues(SRT, SRT, 0).length, 6);
+// first file ends at 65.000s, so the second file's cue 1 (start 1.000s) lands at 66.000s
+eq("merge shifts second file", C.mergeCues(SRT, SRT, 0)[3].start, 66000);
+ok("csv header", C.toCsv(SRT).startsWith("index,start,end,duration_ms,text"));
+eq("csv row count", C.toCsv(SRT).split("\n").length, 4);
+
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

@@ -13,6 +13,18 @@
     return ((h * 60 + mi) * 60 + se) * 1000 + ms;
   }
 
+  /* 宽松时间解析：接受 "90"（秒）、"45:00"、"1:02:03"、带毫秒也行。用于切分点输入。 */
+  function parseLooseTime(s) {
+    s = String(s == null ? "" : s).trim();
+    if (!s) return 0;
+    if (/^\d+(\.\d+)?$/.test(s)) return Math.round(parseFloat(s) * 1000);
+    var m = /^(?:(\d{1,3}):)?(\d{1,2}):(\d{1,2})(?:[.,](\d{1,3}))?$/.exec(s);
+    if (!m) return null;
+    var msStr = m[4] || "0";
+    while (msStr.length < 3) msStr += "0";
+    return ((parseInt(m[1] || 0, 10) * 60 + parseInt(m[2], 10)) * 60 + parseInt(m[3], 10)) * 1000 + parseInt(msStr, 10);
+  }
+
   function pad(n, w) { n = String(n); while (n.length < w) n = "0" + n; return n; }
 
   function fmtTime(ms, sep) {
@@ -165,6 +177,225 @@
     return rows.join("\n");
   }
 
+  /* 切分：按时间点把一条轨分成两半。各自保留原始时间码（不重定时）。 */
+  function splitCues(text, atMs) {
+    var cues = parseCues(text), a = [], b = [];
+    for (var i = 0; i < cues.length; i++) {
+      (cues[i].start < atMs ? a : b).push(cues[i]);
+    }
+    return { a: a, b: b };
+  }
+
+  /* ---------- 乱码修复（mojibake） ----------
+     成因：UTF-8 字节被当成单字节编码（cp1252 / Latin-1 / cp1251）读了一遍。
+     修法：把每个字符还原成它当时那个字节，再按 UTF-8 重新解码。 */
+  var CP1252_REV = {
+    0x20AC: 0x80, 0x201A: 0x82, 0x0192: 0x83, 0x201E: 0x84, 0x2026: 0x85,
+    0x2020: 0x86, 0x2021: 0x87, 0x02C6: 0x88, 0x2030: 0x89, 0x0160: 0x8A,
+    0x2039: 0x8B, 0x0152: 0x8C, 0x017D: 0x8E, 0x2018: 0x91, 0x2019: 0x92,
+    0x201C: 0x93, 0x201D: 0x94, 0x2022: 0x95, 0x2013: 0x96, 0x2014: 0x97,
+    0x02DC: 0x98, 0x2122: 0x99, 0x0161: 0x9A, 0x203A: 0x9B, 0x0153: 0x9C,
+    0x017E: 0x9E, 0x0178: 0x9F
+  };
+  /* cp1251 0x80-0xBF 的字符表（用码点写，避免源文件编码问题） */
+  var CP1251_HI_CODES = [
+    0x0402, 0x0403, 0x201A, 0x0453, 0x201E, 0x2026, 0x2020, 0x2021,
+    0x20AC, 0x2030, 0x0409, 0x2039, 0x040A, 0x040C, 0x040B, 0x040F,
+    0x0452, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+    0x0098, 0x2122, 0x0459, 0x203A, 0x045A, 0x045C, 0x045B, 0x045F,
+    0x00A0, 0x040E, 0x045E, 0x0408, 0x00A4, 0x0490, 0x00A6, 0x00A7,
+    0x0401, 0x00A9, 0x0404, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x0407,
+    0x00B0, 0x00B1, 0x0406, 0x0456, 0x0491, 0x00B5, 0x00B6, 0x00B7,
+    0x0451, 0x2116, 0x0454, 0x00BB, 0x0458, 0x0405, 0x0455, 0x0457
+  ];
+  var cp1251RevCache = null;
+  function cp1251Rev() {
+    if (cp1251RevCache) return cp1251RevCache;
+    var m = {}, i;
+    for (i = 0; i < CP1251_HI_CODES.length; i++) m[CP1251_HI_CODES[i]] = 0x80 + i;
+    for (i = 0xC0; i <= 0xDF; i++) m[0x410 + (i - 0xC0)] = i;
+    for (i = 0xE0; i <= 0xFF; i++) m[0x430 + (i - 0xE0)] = i;
+    cp1251RevCache = m;
+    return m;
+  }
+
+  /* 严格 UTF-8 解码：遇到非法字节返回 null（宁可不修，也不猜） */
+  function utf8Decode(bytes) {
+    var out = "", i = 0;
+    while (i < bytes.length) {
+      var b = bytes[i], need, cp;
+      if (b < 0x80) { cp = b; need = 0; }
+      else if (b >= 0xC2 && b <= 0xDF) { cp = b & 0x1F; need = 1; }
+      else if (b >= 0xE0 && b <= 0xEF) { cp = b & 0x0F; need = 2; }
+      else if (b >= 0xF0 && b <= 0xF4) { cp = b & 0x07; need = 3; }
+      else return null;
+      if (i + need >= bytes.length) return null;
+      for (var k = 1; k <= need; k++) {
+        var c = bytes[i + k];
+        if ((c & 0xC0) !== 0x80) return null;
+        cp = (cp << 6) | (c & 0x3F);
+      }
+      out += String.fromCodePoint ? String.fromCodePoint(cp) : String.fromCharCode(cp);
+      i += need + 1;
+    }
+    return out;
+  }
+
+  /* 把一个字符串按指定单字节编码还原成字节流；出现无法表示的字符就放弃 */
+  function toBytes(str, src) {
+    var rev = src === "cp1251" ? cp1251Rev() : null;
+    var out = new Array(str.length);
+    for (var i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i), b;
+      if (code in CP1252_REV && src !== "cp1251") b = CP1252_REV[code];
+      else if (code <= 0xFF) b = code;
+      else if (rev && code in rev) b = rev[code];
+      else return null;
+      out[i] = b;
+    }
+    return out;
+  }
+
+  /* 结果可信度检查：控制字符（换行/tab 除外）占比过高 => 这不是修复，是二次破坏 */
+  function sane(s) {
+    var bad = 0, tot = 0;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      if (c === 10 || c === 13 || c === 9) continue;
+      tot++;
+      if (c < 0x20 || (c >= 0x7F && c <= 0x9F)) bad++;
+    }
+    return tot === 0 || bad / tot < 0.02;
+  }
+
+  /* 统计疑似 mojibake 的序列数量，用来判断「还有没有乱码」。
+     两条规则：
+     (1) 拉丁系 —— Ã/Â/â/Ð/Ñ 后面跟一个单字节编码的高位字符（UTF-8 首字节被拆开的痕迹）
+     (2) 西里尔系 —— Р/С（UTF-8 的 D0/D1 被当成 cp1251）后面跟 cp1251 高位表里的字符
+     第 (2) 条刻意只匹配真实俄语里几乎不会出现的组合，避免把正常俄文误判成乱码。 */
+  var MOJI_LAT_RE = /[\u00C3\u00C2\u00E2\u00D0\u00D1][\u0080-\u00BF\u20AC\u201A\u0192\u201E\u2026\u2020\u2021\u02C6\u2030\u0160\u2039\u0152\u017D\u2018\u2019\u201C\u201D\u2022\u2013\u2014\u02DC\u2122\u0161\u203A\u0153\u017E\u0178]/g;
+  var MOJI_CYR_RE = /[\u0420\u0421][\u0402\u0403\u201A\u0453\u201E\u2026\u2020\u2021\u20AC\u2030\u0409\u2039\u040A\u040C\u040B\u040F\u0452\u2018\u2019\u201C\u201D\u2022\u2013\u2014\u2122\u0459\u203A\u045A\u045C\u045B\u045F\u040E\u045E\u0408\u0490\u0401\u0404\u0407\u0406\u0456\u0491\u0451\u2116\u0454\u0458\u0405\u0455\u0457\u00A0\u00A4\u00A6\u00A7\u00A9\u00AB\u00AC\u00AE\u00B0\u00B1\u00B5\u00B6\u00B7\u00BB]/g;
+
+  function mojiCount(s) {
+    var a = String(s).match(MOJI_LAT_RE);
+    var b = String(s).match(MOJI_CYR_RE);
+    return (a ? a.length : 0) + (b ? b.length : 0);
+  }
+
+  function repairOnce(str, src) {
+    var bytes = toBytes(str, src);
+    if (!bytes) return null;
+    var out = utf8Decode(bytes);
+    if (out === null || !sane(out)) return null;
+    return out;
+  }
+
+  /* src: "auto" | "cp1252" | "cp1251"  twice: 双重编码（读错了两遍） */
+  function repairEncoding(text, src, twice) {
+    var passes = 0, cur = String(text), before = mojiCount(cur);
+    var order = src === "cp1251" ? ["cp1251", "cp1252"] : src === "cp1252" ? ["cp1252"] : ["cp1252", "cp1251"];
+    var rounds = twice ? 2 : 1;
+    for (var r = 0; r < rounds; r++) {
+      var got = null, used = null;
+      for (var i = 0; i < order.length; i++) {
+        var cand = repairOnce(cur, order[i]);
+        if (cand !== null && cand !== cur && mojiCount(cand) < mojiCount(cur)) {
+          got = cand; used = order[i];
+          break;
+        }
+      }
+      if (got === null) break;
+      cur = got; passes++;
+    }
+    return { text: cur, passes: passes, before: before, after: mojiCount(cur), source: src };
+  }
+
+  /* ---------- 节奏 / 可读性检查 ---------- */
+  function plainOf(t) {
+    return String(t).replace(/\{\\[^}]*\}/g, "").replace(/<[^>]*>/g, "");
+  }
+
+  function timingReport(text, o) {
+    var cues = parseCues(text);
+    if (!cues.length) return "";
+    var maxCps = o.maxCps > 0 ? o.maxCps : 20;
+    var minMs = o.minMs >= 0 ? o.minMs : 833;
+    var maxMs = o.maxMs > 0 ? o.maxMs : 7000;
+    var maxLine = o.maxLine > 0 ? o.maxLine : 42;
+    var maxLines = 2;
+
+    var issues = [], counts = { fast: 0, short: 0, long: 0, wide: 0, lines: 0, overlap: 0 };
+    var totalMs = 0, sumCps = 0, nCps = 0, minDur = Infinity, maxDur = 0;
+
+    for (var i = 0; i < cues.length; i++) {
+      var c = cues[i], dur = c.end - c.start;
+      var plain = plainOf(c.text);
+      var rows = plain.split("\n");
+      var chars = plain.replace(/\n/g, " ").length;
+      var hits = [];
+
+      if (dur > 0) {
+        var cps = chars / (dur / 1000);
+        sumCps += cps; nCps++;
+        if (cps > maxCps) { counts.fast++; hits.push("too fast — " + cps.toFixed(1) + " CPS (max " + maxCps.toFixed(1) + ")"); }
+      } else {
+        counts.short++; hits.push("zero or negative duration");
+      }
+      if (dur > 0 && dur < minMs) { counts.short++; hits.push("too short — " + (dur / 1000).toFixed(2) + "s (min " + (minMs / 1000).toFixed(2) + "s)"); }
+      if (dur > maxMs) { counts.long++; hits.push("on screen too long — " + (dur / 1000).toFixed(2) + "s (max " + (maxMs / 1000).toFixed(2) + "s)"); }
+      var widest = 0;
+      for (var k = 0; k < rows.length; k++) if (rows[k].length > widest) widest = rows[k].length;
+      if (widest > maxLine) { counts.wide++; hits.push("line too long — " + widest + " chars (max " + maxLine + ")"); }
+      if (rows.length > maxLines) { counts.lines++; hits.push(rows.length + " lines (max " + maxLines + ")"); }
+      var nxt = cues[i + 1];
+      if (nxt && nxt.start < c.end - 1) { counts.overlap++; hits.push("overlaps the next cue by " + ((c.end - nxt.start) / 1000).toFixed(2) + "s"); }
+
+      totalMs += Math.max(0, dur);
+      if (dur > 0) { if (dur < minDur) minDur = dur; if (dur > maxDur) maxDur = dur; }
+      if (hits.length) issues.push({ n: i + 1, start: c.start, end: c.end, dur: dur, text: plain, hits: hits });
+    }
+
+    var secs = function (ms) { return (ms / 1000).toFixed(2) + "s"; };
+    var L = [];
+    L.push("Subtitle timing report");
+    L.push("======================");
+    L.push(cues.length + " cues checked · " + issues.length + " flagged (" +
+      (cues.length ? Math.round((issues.length / cues.length) * 100) : 0) + "%)");
+    L.push("");
+    L.push("Average reading speed : " + (nCps ? (sumCps / nCps).toFixed(1) : "0.0") + " CPS");
+    L.push("Cue duration          : min " + (minDur === Infinity ? "n/a" : secs(minDur)) +
+      " · max " + secs(maxDur) + " · total on-screen " + secs(totalMs));
+    L.push("");
+    var padR = function (s, n) { s = String(s); while (s.length < n) s += " "; return s; };
+    var padL = function (s, n) { s = String(s); while (s.length < n) s = " " + s; return s; };
+    L.push(padR("Too fast      (> " + maxCps.toFixed(1) + " CPS)", 34) + padL(counts.fast, 5));
+    L.push(padR("Too short     (< " + (minMs / 1000).toFixed(2) + "s)", 34) + padL(counts.short, 5));
+    L.push(padR("On too long   (> " + (maxMs / 1000).toFixed(2) + "s)", 34) + padL(counts.long, 5));
+    L.push(padR("Line too long (> " + maxLine + " chars)", 34) + padL(counts.wide, 5));
+    L.push(padR("More than " + maxLines + " lines", 34) + padL(counts.lines, 5));
+    L.push(padR("Overlapping cues", 34) + padL(counts.overlap, 5));
+    L.push("");
+    if (!issues.length) {
+      L.push("Nothing flagged. Every cue is inside the limits above.");
+    } else {
+      L.push("--- Flagged cues ---");
+      L.push("");
+      var cap = Math.min(issues.length, 200);
+      for (var j = 0; j < cap; j++) {
+        var it = issues[j];
+        var num = String(it.n); while (num.length < 4) num = "0" + num;
+        L.push("#" + num + "  " + fmtTime(it.start, ",") + " -> " + fmtTime(it.end, ",") +
+          "  (" + secs(it.dur) + ", " + (it.dur > 0 ? (plainOf(it.text).replace(/\n/g, " ").length / (it.dur / 1000)).toFixed(1) : "0.0") + " CPS)");
+        var tr = it.text.split("\n");
+        for (var q = 0; q < tr.length; q++) L.push("        " + tr[q]);
+        L.push("        ! " + it.hits.join("; "));
+        L.push("");
+      }
+      if (issues.length > cap) L.push("... and " + (issues.length - cap) + " more. Fix the ones above and re-run.");
+    }
+    return L.join("\n");
+  }
+
   function sbvCues(text) {
     var blocks = String(text).replace(/\r\n?/g, "\n").split(/\n{2,}/);
     var cues = [];
@@ -201,11 +432,20 @@
     };
     var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status"), ratio = $("ratio");
     var in2 = $("in2"), gap = $("gap");
+    var splitAt = $("split-at"), part = $("part");
+    var chkIds = ["chk-cps", "chk-min", "chk-max", "chk-line"];
 
     function readOpt(k, dflt) {
       var el = opts[k];
       if (!el) return dflt;
       return el.checked;
+    }
+
+    function numVal(id, dflt) {
+      var el = $(id);
+      if (!el) return dflt;
+      var v = parseFloat(el.value);
+      return isNaN(v) ? dflt : v;
     }
 
     function run() {
@@ -246,6 +486,57 @@
         res = cues.length ? serialize(cues, vtt) : "";
       } else if (mode === "to-csv") {
         res = toCsv(text);
+      } else if (mode === "split") {
+        var atRaw = splitAt ? splitAt.value : "";
+        var atMs = parseLooseTime(atRaw);
+        if (atMs === null) atMs = 0;
+        var sp = splitCues(text, atMs);
+        var which = part ? part.value : "a";
+        var sel = which === "b" ? sp.b : sp.a;
+        res = sel.length ? serialize(sel, vtt) : "";
+        var dlBtn = $("download");
+        if (dlBtn) dlBtn.setAttribute("data-name", (which === "b" ? "part2" : "part1") + (vtt ? ".vtt" : ".srt"));
+        if (status) {
+          status.textContent = "Split at " + fmtTime(atMs, ",") +
+            " — part 1: " + sp.a.length + " cue" + (sp.a.length === 1 ? "" : "s") +
+            " · part 2: " + sp.b.length + " cue" + (sp.b.length === 1 ? "" : "s") +
+            (sp.a.length && sp.b.length ? "" : " — move the split point so both parts have cues");
+        }
+        output.value = res;
+        return;
+      } else if (mode === "fix-encoding") {
+        var srcSel = $("enc-src"), tw = $("enc-twice");
+        var rep = repairEncoding(text, srcSel ? srcSel.value : "auto", tw ? tw.checked : false);
+        res = rep.text;
+        if (status) {
+          if (!text.trim()) status.textContent = "";
+          else if (rep.passes === 0) {
+            status.textContent = rep.after === 0
+              ? "No mojibake patterns found — this text already decodes cleanly."
+              : "No safe repair found. Try the other \"read as\" setting, or check that the file really is UTF-8 misread as single-byte.";
+          } else {
+            status.textContent = "Repaired " + rep.passes + " encoding pass" + (rep.passes === 1 ? "" : "es") +
+              " (read as " + (rep.source === "auto" ? "auto-detected" : rep.source === "cp1251" ? "Windows-1251" : "Windows-1252") +
+              "). Remaining suspicious sequences: " + rep.after + ".";
+          }
+        }
+        output.value = res;
+        return;
+      } else if (mode === "check") {
+        res = timingReport(text, {
+          maxCps: numVal("chk-cps", 20), minMs: numVal("chk-min", 833),
+          maxMs: numVal("chk-max", 7000), maxLine: numVal("chk-line", 42)
+        });
+        if (status) {
+          var cn = parseCues(text).length;
+          var flagged = (res.match(/^#\d{4}/gm) || []).length;
+          status.textContent = cn
+            ? cn + " cue" + (cn === 1 ? "" : "s") + " checked · " + flagged + " flagged (" +
+              Math.round((flagged / cn) * 100) + "%)"
+            : "No subtitle cues found — check that the file uses \"-->\" between timestamps.";
+        }
+        output.value = res;
+        return;
       }
       output.value = res;
       if (status) {
@@ -277,6 +568,13 @@
     });
     if (in2) in2.addEventListener("input", run);
     if (gap) gap.addEventListener("input", run);
+    if (splitAt) splitAt.addEventListener("input", run);
+    if (part) part.addEventListener("change", run);
+    chkIds.forEach(function (id) { var el = $(id); if (el) el.addEventListener("input", run); });
+    ["enc-src", "enc-twice"].forEach(function (id) {
+      var el = $(id);
+      if (el) el.addEventListener(el.tagName === "SELECT" ? "change" : "change", run);
+    });
     Object.keys(opts).forEach(function (k) { if (opts[k]) opts[k].addEventListener("change", run); });
 
     /* file drop / pick */
@@ -341,7 +639,11 @@
     module.exports = {
       parseTime: parseTime, fmtTime: fmtTime, parseCues: parseCues,
       toVtt: toVtt, toSrt: toSrt, toPlainText: toPlainText,
-      cleanCues: cleanCues, shiftCues: shiftCues, serialize: serialize, looksVtt: looksVtt
+      cleanCues: cleanCues, shiftCues: shiftCues, serialize: serialize, looksVtt: looksVtt,
+      resyncCues: resyncCues, mergeCues: mergeCues, toCsv: toCsv, sbvCues: sbvCues,
+      splitCues: splitCues, parseLooseTime: parseLooseTime,
+      repairEncoding: repairEncoding, mojiCount: mojiCount, utf8Decode: utf8Decode,
+      timingReport: timingReport, plainOf: plainOf
     };
   }
 })();
