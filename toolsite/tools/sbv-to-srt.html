@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clean Up AI-Generated Subtitles — Free, No Upload | Subtitle Toolkit</title>
-<meta name="description" content="Clean messy AI subtitles in your browser: strip sound tags like [Music], HTML and ASS formatting, speaker labels and duplicate cues. No upload required.">
-<link rel="canonical" href="https://toolboxes.top/tools/clean-subtitles">
-<meta property="og:title" content="Clean Up AI-Generated Subtitles — Free, No Upload | Subtitle Toolkit">
-<meta property="og:description" content="Clean messy AI subtitles in your browser: strip sound tags like [Music], HTML and ASS formatting, speaker labels and duplicate cues. No upload required.">
+<title>SBV to SRT Converter — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Free SBV to SRT converter running entirely in your browser. Turn YouTube .sbv caption downloads into standard SubRip subtitles. No upload, no signup.">
+<link rel="canonical" href="https://toolboxes.top/tools/sbv-to-srt">
+<meta property="og:title" content="SBV to SRT Converter — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Free SBV to SRT converter running entirely in your browser. Turn YouTube .sbv caption downloads into standard SubRip subtitles. No upload, no signup.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toolboxes.top/tools/clean-subtitles">
+<meta property="og:url" content="https://toolboxes.top/tools/sbv-to-srt">
 <meta property="og:site_name" content="Subtitle Toolkit">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -172,9 +172,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Clean Up AI-Generated Subtitles","url":"https://toolboxes.top/tools/clean-subtitles","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Clean messy AI subtitles in your browser: strip sound tags like [Music], HTML and ASS formatting, speaker labels and duplicate cues. No upload required.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop the subtitle file you want to clean.","Tick the cleanups you need — the preview updates immediately.","Download the result in the same format you pasted (SRT or VTT is detected automatically)."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will cleaning break my subtitle timing?","acceptedAnswer":{"@type":"Answer","text":"No. Cue start and end times are untouched — only the text inside each cue is modified."}},{"@type":"Question","name":"Can it remove speaker names from a podcast transcript?","acceptedAnswer":{"@type":"Answer","text":"Yes, enable Remove speaker labels. It strips a leading name followed by a colon, for example HOST: or Jane Doe:."}},{"@type":"Question","name":"Does it fix bad punctuation or capitalisation?","acceptedAnswer":{"@type":"Answer","text":"No, and be cautious with tools that claim to. Automated rewriting can change meaning. This tool only removes markup and noise."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Clean Up AI-Generated Subtitles","item":"https://toolboxes.top/tools/clean-subtitles"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"SBV to SRT Converter","url":"https://toolboxes.top/tools/sbv-to-srt","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Free SBV to SRT converter running entirely in your browser. Turn YouTube .sbv caption downloads into standard SubRip subtitles. No upload, no signup.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste your SBV content, or drop the .sbv file onto the box.","The conversion runs in JavaScript on your device — nothing is sent anywhere.","Copy the result or download it as an .srt file."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an .sbv file?","acceptedAnswer":{"@type":"Answer","text":"YouTube's own subtitle download format. It is simpler than SRT — no cue numbers, no arrow — which is convenient to generate but poorly supported by editing software."}},{"@type":"Question","name":"Why does my renamed file show no subtitles?","acceptedAnswer":{"@type":"Answer","text":"Because the extension does not change the contents. A file with SBV formatting and an .srt extension has no --&gt; separators, so SRT parsers find no cues and show nothing."}},{"@type":"Question","name":"Is the text changed in any way?","acceptedAnswer":{"@type":"Answer","text":"No. Only the timestamp format and cue numbering are rewritten. Line breaks inside a cue and any markup are preserved."}},{"@type":"Question","name":"Does this upload my captions?","acceptedAnswer":{"@type":"Answer","text":"No. Everything happens in JavaScript on your device, and the page keeps working with the network disconnected."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"SBV to SRT Converter","item":"https://toolboxes.top/tools/sbv-to-srt"}]}]</script>
 </head>
-<body data-tool="clean">
+<body data-tool="sbv-to-srt">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
@@ -184,9 +184,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </header>
 <main id="main">
 <div class="wrap narrow">
-  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Clean Up AI-Generated Subtitles</p>
-  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Clean Up AI-Generated Subtitles</h1>
-  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p>
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › SBV to SRT Converter</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">SBV to SRT Converter</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.</p>
 
   <div class="tool">
     <div id="drop">
@@ -207,13 +207,7 @@ Paste your subtitle file here…"></textarea>
     </div>
     
     
-    <div class="opts">
-      <label><input type="checkbox" id="opt-sound" checked> Remove sound cues</label>
-      <label><input type="checkbox" id="opt-tags" checked> Remove markup</label>
-      <label><input type="checkbox" id="opt-speaker"> Remove speaker labels</label>
-      <label><input type="checkbox" id="opt-dupe"> Remove duplicate cues</label>
-      <label><input type="checkbox" id="opt-empty" checked> Drop empty cues</label>
-    </div>
+    
     
     <div class="row">
       <button class="btn primary" id="copy">Copy result</button>
@@ -230,62 +224,62 @@ Paste your subtitle file here…"></textarea>
 
   <article>
     <h2>What this does</h2>
-    <p>Auto-generated captions arrive with markup you rarely want: <code>[Music]</code> and <code>[Applause]</code> tags, <code>&lt;font&gt;</code> wrappers, ASS override codes, ALL-CAPS speaker labels and the same line repeated across two cues. This tool removes them and re-emits a valid subtitle file.</p>
+    <p>Captions downloaded from YouTube as <strong>.sbv</strong> use a compact format that most editors and players do not recognise: one line holding <code>start,end</code> as <code>h:mm:ss.mmm</code>, followed by the text, separated by blank lines. SubRip (.srt) is the format virtually everything else accepts, and this page converts between them locally.</p>
 
     <h2>How to use it</h2>
-    <ol><li>Paste or drop the subtitle file you want to clean.</li><li>Tick the cleanups you need — the preview updates immediately.</li><li>Download the result in the same format you pasted (SRT or VTT is detected automatically).</li></ol>
+    <ol><li>Paste your SBV content, or drop the <code>.sbv</code> file onto the box.</li><li>The conversion runs in JavaScript on your device — nothing is sent anywhere.</li><li>Copy the result or download it as an <code>.srt</code> file.</li></ol>
 
     <div class="note">
       <h4>Good to know</h4>
-      <ul><li>Sound cue removal targets bracketed effects such as <code>[Music]</code>, <code>(applause)</code> and <code>♪ … ♪</code>. Genuine dialogue inside brackets is left alone where the pattern is not a known effect.</li><li>Speaker-label removal strips leading <code>SPEAKER:</code> style prefixes, which are common in interview and podcast transcripts.</li><li>Empty cues are dropped so the timeline stays valid.</li></ul>
+      <ul><li>SBV timestamps use a period before milliseconds; SRT uses a comma. The conversion rewrites every one.</li><li>Cue numbers are added automatically, starting at 1 and incrementing in order.</li><li>Blank-line separated blocks with no valid timestamp line are skipped rather than guessed at.</li><li>If your source is already WebVTT, use the <a href="/tools/vtt-to-srt">VTT to SRT converter</a> instead.</li></ul>
     </div>
 
-    <h2>What auto-captioning actually gets wrong</h2>
-    <p>Automatic captions fail in predictable ways, and it helps to know which defects are safe to fix automatically. <strong>Sound tags</strong> such as <code>[Music]</code>, <code>(applause)</code> and <code>♪ … ♪</code> are almost always noise. <strong>Markup wrappers</strong> added by an export step are safe to strip. <strong>Speaker labels</strong> are safe to strip only if you do not need to know who spoke.</p>
-    <p>Two categories are not safe to automate. <strong>Punctuation and capitalisation</strong> change meaning — a misplaced full stop turns a question into a statement, and automatic rewriting is how transcripts end up misquoting people. <strong>Homophone errors</strong> from the recogniser, such as "their" for "there", or a name spelled three different ways, need a human reading the text against the audio.</p>
-    <p>This tool deliberately only performs the safe category. Anything it cannot fix reliably is left for you rather than guessed at.</p>
+    <h2>Why SBV files fail in most tools</h2>
+    <p>SBV has no cue numbers and no arrow between timestamps. It uses a comma to separate start from end, and allows a single-digit hour — <code>0:00:01.000</code> rather than SRT's <code>00:00:01,000</code>.</p>
+    <p>That difference is why an SBV file renamed to <code>.srt</code> usually loads as nothing at all. Parsers expect the <code>--&gt;</code> separator, do not find it, and silently drop every cue.</p>
+    <p>SubRip is the safer target because it is understood by desktop editors, mobile players, and the subtitle upload boxes of most video platforms. If you are unsure which format to produce, produce SRT.</p>
+    <p>Once converted, the file can be shifted, cleaned or resampled with the other tools here — they all read standard SRT.</p>
 
     <h2>Worked example</h2>
     <div class="example">
       <div>
-        <h5>Input — raw auto-captions</h5>
+        <h5>Input — .sbv</h5>
+        <pre>0:00:01.000,0:00:04.000
+Hello there.
+
+0:00:04.200,0:00:07.000
+How are you?</pre>
+      </div>
+      <div>
+        <h5>Output — .srt</h5>
         <pre>1
 00:00:01,000 --&gt; 00:00:04,000
-[Music]
+Hello there.
 
 2
 00:00:04,200 --&gt; 00:00:07,000
-&lt;font color=&quot;#ffffff&quot;&gt;HOST: Welcome back.&lt;/font&gt;
-
-3
-00:00:07,400 --&gt; 00:00:10,000
-HOST: Welcome back.</pre>
-      </div>
-      <div>
-        <h5>Output — cleaned</h5>
-        <pre>1
-00:00:04,200 --&gt; 00:00:07,000
-Welcome back.</pre>
+How are you?</pre>
       </div>
     </div>
-    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">Cue 1 was a sound cue, cue 3 duplicated cue 2, and the font wrapper and speaker label were stripped. Only one cue survives — with its original timing intact.</p>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">Commas between timestamps become <code>--&gt;</code>, periods before milliseconds become commas, and cue numbers are added.</p>
 
     <h2>FAQ</h2>
-    <details class="faq"><summary>Will cleaning break my subtitle timing?</summary><div class="body">No. Cue start and end times are untouched — only the text inside each cue is modified.</div></details>
-    <details class="faq"><summary>Can it remove speaker names from a podcast transcript?</summary><div class="body">Yes, enable <em>Remove speaker labels</em>. It strips a leading name followed by a colon, for example <code>HOST:</code> or <code>Jane Doe:</code>.</div></details>
-    <details class="faq"><summary>Does it fix bad punctuation or capitalisation?</summary><div class="body">No, and be cautious with tools that claim to. Automated rewriting can change meaning. This tool only removes markup and noise.</div></details>
+    <details class="faq"><summary>What is an .sbv file?</summary><div class="body">YouTube's own subtitle download format. It is simpler than SRT — no cue numbers, no arrow — which is convenient to generate but poorly supported by editing software.</div></details>
+    <details class="faq"><summary>Why does my renamed file show no subtitles?</summary><div class="body">Because the extension does not change the contents. A file with SBV formatting and an .srt extension has no <code>--&gt;</code> separators, so SRT parsers find no cues and show nothing.</div></details>
+    <details class="faq"><summary>Is the text changed in any way?</summary><div class="body">No. Only the timestamp format and cue numbering are rewritten. Line breaks inside a cue and any markup are preserved.</div></details>
+    <details class="faq"><summary>Does this upload my captions?</summary><div class="body">No. Everything happens in JavaScript on your device, and the page keeps working with the network disconnected.</div></details>
 
     <h2>Troubleshooting</h2>
     <ol class="tshoot">
-      <li><span class="sym">Genuine dialogue was deleted</span><span class="fix">Only bracket patterns matching known sound effects are removed. If a line such as <code>[laughs]</code> was real speech, untick <em>Remove sound cues</em> and clean again.</span></li>
-      <li><span class="sym">Speaker names are still present</span><span class="fix">Enable <em>Remove speaker labels</em>. It strips a leading name followed by a colon, so <code>NARRATOR:</code> and <code>Dr. Chen:</code> are handled, but a name in the middle of a sentence is left alone.</span></li>
-      <li><span class="sym">The timing looks different after cleaning</span><span class="fix">It should not — start and end times are never modified. If cues look wrong, the source was already broken; inspect it with <a href="/tools/shift-subtitles">Shift subtitles</a>.</span></li>
-      <li><span class="sym">Markup like {\an8} is still there</span><span class="fix">Tick <em>Remove markup</em>. It strips HTML tags and ASS override codes, but leaves plain braces that are part of the dialogue itself.</span></li>
+      <li><span class="sym">The output is empty</span><span class="fix">The blocks are not separated by blank lines, or the first line of each block is not a <code>h:mm:ss.mmm,h:mm:ss.mmm</code> pair. Re-export the captions and try again.</span></li>
+      <li><span class="sym">Only some cues converted</span><span class="fix">Blocks whose first line does not match the timestamp pattern are skipped by design. Check for stray text or merged lines above a cue.</span></li>
+      <li><span class="sym">Timestamps look wrong</span><span class="fix">SBV allows a one-digit hour. Long recordings exported with a two-digit hour still convert correctly — if times are off, confirm the source file's own timing first.</span></li>
+      <li><span class="sym">I have a .vtt file, not .sbv</span><span class="fix">Use the <a href="/tools/vtt-to-srt">VTT to SRT converter</a>. VTT and SBV look similar but have different header and separator rules.</span></li>
     </ol>
 
     <h2>Related tools</h2>
     <div class="grid">
-      <a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a>
+      <a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a>
     </div>
   </article>
   <div class="note">

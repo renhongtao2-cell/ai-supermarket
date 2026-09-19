@@ -12,6 +12,8 @@ const files = [
   "tools/remove-timestamps.html",
   "tools/clean-subtitles.html",
   "tools/shift-subtitles.html",
+  "tools/resync-subtitles.html",
+  "tools/sbv-to-srt.html",
   "guides/subtitle-formats.html",
   "guides/add-subtitles-to-html5-video.html",
   "about.html",

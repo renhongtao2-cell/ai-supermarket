@@ -111,6 +111,41 @@
     });
   }
 
+  /* 渐进失步：帧率/倍速不匹配时，误差随播放递增，单个偏移修不了，只能按比例重采样。 */
+  function resyncCues(text, ratio) {
+    if (!ratio || ratio <= 0) ratio = 1;
+    var cues = parseCues(text);
+    return cues.map(function (c) {
+      return {
+        start: Math.max(0, Math.round(c.start * ratio)),
+        end: Math.max(0, Math.round(c.end * ratio)),
+        text: c.text
+      };
+    });
+  }
+
+  /* YouTube SBV：每行 "0:00:01.000,0:00:04.000" 后跟文本，空行分块。 */
+  function sbvTime(s) {
+    var m = /^(-?\d+):(\d{1,2}):(\d{1,2})[.,](\d{1,3})$/.exec(String(s).trim());
+    if (!m) return 0;
+    var msStr = m[4];
+    while (msStr.length < 3) msStr += "0";
+    return (parseInt(m[1], 10) * 3600 + parseInt(m[2], 10) * 60 + parseInt(m[3], 10)) * 1000 + parseInt(msStr, 10);
+  }
+
+  function sbvCues(text) {
+    var blocks = String(text).replace(/\r\n?/g, "\n").split(/\n{2,}/);
+    var cues = [];
+    for (var i = 0; i < blocks.length; i++) {
+      var lines = blocks[i].split("\n");
+      var m = /^\s*(-?\d+:\d{1,2}:\d{1,2}[.,]\d{1,3})\s*,\s*(-?\d+:\d{1,2}:\d{1,2}[.,]\d{1,3})\s*$/.exec(lines[0] || "");
+      if (!m) continue;
+      var t = lines.slice(1).join("\n").replace(/\n+$/, "").trim();
+      cues.push({ start: sbvTime(m[1]), end: sbvTime(m[2]), text: t });
+    }
+    return cues;
+  }
+
   function download(name, content) {
     var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     var a = document.createElement("a");
@@ -132,7 +167,7 @@
       tags: $("opt-tags"), sound: $("opt-sound"), speaker: $("opt-speaker"),
       empty: $("opt-empty"), dupe: $("opt-dupe"), dedupe: $("opt-dedupe"),
     };
-    var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status");
+    var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status"), ratio = $("ratio");
 
     function readOpt(k, dflt) {
       var el = opts[k];
@@ -164,6 +199,14 @@
         if (isNaN(ms)) ms = 0;
         cues = shiftCues(text, ms);
         res = cues.length ? serialize(cues, vtt) : "";
+      } else if (mode === "resync") {
+        var r = ratio ? parseFloat(ratio.value) : NaN;
+        if (isNaN(r) || r <= 0) r = 1;
+        cues = resyncCues(text, r);
+        res = cues.length ? serialize(cues, vtt) : "";
+      } else if (mode === "sbv-to-srt") {
+        var sc = sbvCues(text);
+        res = sc.length ? serialize(sc, false) : "";
       }
       output.value = res;
       if (status) {
@@ -182,6 +225,15 @@
     });
     if (offsetMs) offsetMs.addEventListener("input", function () {
       if (offset) offset.value = ((parseInt(offsetMs.value, 10) || 0) / 1000).toFixed(3).replace(/\.?0+$/, "");
+      run();
+    });
+    var preset = $("preset");
+    if (preset && ratio) preset.addEventListener("change", function () {
+      ratio.value = preset.value;
+      run();
+    });
+    if (ratio) ratio.addEventListener("input", function () {
+      if (preset) preset.value = "1";
       run();
     });
     Object.keys(opts).forEach(function (k) { if (opts[k]) opts[k].addEventListener("change", run); });

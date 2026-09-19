@@ -288,6 +288,123 @@ const TOOLS = [
     ],
     related: ["srt-to-vtt", "vtt-to-srt", "clean-subtitles"],
   },
+  {
+    slug: "resync-subtitles",
+    h1: "Resync Subtitles by Frame Rate or Speed",
+    tagline: "Fix subtitles that drift progressively out of sync by resampling them to your video's frame rate or playback speed.",
+    metaDesc:
+      "Resync drifting subtitles by resampling every timestamp. Pick a 23.976/25 fps conversion or any playback speed. Runs in your browser, no upload.",
+    mode: "resync",
+    intro:
+      "When subtitles start roughly in sync and get worse as the video plays, no single offset can fix them — the error <em>grows</em> with time. That is a frame-rate or playback-speed mismatch, and the fix is to <strong>resample</strong> every timestamp by a ratio rather than shift it by a constant.",
+    steps: [
+      "Paste or drop the subtitle file that drifts.",
+      "Pick the preset that matches your situation — for example <code>23.976 fps → 25 fps</code> — or type a ratio yourself.",
+      "Download the resampled file. Every start and end time is multiplied by the same ratio.",
+    ],
+    deep: {
+      h2: "Drift versus offset: pick the right fix",
+      body: [
+        "Compare a cue near the <strong>start</strong> of the file with one near the <strong>end</strong>. That single check tells you which tool you need.",
+        "<strong>Constant offset.</strong> Both cues are wrong by the same amount. Every line appears, say, two seconds late. Use the <a href=\"/tools/shift-subtitles\">shift tool</a> — one offset fixes the whole track.",
+        "<strong>Progressive drift.</strong> The first cue is nearly right and the last one is badly wrong, and the error grows steadily through the file. This is what this page fixes. A drifting track needs its timestamps <em>scaled</em>, not moved.",
+        "The usual cause is a subtitle file authored for one frame rate being played against another. The 23.976 fps ↔ 25 fps pair is the classic case: it is the difference between NTSC-derived and PAL-derived masters, and it produces about four seconds of drift over a feature-length film.",
+        "The same maths covers playback speed. If a video was sped up to 1.1× to fit a time slot, its subtitles need dividing by 1.1 — which is a ratio of roughly 0.909.",
+      ],
+    },
+    notes: [
+      "A ratio above 1 stretches the timeline, making subtitles appear later; below 1 compresses it, making them appear earlier.",
+      "Resampling changes every gap between cues, not just their position. If the original file had correct pacing, the output will too.",
+      "The output format follows the input, so an SRT file stays SRT and a VTT file stays VTT.",
+      "If the first cue is correct but later ones drift, resampling around that first cue gives the best result — its position barely moves.",
+    ],
+    faq: [
+      ["How do I tell drift from a simple offset?",
+       "Check a cue near the start and one near the end. If both are wrong by the same amount, it is an offset. If the error grows through the file, it is drift and needs a ratio."],
+      ["What ratio do I use for 23.976 to 25 fps?",
+       "Multiply by <code>25 ÷ 23.976 ≈ 1.04271</code>. The preset on this page already has it, so you do not have to type it."],
+      ["My video plays faster than the original. What then?",
+       "Divide by the speed factor. For 1.1× playback use a ratio of <code>1 ÷ 1.1 ≈ 0.909</code>; for 1.25× use <code>0.8</code>. Both are in the preset list."],
+      ["Can this fix a file that is out of sync only in one section?",
+       "No. Split the file at the point where sync changes and resample each part separately — a single ratio applies to the whole track."],
+    ],
+    example: {
+      inLabel: "Input — drifting SRT",
+      outLabel: "Output — resampled ×1.04271",
+      before: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n632\n01:40:12,500 --> 01:40:15,500\nGoodbye.",
+      after: "1\n00:00:01,043 --> 00:00:04,171\nHello there.\n\n632\n01:44:17,086 --> 01:44:20,213\nGoodbye.",
+      cap: "The early cue barely moves, while the late cue shifts by roughly four minutes — that widening gap is exactly what a fixed offset cannot reproduce.",
+    },
+    troubleshoot: [
+      ["The first cue moved too",
+       "Resampling scales everything from zero, so the earliest cues shift slightly. If your file starts late, subtract that starting offset first with the shift tool, then resample."],
+      ["Subtitles are now drifting the other way",
+       "The ratio is inverted. Swap it — use 0.95904 instead of 1.04271 for a 25 fps source played at 23.976."],
+      ["Nothing changed in the output",
+       "The ratio is 1, which is a no-op. Pick a preset or enter a value other than 1."],
+      ["Cues overlap after resampling",
+       "Stretching a track that already had tight gaps can push cues into each other. Clean or re-time the crowded section manually after resampling."],
+    ],
+    related: ["shift-subtitles", "srt-to-vtt", "clean-subtitles"],
+  },
+  {
+    slug: "sbv-to-srt",
+    h1: "SBV to SRT Converter",
+    tagline: "Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.",
+    metaDesc:
+      "Free SBV to SRT converter running entirely in your browser. Turn YouTube .sbv caption downloads into standard SubRip subtitles. No upload, no signup.",
+    mode: "sbv-to-srt",
+    intro:
+      "Captions downloaded from YouTube as <strong>.sbv</strong> use a compact format that most editors and players do not recognise: one line holding <code>start,end</code> as <code>h:mm:ss.mmm</code>, followed by the text, separated by blank lines. SubRip (.srt) is the format virtually everything else accepts, and this page converts between them locally.",
+    steps: [
+      "Paste your SBV content, or drop the <code>.sbv</code> file onto the box.",
+      "The conversion runs in JavaScript on your device — nothing is sent anywhere.",
+      "Copy the result or download it as an <code>.srt</code> file.",
+    ],
+    deep: {
+      h2: "Why SBV files fail in most tools",
+      body: [
+        "SBV has no cue numbers and no arrow between timestamps. It uses a comma to separate start from end, and allows a single-digit hour — <code>0:00:01.000</code> rather than SRT's <code>00:00:01,000</code>.",
+        "That difference is why an SBV file renamed to <code>.srt</code> usually loads as nothing at all. Parsers expect the <code>--&gt;</code> separator, do not find it, and silently drop every cue.",
+        "SubRip is the safer target because it is understood by desktop editors, mobile players, and the subtitle upload boxes of most video platforms. If you are unsure which format to produce, produce SRT.",
+        "Once converted, the file can be shifted, cleaned or resampled with the other tools here — they all read standard SRT.",
+      ],
+    },
+    notes: [
+      "SBV timestamps use a period before milliseconds; SRT uses a comma. The conversion rewrites every one.",
+      "Cue numbers are added automatically, starting at 1 and incrementing in order.",
+      "Blank-line separated blocks with no valid timestamp line are skipped rather than guessed at.",
+      "If your source is already WebVTT, use the <a href=\"/tools/vtt-to-srt\">VTT to SRT converter</a> instead.",
+    ],
+    faq: [
+      ["What is an .sbv file?",
+       "YouTube's own subtitle download format. It is simpler than SRT — no cue numbers, no arrow — which is convenient to generate but poorly supported by editing software."],
+      ["Why does my renamed file show no subtitles?",
+       "Because the extension does not change the contents. A file with SBV formatting and an .srt extension has no <code>--&gt;</code> separators, so SRT parsers find no cues and show nothing."],
+      ["Is the text changed in any way?",
+       "No. Only the timestamp format and cue numbering are rewritten. Line breaks inside a cue and any markup are preserved."],
+      ["Does this upload my captions?",
+       "No. Everything happens in JavaScript on your device, and the page keeps working with the network disconnected."],
+    ],
+    example: {
+      inLabel: "Input — .sbv",
+      outLabel: "Output — .srt",
+      before: "0:00:01.000,0:00:04.000\nHello there.\n\n0:00:04.200,0:00:07.000\nHow are you?",
+      after: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\nHow are you?",
+      cap: "Commas between timestamps become <code>--&gt;</code>, periods before milliseconds become commas, and cue numbers are added.",
+    },
+    troubleshoot: [
+      ["The output is empty",
+       "The blocks are not separated by blank lines, or the first line of each block is not a <code>h:mm:ss.mmm,h:mm:ss.mmm</code> pair. Re-export the captions and try again."],
+      ["Only some cues converted",
+       "Blocks whose first line does not match the timestamp pattern are skipped by design. Check for stray text or merged lines above a cue."],
+      ["Timestamps look wrong",
+       "SBV allows a one-digit hour. Long recordings exported with a two-digit hour still convert correctly — if times are off, confirm the source file's own timing first."],
+      ["I have a .vtt file, not .sbv",
+       "Use the <a href=\"/tools/vtt-to-srt\">VTT to SRT converter</a>. VTT and SBV look similar but have different header and separator rules."],
+    ],
+    related: ["vtt-to-srt", "srt-to-vtt", "clean-subtitles"],
+  },
 ];
 
 const bySlug = Object.fromEntries(TOOLS.map((t) => [t.slug, t]));
@@ -528,6 +645,41 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     });
   }
 
+  /* 渐进失步：帧率/倍速不匹配时，误差随播放递增，单个偏移修不了，只能按比例重采样。 */
+  function resyncCues(text, ratio) {
+    if (!ratio || ratio <= 0) ratio = 1;
+    var cues = parseCues(text);
+    return cues.map(function (c) {
+      return {
+        start: Math.max(0, Math.round(c.start * ratio)),
+        end: Math.max(0, Math.round(c.end * ratio)),
+        text: c.text
+      };
+    });
+  }
+
+  /* YouTube SBV：每行 "0:00:01.000,0:00:04.000" 后跟文本，空行分块。 */
+  function sbvTime(s) {
+    var m = /^(-?\d+):(\d{1,2}):(\d{1,2})[.,](\d{1,3})$/.exec(String(s).trim());
+    if (!m) return 0;
+    var msStr = m[4];
+    while (msStr.length < 3) msStr += "0";
+    return (parseInt(m[1], 10) * 3600 + parseInt(m[2], 10) * 60 + parseInt(m[3], 10)) * 1000 + parseInt(msStr, 10);
+  }
+
+  function sbvCues(text) {
+    var blocks = String(text).replace(/\r\n?/g, "\n").split(/\n{2,}/);
+    var cues = [];
+    for (var i = 0; i < blocks.length; i++) {
+      var lines = blocks[i].split("\n");
+      var m = /^\s*(-?\d+:\d{1,2}:\d{1,2}[.,]\d{1,3})\s*,\s*(-?\d+:\d{1,2}:\d{1,2}[.,]\d{1,3})\s*$/.exec(lines[0] || "");
+      if (!m) continue;
+      var t = lines.slice(1).join("\n").replace(/\n+$/, "").trim();
+      cues.push({ start: sbvTime(m[1]), end: sbvTime(m[2]), text: t });
+    }
+    return cues;
+  }
+
   function download(name, content) {
     var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     var a = document.createElement("a");
@@ -549,7 +701,7 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
       tags: $("opt-tags"), sound: $("opt-sound"), speaker: $("opt-speaker"),
       empty: $("opt-empty"), dupe: $("opt-dupe"), dedupe: $("opt-dedupe"),
     };
-    var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status");
+    var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status"), ratio = $("ratio");
 
     function readOpt(k, dflt) {
       var el = opts[k];
@@ -581,6 +733,14 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
         if (isNaN(ms)) ms = 0;
         cues = shiftCues(text, ms);
         res = cues.length ? serialize(cues, vtt) : "";
+      } else if (mode === "resync") {
+        var r = ratio ? parseFloat(ratio.value) : NaN;
+        if (isNaN(r) || r <= 0) r = 1;
+        cues = resyncCues(text, r);
+        res = cues.length ? serialize(cues, vtt) : "";
+      } else if (mode === "sbv-to-srt") {
+        var sc = sbvCues(text);
+        res = sc.length ? serialize(sc, false) : "";
       }
       output.value = res;
       if (status) {
@@ -599,6 +759,15 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     });
     if (offsetMs) offsetMs.addEventListener("input", function () {
       if (offset) offset.value = ((parseInt(offsetMs.value, 10) || 0) / 1000).toFixed(3).replace(/\.?0+$/, "");
+      run();
+    });
+    var preset = $("preset");
+    if (preset && ratio) preset.addEventListener("change", function () {
+      ratio.value = preset.value;
+      run();
+    });
+    if (ratio) ratio.addEventListener("input", function () {
+      if (preset) preset.value = "1";
       run();
     });
     Object.keys(opts).forEach(function (k) { if (opts[k]) opts[k].addEventListener("change", run); });
@@ -976,6 +1145,7 @@ const homeBody = `
 function toolBody(t) {
   const isClean = t.slug === "clean-subtitles";
   const isShift = t.slug === "shift-subtitles";
+  const isResync = t.slug === "resync-subtitles";
   const isText = t.slug === "remove-timestamps";
   const outName = isText ? "transcript.txt" : t.slug === "srt-to-vtt" ? "output.vtt" : t.slug === "vtt-to-srt" ? "output.srt" : "output.srt";
   const outLabel = isText ? "Plain text" : t.slug === "srt-to-vtt" ? "WebVTT output" : "SRT output";
@@ -1006,6 +1176,18 @@ Paste your subtitle file here…"></textarea>
     ${isShift ? `<div class="opts">
       <span class="field">Shift by <input type="number" id="offset" step="0.1" value="0" aria-label="Offset in seconds"> seconds</span>
       <span class="field">or <input type="number" id="offset-ms" step="10" value="0" aria-label="Offset in milliseconds"> ms</span>
+    </div>` : ""}
+    ${isResync ? `<div class="opts">
+      <span class="field">Preset <select id="preset" aria-label="Frame rate or playback speed preset">
+        <option value="1">Custom — use the ratio box</option>
+        <option value="1.04271">23.976 fps → 25 fps (×1.04271)</option>
+        <option value="0.95904">25 fps → 23.976 fps (×0.95904)</option>
+        <option value="1.04167">24 fps → 25 fps (×1.04167)</option>
+        <option value="0.96">24 fps → 23.976 fps (×0.96)</option>
+        <option value="0.90909">Video plays at 1.1× speed (×0.90909)</option>
+        <option value="0.8">Video plays at 1.25× speed (×0.8)</option>
+      </select></span>
+      <span class="field">or ratio <input type="number" id="ratio" step="0.00001" value="1" aria-label="Resample ratio"></span>
     </div>` : ""}
     ${isClean ? `<div class="opts">
       <label><input type="checkbox" id="opt-sound" checked> Remove sound cues</label>
