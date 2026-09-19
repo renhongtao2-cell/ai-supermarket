@@ -133,6 +133,38 @@
     return (parseInt(m[1], 10) * 3600 + parseInt(m[2], 10) * 60 + parseInt(m[3], 10)) * 1000 + parseInt(msStr, 10);
   }
 
+  /* 合并：第二份文件整体接到第一份结束之后（+ 可选间隔）。用于 CD1+CD2、加配字幕轨。 */
+  function mergeCues(a, b, gapMs) {
+    var ca = parseCues(a), cb = parseCues(b);
+    var base = 0;
+    for (var i = 0; i < ca.length; i++) if (ca[i].end > base) base = ca[i].end;
+    base += (gapMs || 0);
+    var out = ca.slice();
+    for (var j = 0; j < cb.length; j++) {
+      out.push({ start: cb[j].start + base, end: cb[j].end + base, text: cb[j].text });
+    }
+    return out;
+  }
+
+  /* 导出 CSV：序号,开始,结束,时长(ms),文本 —— 给翻译/审校/表格用。 */
+  function toCsv(text) {
+    var cues = parseCues(text);
+    if (!cues.length) return "";
+    var q = function (s) { return '"' + String(s).replace(/"/g, '""') + '"'; };
+    var rows = ["index,start,end,duration_ms,text"];
+    for (var i = 0; i < cues.length; i++) {
+      var c = cues[i];
+      rows.push([
+        i + 1,
+        q(fmtTime(c.start, ",")),
+        q(fmtTime(c.end, ",")),
+        c.end - c.start,
+        q(c.text.replace(/\n/g, " "))
+      ].join(","));
+    }
+    return rows.join("\n");
+  }
+
   function sbvCues(text) {
     var blocks = String(text).replace(/\r\n?/g, "\n").split(/\n{2,}/);
     var cues = [];
@@ -168,6 +200,7 @@
       empty: $("opt-empty"), dupe: $("opt-dupe"), dedupe: $("opt-dedupe"),
     };
     var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status"), ratio = $("ratio");
+    var in2 = $("in2"), gap = $("gap");
 
     function readOpt(k, dflt) {
       var el = opts[k];
@@ -207,6 +240,12 @@
       } else if (mode === "sbv-to-srt") {
         var sc = sbvCues(text);
         res = sc.length ? serialize(sc, false) : "";
+      } else if (mode === "merge") {
+        var g = gap ? Math.round((parseFloat(gap.value) || 0) * 1000) : 0;
+        cues = mergeCues(text, in2 ? in2.value : "", g);
+        res = cues.length ? serialize(cues, vtt) : "";
+      } else if (mode === "to-csv") {
+        res = toCsv(text);
       }
       output.value = res;
       if (status) {
@@ -236,6 +275,8 @@
       if (preset) preset.value = "1";
       run();
     });
+    if (in2) in2.addEventListener("input", run);
+    if (gap) gap.addEventListener("input", run);
     Object.keys(opts).forEach(function (k) { if (opts[k]) opts[k].addEventListener("change", run); });
 
     /* file drop / pick */

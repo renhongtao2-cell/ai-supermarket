@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Add Subtitles to HTML5 Video (track, WebVTT, CORS)</title>
-<meta name="description" content="Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.">
-<link rel="canonical" href="https://toolboxes.top/guides/add-subtitles-to-html5-video">
-<meta property="og:title" content="How to Add Subtitles to HTML5 Video (track, WebVTT, CORS)">
-<meta property="og:description" content="Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.">
+<title>Merge Subtitle Files — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Merge two subtitle files into a single SRT or VTT track in your browser. Joins CD1 and CD2, or adds a second cue set, with no upload.">
+<link rel="canonical" href="https://toolboxes.top/tools/merge-subtitles">
+<meta property="og:title" content="Merge Subtitle Files — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Merge two subtitle files into a single SRT or VTT track in your browser. Joins CD1 and CD2, or adds a second cue set, with no upload.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toolboxes.top/guides/add-subtitles-to-html5-video">
+<meta property="og:url" content="https://toolboxes.top/tools/merge-subtitles">
 <meta property="og:site_name" content="Subtitle Toolkit">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -172,9 +172,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Add Subtitles to HTML5 Video","description":"Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.","url":"https://toolboxes.top/guides/add-subtitles-to-html5-video","inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"How to Add Subtitles to HTML5 Video","item":"https://toolboxes.top/guides/add-subtitles-to-html5-video"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Merge Subtitle Files","url":"https://toolboxes.top/tools/merge-subtitles","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Merge two subtitle files into a single SRT or VTT track in your browser. Joins CD1 and CD2, or adds a second cue set, with no upload.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop the first subtitle file into the top box.","Paste the second file into the box below it.","Optionally set a gap in seconds, then download the merged file."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does my merged file play both halves at the start?","acceptedAnswer":{"@type":"Answer","text":"Because the files were concatenated without re-timing. The second file's timestamps still begin at zero. This tool shifts them by the first file's duration."}},{"@type":"Question","name":"Can I merge more than two files?","acceptedAnswer":{"@type":"Answer","text":"Not in one step. Merge the first two, copy the output, then merge that with the third — repeat as needed."}},{"@type":"Question","name":"What gap should I use?","acceptedAnswer":{"@type":"Answer","text":"Zero is correct when the parts are continuous. Use one or two seconds if the original files were split at a scene change and you want a beat before the next part starts."}},{"@type":"Question","name":"Does the text get changed?","acceptedAnswer":{"@type":"Answer","text":"No. Only timestamps and cue numbers are rewritten; the wording of every cue is preserved exactly."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Merge Subtitle Files","item":"https://toolboxes.top/tools/merge-subtitles"}]}]</script>
 </head>
-<body>
+<body data-tool="merge">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
@@ -182,64 +182,123 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
     <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><a href="/tools/resync-subtitles">Resync Subtitles by Frame Rate or Speed</a><a href="/tools/sbv-to-srt">SBV to SRT</a><a href="/tools/merge-subtitles">Merge Subtitle Files</a><a href="/tools/srt-to-csv">Subtitles to CSV</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
   </div>
 </header>
-<main id="main"><div class="wrap narrow">
-  <p class="crumb"><a href="/">Home</a> › Guides › How to Add Subtitles to HTML5 Video</p>
-  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">How to Add Subtitles to HTML5 Video</h1>
-  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">The native track element handles captions without any JavaScript library. Here is the working setup, and the four reasons it silently does nothing.</p>
-  <article>
-<h2>The short version</h2>
-<p>Use a <code>&lt;track&gt;</code> element pointing at a WebVTT file. If your file is <code>.srt</code>, convert it first — browsers do not read SubRip at all. The three things that break most often are the file format, the server's content type, and cross-origin access.</p>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Merge Subtitle Files</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Merge Subtitle Files</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Combine two SRT or VTT files into one track, with the second file appended after the first.</p>
 
-<h2>A minimal working example</h2>
-<pre>&lt;video controls width="640"&gt;
-  &lt;source src="video.mp4" type="video/mp4"&gt;
-  &lt;track src="captions.vtt" kind="subtitles" srclang="en" label="English" default&gt;
-&lt;/video&gt;</pre>
-<p>Save the captions as <code>captions.vtt</code> beside the video. That is a complete, working setup — no library, no configuration.</p>
-
-<h2>The four attributes that matter</h2>
-<ul>
-<li><code>src</code> — path to the WebVTT file.</li>
-<li><code>kind</code> — use <code>subtitles</code> when you are translating dialogue, <code>captions</code> when you are also conveying sound effects and speaker identity. The distinction is about accessibility, not about file format.</li>
-<li><code>srclang</code> — a BCP 47 language tag such as <code>en</code>, <code>zh-Hans</code> or <code>pt-BR</code>. Required for the track to be offered as a subtitle option.</li>
-<li><code>label</code> — the text shown in the player's caption menu. Omit it and the menu entry can appear blank.</li>
-</ul>
-<p>Add <code>default</code> to the track you want enabled automatically. Supply several tracks without marking any <code>default</code> and captions start switched off, leaving the viewer to find the menu.</p>
-
-<h2>Why your captions silently do nothing</h2>
-<p>Browsers fail quietly here. A broken track usually produces no console error and no visible message — the captions simply never appear.</p>
-<h3>1. The file is SubRip</h3>
-<p>An <code>.srt</code> file is ignored even when you point <code>src</code> straight at it. Convert it with the <a href="/tools/srt-to-vtt">SRT to VTT converter</a>. If you can see a comma inside the timestamp, that is your problem.</p>
-<h3>2. The server sends the wrong content type</h3>
-<p>WebVTT files must be served as <code>text/vtt</code>. Plenty of servers and default static-host configurations serve an unfamiliar extension as <code>application/octet-stream</code> or <code>text/plain</code>, and browsers then refuse the track. Check the response headers in your browser's network panel. On a static host, add a rule mapping <code>.vtt</code> to <code>text/vtt</code>.</p>
-<h3>3. The file is on a different origin</h3>
-<p>Track files follow cross-origin rules. If the video and the captions live on different domains, the caption request needs CORS headers <em>and</em> the <code>&lt;track&gt;</code> element needs <code>crossorigin="anonymous"</code>. Without both, the track is blocked.</p>
-<h3>4. The WebVTT file is malformed</h3>
-<p>WebVTT requires the <code>WEBVTT</code> header, a blank line before the first cue, and a blank line between cues. A file missing any of those parses as empty. Re-convert from the original source, or run it through <a href="/tools/clean-subtitles">Clean subtitles</a>.</p>
-
-<h2>Styling the captions</h2>
-<p>WebVTT cues can be styled from your own CSS using the <code>::cue</code> pseudo-element — a genuine advantage over SubRip.</p>
-<pre>video::cue {
-  background: rgba(0,0,0,.75);
-  color: #fff;
-  font-size: 1.1rem;
-}
-video::cue(.speaker) { color: #ffd479; }</pre>
-<p>To use a class, write it into the cue as <code>&lt;c.speaker&gt;</code> in the WebVTT text. Class-based cue styling is supported unevenly across browsers, so treat it as an enhancement rather than a requirement.</p>
-
-<h2>Serving captions in more than one language</h2>
-<p>Add one <code>&lt;track&gt;</code> per language. The player builds its caption menu from <code>label</code> and <code>srclang</code>.</p>
-<pre>&lt;track src="captions.en.vtt" kind="subtitles" srclang="en" label="English" default&gt;
-&lt;track src="captions.es.vtt" kind="subtitles" srclang="es" label="Español"&gt;
-&lt;track src="captions.de.vtt" kind="subtitles" srclang="de" label="Deutsch"&gt;</pre>
-
-<h2>Do you need a player library?</h2>
-<p>Not for basic captions. Native <code>&lt;track&gt;</code> support in modern browsers handles loading, the caption menu, timing and styling on its own. Reach for a JavaScript player library when you need adaptive bitrate streaming, DRM, or caption rendering that must look identical on every platform — not simply to display subtitles.</p></article>
-  <h2>Tools mentioned in this guide</h2>
-  <div class="grid">
-    <a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/resync-subtitles"><h3>Resync Subtitles by Frame Rate or Speed</h3><p>Fix subtitles that drift progressively out of sync by resampling them to your video&#39;s frame rate or playback speed.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/sbv-to-srt"><h3>SBV to SRT Converter</h3><p>Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/merge-subtitles"><h3>Merge Subtitle Files</h3><p>Combine two SRT or VTT files into one track, with the second file appended after the first.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-csv"><h3>Subtitles to CSV Converter</h3><p>Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.</p><div class="go">Open tool →</div></a>
+  <div class="tool">
+    <div id="drop">
+      Drop a subtitle file here, or
+      <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
+    </div>
+    <div class="panes">
+      <div class="pane">
+        <label for="in2">Second file — .srt / .vtt</label>
+        <textarea id="in2" spellcheck="false" placeholder="Paste the second subtitle file here…"></textarea>
+      </div>
+      <div class="pane">
+        <span class="field">Gap between files <input type="number" id="gap" step="0.1" value="0" aria-label="Gap in seconds"> seconds</span>
+        <p style="margin:10px 0 0;color:var(--text-2);font-size:14px">The second file is appended after the first one ends, so CD1 + CD2 stay in order.</p>
+      </div>
+    </div>
+    <div class="panes">
+      <div class="pane">
+        <label for="in">Input — .srt / .vtt</label>
+        <textarea id="in" spellcheck="false" placeholder="1
+00:00:01,000 --> 00:00:04,000
+Paste your subtitle file here…"></textarea>
+      </div>
+      <div class="pane">
+        <label for="out">SRT output</label>
+        <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
+      </div>
+    </div>
+    
+    
+    
+    
+    <div class="row">
+      <button class="btn primary" id="copy">Copy result</button>
+      <button class="btn" id="download" data-name="output.srt">Download SRT</button>
+      <button class="btn" id="clear">Clear</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
   </div>
-  <p class="updated">Last updated 2026-09-17. All tools run locally in your browser.</p>
+
+  <div class="privacy">
+    <h4>Your file never leaves your device</h4>
+    <p>This tool is plain JavaScript. There is no upload step and no server-side processing, so confidential captions, unreleased content and client material stay on your machine.</p>
+  </div>
+
+  <article>
+    <h2>What this does</h2>
+    <p>Feature films and long recordings are often split across several subtitle files, and a player will only load one track. Merging them means appending the second file's cues after the first one ends and renumbering the result — which is what this page does locally, in one step.</p>
+
+    <h2>How to use it</h2>
+    <ol><li>Paste or drop the <strong>first</strong> subtitle file into the top box.</li><li>Paste the <strong>second</strong> file into the box below it.</li><li>Optionally set a gap in seconds, then download the merged file.</li></ol>
+
+    <div class="note">
+      <h4>Good to know</h4>
+      <ul><li>The second file is appended after the <strong>last cue of the first file</strong>, not after its final timestamp — overlapping cues inside a file do not shorten the result.</li><li>Both files should be in the same format. The output follows the first file's format.</li><li>A gap of one or two seconds reads more naturally than cutting straight from one part to the next.</li><li>To merge more than two files, merge the first two, then merge the result with the third.</li></ul>
+    </div>
+
+    <h2>Why merging is not just concatenation</h2>
+    <p>The naive approach — pasting one file after another — produces a track where the second half restarts at zero. Every cue from the second file then appears at the beginning of the video, overlapping the first half.</p>
+    <p>A correct merge re-times the second file. Its cues are shifted by however long the first file runs, so the combined track plays straight through. That is what the <em>gap</em> setting adjusts: zero means the second file starts the instant the first one ends.</p>
+    <p>Cue numbers are then reassigned in order. SubRip numbers are largely cosmetic — most players ignore them — but a continuous sequence makes the file easier to diff and edit afterwards.</p>
+    <p>If you need the two files to overlap rather than follow each other — a translation track alongside an original, for example — merging is the wrong operation. Players handle those as separate tracks, not one combined file.</p>
+
+    <h2>Worked example</h2>
+    <div class="example">
+      <div>
+        <h5>Input — file A, then file B</h5>
+        <pre>A: 1
+00:00:01,000 --&gt; 00:00:04,000
+Part one.
+
+B: 1
+00:00:01,000 --&gt; 00:00:04,000
+Part two.</pre>
+      </div>
+      <div>
+        <h5>Output — merged</h5>
+        <pre>1
+00:00:01,000 --&gt; 00:00:04,000
+Part one.
+
+2
+00:00:04,000 --&gt; 00:00:07,000
+Part two.</pre>
+      </div>
+    </div>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">File B's cue moves from 00:00:01 to 00:00:04 — the point where file A ends. Set a gap to push it later still.</p>
+
+    <h2>FAQ</h2>
+    <details class="faq"><summary>Why does my merged file play both halves at the start?</summary><div class="body">Because the files were concatenated without re-timing. The second file's timestamps still begin at zero. This tool shifts them by the first file's duration.</div></details>
+    <details class="faq"><summary>Can I merge more than two files?</summary><div class="body">Not in one step. Merge the first two, copy the output, then merge that with the third — repeat as needed.</div></details>
+    <details class="faq"><summary>What gap should I use?</summary><div class="body">Zero is correct when the parts are continuous. Use one or two seconds if the original files were split at a scene change and you want a beat before the next part starts.</div></details>
+    <details class="faq"><summary>Does the text get changed?</summary><div class="body">No. Only timestamps and cue numbers are rewritten; the wording of every cue is preserved exactly.</div></details>
+
+    <h2>Troubleshooting</h2>
+    <ol class="tshoot">
+      <li><span class="sym">The second file still starts at the beginning</span><span class="fix">Confirm the second file is in the lower box. Text pasted into the main input is treated as file A.</span></li>
+      <li><span class="sym">Cues from the two files overlap</span><span class="fix">Increase the gap. If file A's last cue ends later than you expect, the append point moves with it.</span></li>
+      <li><span class="sym">The output is empty</span><span class="fix">At least one of the two boxes has no recognisable cues. Both files must use the <code>--&gt;</code> separator between timestamps.</span></li>
+      <li><span class="sym">Numbering restarts in the middle</span><span class="fix">That happens when the second file was parsed as a separate track. Re-paste both files, ensuring there is no stray text between them.</span></li>
+    </ol>
+
+    <h2>Related tools</h2>
+    <div class="grid">
+      <a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a>
+    </div>
+  </article>
+  <div class="note">
+    <h4>Further reading</h4>
+    <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
+  </div>
+  <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
 </div></main>
 <footer class="site">
   <div class="wrap">

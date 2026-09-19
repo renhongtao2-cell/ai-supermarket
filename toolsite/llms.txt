@@ -14,6 +14,8 @@ Last updated: 2026-09-17
 - [Shift Subtitle Timing](https://toolboxes.top/tools/shift-subtitles): Move every subtitle cue earlier or later to fix out-of-sync captions.
 - [Resync Subtitles by Frame Rate or Speed](https://toolboxes.top/tools/resync-subtitles): Fix subtitles that drift progressively out of sync by resampling them to your video's frame rate or playback speed.
 - [SBV to SRT Converter](https://toolboxes.top/tools/sbv-to-srt): Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.
+- [Merge Subtitle Files](https://toolboxes.top/tools/merge-subtitles): Combine two SRT or VTT files into one track, with the second file appended after the first.
+- [Subtitles to CSV Converter](https://toolboxes.top/tools/srt-to-csv): Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.
 
 ## Key facts
 

@@ -405,6 +405,122 @@ const TOOLS = [
     ],
     related: ["vtt-to-srt", "srt-to-vtt", "clean-subtitles"],
   },
+  {
+    slug: "merge-subtitles",
+    h1: "Merge Subtitle Files",
+    tagline: "Combine two SRT or VTT files into one track, with the second file appended after the first.",
+    metaDesc:
+      "Merge two subtitle files into a single SRT or VTT track in your browser. Joins CD1 and CD2, or adds a second cue set, with no upload.",
+    mode: "merge",
+    intro:
+      "Feature films and long recordings are often split across several subtitle files, and a player will only load one track. Merging them means appending the second file's cues after the first one ends and renumbering the result — which is what this page does locally, in one step.",
+    steps: [
+      "Paste or drop the <strong>first</strong> subtitle file into the top box.",
+      "Paste the <strong>second</strong> file into the box below it.",
+      "Optionally set a gap in seconds, then download the merged file.",
+    ],
+    deep: {
+      h2: "Why merging is not just concatenation",
+      body: [
+        "The naive approach — pasting one file after another — produces a track where the second half restarts at zero. Every cue from the second file then appears at the beginning of the video, overlapping the first half.",
+        "A correct merge re-times the second file. Its cues are shifted by however long the first file runs, so the combined track plays straight through. That is what the <em>gap</em> setting adjusts: zero means the second file starts the instant the first one ends.",
+        "Cue numbers are then reassigned in order. SubRip numbers are largely cosmetic — most players ignore them — but a continuous sequence makes the file easier to diff and edit afterwards.",
+        "If you need the two files to overlap rather than follow each other — a translation track alongside an original, for example — merging is the wrong operation. Players handle those as separate tracks, not one combined file.",
+      ],
+    },
+    notes: [
+      "The second file is appended after the <strong>last cue of the first file</strong>, not after its final timestamp — overlapping cues inside a file do not shorten the result.",
+      "Both files should be in the same format. The output follows the first file's format.",
+      "A gap of one or two seconds reads more naturally than cutting straight from one part to the next.",
+      "To merge more than two files, merge the first two, then merge the result with the third.",
+    ],
+    faq: [
+      ["Why does my merged file play both halves at the start?",
+       "Because the files were concatenated without re-timing. The second file's timestamps still begin at zero. This tool shifts them by the first file's duration."],
+      ["Can I merge more than two files?",
+       "Not in one step. Merge the first two, copy the output, then merge that with the third — repeat as needed."],
+      ["What gap should I use?",
+       "Zero is correct when the parts are continuous. Use one or two seconds if the original files were split at a scene change and you want a beat before the next part starts."],
+      ["Does the text get changed?",
+       "No. Only timestamps and cue numbers are rewritten; the wording of every cue is preserved exactly."],
+    ],
+    example: {
+      inLabel: "Input — file A, then file B",
+      outLabel: "Output — merged",
+      before: "A: 1\n00:00:01,000 --> 00:00:04,000\nPart one.\n\nB: 1\n00:00:01,000 --> 00:00:04,000\nPart two.",
+      after: "1\n00:00:01,000 --> 00:00:04,000\nPart one.\n\n2\n00:00:04,000 --> 00:00:07,000\nPart two.",
+      cap: "File B's cue moves from 00:00:01 to 00:00:04 — the point where file A ends. Set a gap to push it later still.",
+    },
+    troubleshoot: [
+      ["The second file still starts at the beginning",
+       "Confirm the second file is in the lower box. Text pasted into the main input is treated as file A."],
+      ["Cues from the two files overlap",
+       "Increase the gap. If file A's last cue ends later than you expect, the append point moves with it."],
+      ["The output is empty",
+       "At least one of the two boxes has no recognisable cues. Both files must use the <code>--&gt;</code> separator between timestamps."],
+      ["Numbering restarts in the middle",
+       "That happens when the second file was parsed as a separate track. Re-paste both files, ensuring there is no stray text between them."],
+    ],
+    related: ["shift-subtitles", "srt-to-vtt", "clean-subtitles"],
+  },
+  {
+    slug: "srt-to-csv",
+    h1: "Subtitles to CSV Converter",
+    tagline: "Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.",
+    metaDesc:
+      "Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.",
+    mode: "to-csv",
+    intro:
+      "A subtitle file is awkward to work with in a spreadsheet, but translation, proofreading and timing review are all easier in rows. This converter flattens an SRT or VTT file into CSV — one row per cue, with the start time, end time, duration and text as separate columns.",
+    steps: [
+      "Paste or drop your subtitle file.",
+      "The CSV is generated locally as you type.",
+      "Download it and open it in Excel, Google Sheets, Numbers or a CAT tool.",
+    ],
+    deep: {
+      h2: "What the columns are for",
+      body: [
+        "<strong>index</strong> is the cue number, starting at 1. It keeps rows identifiable after sorting or filtering, which matters because most review workflows reorder rows.",
+        "<strong>start</strong> and <strong>end</strong> use SubRip's <code>hh:mm:ss,mmm</code> form. They are written as text rather than a spreadsheet time so that no application silently reinterpret them.",
+        "<strong>duration_ms</strong> is the cue's length in milliseconds. This is the column to sort by when hunting for cues that are too short to read or too long to sit comfortably on screen.",
+        "<strong>text</strong> has its internal line breaks collapsed to spaces so that one cue stays on one row. Quotes inside the text are escaped as <code>\"\"</code>, which is the CSV standard.",
+      ],
+    },
+    notes: [
+      "Text is quoted, so commas and quotation marks inside a cue survive the round trip.",
+      "Multi-line cues become a single row with line breaks replaced by spaces.",
+      "The file is UTF-8. If your spreadsheet shows garbled characters, import it and choose UTF-8 explicitly rather than double-clicking the file.",
+      "This export is one-way by design — it is for review and translation, not for turning a spreadsheet back into subtitles.",
+    ],
+    faq: [
+      ["Can I convert the CSV back into subtitles?",
+       "Not with this tool. The export exists to get cues into a spreadsheet for review or translation; edit the original subtitle file to change timing."],
+      ["Why are times written as text?",
+       "Because spreadsheets guess. A value like <code>00:01:05,000</code> can be silently reinterpreted as a date or a number depending on locale. Keeping it as text preserves exactly what the subtitle file said."],
+      ["Does it keep the formatting tags?",
+       "Yes — tags such as <code>&lt;i&gt;</code> stay in the text column. Strip them beforehand with the <a href=\"/tools/clean-subtitles\">clean subtitles tool</a> if you want plain text."],
+      ["Is there a cue limit?",
+       "No. Nothing is uploaded, so the practical limit is your browser's memory. Files with several thousand cues convert instantly."],
+    ],
+    example: {
+      inLabel: "Input — .srt",
+      outLabel: "Output — .csv",
+      before: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\nHow are you?",
+      after: "index,start,end,duration_ms,text\n1,\"00:00:01,000\",\"00:00:04,000\",3000,\"Hello there.\"\n2,\"00:00:04,200\",\"00:00:07,000\",2800,\"How are you?\"",
+      cap: "One row per cue. Duration in milliseconds makes it easy to sort by cue length and spot the ones that are too short to read.",
+    },
+    troubleshoot: [
+      ["The CSV is empty",
+       "No cues were recognised. Check that the file uses <code>--&gt;</code> between timestamps — a file renamed from SBV will not parse."],
+      ["Characters look garbled in Excel",
+       "Excel often guesses the wrong encoding. Use Data → From Text/CSV and select UTF-8 rather than opening the file directly."],
+      ["Rows are split in the wrong place",
+       "That happens when opening the file in a locale that uses semicolons as the separator. Import it manually and set the delimiter to a comma."],
+      ["Quotes look doubled",
+       "That is correct CSV escaping. A quote inside a cue is written as <code>\"\"</code> and will display as a single quote once imported."],
+    ],
+    related: ["clean-subtitles", "remove-timestamps", "shift-subtitles"],
+  },
 ];
 
 const bySlug = Object.fromEntries(TOOLS.map((t) => [t.slug, t]));
@@ -667,6 +783,38 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     return (parseInt(m[1], 10) * 3600 + parseInt(m[2], 10) * 60 + parseInt(m[3], 10)) * 1000 + parseInt(msStr, 10);
   }
 
+  /* 合并：第二份文件整体接到第一份结束之后（+ 可选间隔）。用于 CD1+CD2、加配字幕轨。 */
+  function mergeCues(a, b, gapMs) {
+    var ca = parseCues(a), cb = parseCues(b);
+    var base = 0;
+    for (var i = 0; i < ca.length; i++) if (ca[i].end > base) base = ca[i].end;
+    base += (gapMs || 0);
+    var out = ca.slice();
+    for (var j = 0; j < cb.length; j++) {
+      out.push({ start: cb[j].start + base, end: cb[j].end + base, text: cb[j].text });
+    }
+    return out;
+  }
+
+  /* 导出 CSV：序号,开始,结束,时长(ms),文本 —— 给翻译/审校/表格用。 */
+  function toCsv(text) {
+    var cues = parseCues(text);
+    if (!cues.length) return "";
+    var q = function (s) { return '"' + String(s).replace(/"/g, '""') + '"'; };
+    var rows = ["index,start,end,duration_ms,text"];
+    for (var i = 0; i < cues.length; i++) {
+      var c = cues[i];
+      rows.push([
+        i + 1,
+        q(fmtTime(c.start, ",")),
+        q(fmtTime(c.end, ",")),
+        c.end - c.start,
+        q(c.text.replace(/\n/g, " "))
+      ].join(","));
+    }
+    return rows.join("\n");
+  }
+
   function sbvCues(text) {
     var blocks = String(text).replace(/\r\n?/g, "\n").split(/\n{2,}/);
     var cues = [];
@@ -702,6 +850,7 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
       empty: $("opt-empty"), dupe: $("opt-dupe"), dedupe: $("opt-dedupe"),
     };
     var offset = $("offset"), offsetMs = $("offset-ms"), status = $("status"), ratio = $("ratio");
+    var in2 = $("in2"), gap = $("gap");
 
     function readOpt(k, dflt) {
       var el = opts[k];
@@ -741,6 +890,12 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
       } else if (mode === "sbv-to-srt") {
         var sc = sbvCues(text);
         res = sc.length ? serialize(sc, false) : "";
+      } else if (mode === "merge") {
+        var g = gap ? Math.round((parseFloat(gap.value) || 0) * 1000) : 0;
+        cues = mergeCues(text, in2 ? in2.value : "", g);
+        res = cues.length ? serialize(cues, vtt) : "";
+      } else if (mode === "to-csv") {
+        res = toCsv(text);
       }
       output.value = res;
       if (status) {
@@ -770,6 +925,8 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
       if (preset) preset.value = "1";
       run();
     });
+    if (in2) in2.addEventListener("input", run);
+    if (gap) gap.addEventListener("input", run);
     Object.keys(opts).forEach(function (k) { if (opts[k]) opts[k].addEventListener("change", run); });
 
     /* file drop / pick */
@@ -1146,9 +1303,10 @@ function toolBody(t) {
   const isClean = t.slug === "clean-subtitles";
   const isShift = t.slug === "shift-subtitles";
   const isResync = t.slug === "resync-subtitles";
+  const isMerge = t.slug === "merge-subtitles";
   const isText = t.slug === "remove-timestamps";
-  const outName = isText ? "transcript.txt" : t.slug === "srt-to-vtt" ? "output.vtt" : t.slug === "vtt-to-srt" ? "output.srt" : "output.srt";
-  const outLabel = isText ? "Plain text" : t.slug === "srt-to-vtt" ? "WebVTT output" : "SRT output";
+  const outName = isText ? "transcript.txt" : t.slug === "srt-to-csv" ? "subtitles.csv" : t.slug === "srt-to-vtt" ? "output.vtt" : "output.srt";
+  const outLabel = isText ? "Plain text" : t.slug === "srt-to-csv" ? "CSV output" : t.slug === "srt-to-vtt" ? "WebVTT output" : "SRT output";
 
   return `
 <div class="wrap narrow">
@@ -1161,6 +1319,16 @@ function toolBody(t) {
       Drop a subtitle file here, or
       <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
     </div>
+    ${isMerge ? `<div class="panes">
+      <div class="pane">
+        <label for="in2">Second file — .srt / .vtt</label>
+        <textarea id="in2" spellcheck="false" placeholder="Paste the second subtitle file here…"></textarea>
+      </div>
+      <div class="pane">
+        <span class="field">Gap between files <input type="number" id="gap" step="0.1" value="0" aria-label="Gap in seconds"> seconds</span>
+        <p style="margin:10px 0 0;color:var(--text-2);font-size:14px">The second file is appended after the first one ends, so CD1 + CD2 stay in order.</p>
+      </div>
+    </div>` : ""}
     <div class="panes">
       <div class="pane">
         <label for="in">Input — .srt / .vtt</label>

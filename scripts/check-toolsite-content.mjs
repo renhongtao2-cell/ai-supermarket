@@ -14,6 +14,8 @@ const files = [
   "tools/shift-subtitles.html",
   "tools/resync-subtitles.html",
   "tools/sbv-to-srt.html",
+  "tools/merge-subtitles.html",
+  "tools/srt-to-csv.html",
   "guides/subtitle-formats.html",
   "guides/add-subtitles-to-html5-video.html",
   "about.html",

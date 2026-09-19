@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Add Subtitles to HTML5 Video (track, WebVTT, CORS)</title>
-<meta name="description" content="Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.">
-<link rel="canonical" href="https://toolboxes.top/guides/add-subtitles-to-html5-video">
-<meta property="og:title" content="How to Add Subtitles to HTML5 Video (track, WebVTT, CORS)">
-<meta property="og:description" content="Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.">
+<title>Subtitles to CSV Converter — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.">
+<link rel="canonical" href="https://toolboxes.top/tools/srt-to-csv">
+<meta property="og:title" content="Subtitles to CSV Converter — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toolboxes.top/guides/add-subtitles-to-html5-video">
+<meta property="og:url" content="https://toolboxes.top/tools/srt-to-csv">
 <meta property="og:site_name" content="Subtitle Toolkit">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -172,9 +172,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Add Subtitles to HTML5 Video","description":"Add captions to an HTML5 video with the track element: the attributes that matter, the four reasons captions silently fail, cue styling, and multiple languages.","url":"https://toolboxes.top/guides/add-subtitles-to-html5-video","inLanguage":"en"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"How to Add Subtitles to HTML5 Video","item":"https://toolboxes.top/guides/add-subtitles-to-html5-video"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Subtitles to CSV Converter","url":"https://toolboxes.top/tools/srt-to-csv","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Convert subtitle files to CSV in your browser. One row per cue with start, end, duration and text for translation, review or spreadsheets. No upload.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste or drop your subtitle file.","The CSV is generated locally as you type.","Download it and open it in Excel, Google Sheets, Numbers or a CAT tool."]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I convert the CSV back into subtitles?","acceptedAnswer":{"@type":"Answer","text":"Not with this tool. The export exists to get cues into a spreadsheet for review or translation; edit the original subtitle file to change timing."}},{"@type":"Question","name":"Why are times written as text?","acceptedAnswer":{"@type":"Answer","text":"Because spreadsheets guess. A value like 00:01:05,000 can be silently reinterpreted as a date or a number depending on locale. Keeping it as text preserves exactly what the subtitle file said."}},{"@type":"Question","name":"Does it keep the formatting tags?","acceptedAnswer":{"@type":"Answer","text":"Yes — tags such as &lt;i&gt; stay in the text column. Strip them beforehand with the clean subtitles tool if you want plain text."}},{"@type":"Question","name":"Is there a cue limit?","acceptedAnswer":{"@type":"Answer","text":"No. Nothing is uploaded, so the practical limit is your browser's memory. Files with several thousand cues convert instantly."}}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Subtitles to CSV Converter","item":"https://toolboxes.top/tools/srt-to-csv"}]}]</script>
 </head>
-<body>
+<body data-tool="to-csv">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
@@ -182,64 +182,110 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
     <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><a href="/tools/resync-subtitles">Resync Subtitles by Frame Rate or Speed</a><a href="/tools/sbv-to-srt">SBV to SRT</a><a href="/tools/merge-subtitles">Merge Subtitle Files</a><a href="/tools/srt-to-csv">Subtitles to CSV</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
   </div>
 </header>
-<main id="main"><div class="wrap narrow">
-  <p class="crumb"><a href="/">Home</a> › Guides › How to Add Subtitles to HTML5 Video</p>
-  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">How to Add Subtitles to HTML5 Video</h1>
-  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">The native track element handles captions without any JavaScript library. Here is the working setup, and the four reasons it silently does nothing.</p>
-  <article>
-<h2>The short version</h2>
-<p>Use a <code>&lt;track&gt;</code> element pointing at a WebVTT file. If your file is <code>.srt</code>, convert it first — browsers do not read SubRip at all. The three things that break most often are the file format, the server's content type, and cross-origin access.</p>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Subtitles to CSV Converter</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">Subtitles to CSV Converter</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.</p>
 
-<h2>A minimal working example</h2>
-<pre>&lt;video controls width="640"&gt;
-  &lt;source src="video.mp4" type="video/mp4"&gt;
-  &lt;track src="captions.vtt" kind="subtitles" srclang="en" label="English" default&gt;
-&lt;/video&gt;</pre>
-<p>Save the captions as <code>captions.vtt</code> beside the video. That is a complete, working setup — no library, no configuration.</p>
-
-<h2>The four attributes that matter</h2>
-<ul>
-<li><code>src</code> — path to the WebVTT file.</li>
-<li><code>kind</code> — use <code>subtitles</code> when you are translating dialogue, <code>captions</code> when you are also conveying sound effects and speaker identity. The distinction is about accessibility, not about file format.</li>
-<li><code>srclang</code> — a BCP 47 language tag such as <code>en</code>, <code>zh-Hans</code> or <code>pt-BR</code>. Required for the track to be offered as a subtitle option.</li>
-<li><code>label</code> — the text shown in the player's caption menu. Omit it and the menu entry can appear blank.</li>
-</ul>
-<p>Add <code>default</code> to the track you want enabled automatically. Supply several tracks without marking any <code>default</code> and captions start switched off, leaving the viewer to find the menu.</p>
-
-<h2>Why your captions silently do nothing</h2>
-<p>Browsers fail quietly here. A broken track usually produces no console error and no visible message — the captions simply never appear.</p>
-<h3>1. The file is SubRip</h3>
-<p>An <code>.srt</code> file is ignored even when you point <code>src</code> straight at it. Convert it with the <a href="/tools/srt-to-vtt">SRT to VTT converter</a>. If you can see a comma inside the timestamp, that is your problem.</p>
-<h3>2. The server sends the wrong content type</h3>
-<p>WebVTT files must be served as <code>text/vtt</code>. Plenty of servers and default static-host configurations serve an unfamiliar extension as <code>application/octet-stream</code> or <code>text/plain</code>, and browsers then refuse the track. Check the response headers in your browser's network panel. On a static host, add a rule mapping <code>.vtt</code> to <code>text/vtt</code>.</p>
-<h3>3. The file is on a different origin</h3>
-<p>Track files follow cross-origin rules. If the video and the captions live on different domains, the caption request needs CORS headers <em>and</em> the <code>&lt;track&gt;</code> element needs <code>crossorigin="anonymous"</code>. Without both, the track is blocked.</p>
-<h3>4. The WebVTT file is malformed</h3>
-<p>WebVTT requires the <code>WEBVTT</code> header, a blank line before the first cue, and a blank line between cues. A file missing any of those parses as empty. Re-convert from the original source, or run it through <a href="/tools/clean-subtitles">Clean subtitles</a>.</p>
-
-<h2>Styling the captions</h2>
-<p>WebVTT cues can be styled from your own CSS using the <code>::cue</code> pseudo-element — a genuine advantage over SubRip.</p>
-<pre>video::cue {
-  background: rgba(0,0,0,.75);
-  color: #fff;
-  font-size: 1.1rem;
-}
-video::cue(.speaker) { color: #ffd479; }</pre>
-<p>To use a class, write it into the cue as <code>&lt;c.speaker&gt;</code> in the WebVTT text. Class-based cue styling is supported unevenly across browsers, so treat it as an enhancement rather than a requirement.</p>
-
-<h2>Serving captions in more than one language</h2>
-<p>Add one <code>&lt;track&gt;</code> per language. The player builds its caption menu from <code>label</code> and <code>srclang</code>.</p>
-<pre>&lt;track src="captions.en.vtt" kind="subtitles" srclang="en" label="English" default&gt;
-&lt;track src="captions.es.vtt" kind="subtitles" srclang="es" label="Español"&gt;
-&lt;track src="captions.de.vtt" kind="subtitles" srclang="de" label="Deutsch"&gt;</pre>
-
-<h2>Do you need a player library?</h2>
-<p>Not for basic captions. Native <code>&lt;track&gt;</code> support in modern browsers handles loading, the caption menu, timing and styling on its own. Reach for a JavaScript player library when you need adaptive bitrate streaming, DRM, or caption rendering that must look identical on every platform — not simply to display subtitles.</p></article>
-  <h2>Tools mentioned in this guide</h2>
-  <div class="grid">
-    <a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/resync-subtitles"><h3>Resync Subtitles by Frame Rate or Speed</h3><p>Fix subtitles that drift progressively out of sync by resampling them to your video&#39;s frame rate or playback speed.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/sbv-to-srt"><h3>SBV to SRT Converter</h3><p>Convert YouTube .sbv caption files to SubRip (.srt), right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/merge-subtitles"><h3>Merge Subtitle Files</h3><p>Combine two SRT or VTT files into one track, with the second file appended after the first.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/srt-to-csv"><h3>Subtitles to CSV Converter</h3><p>Export SRT or VTT cues to a CSV spreadsheet with start time, end time, duration and text.</p><div class="go">Open tool →</div></a>
+  <div class="tool">
+    <div id="drop">
+      Drop a subtitle file here, or
+      <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
+    </div>
+    
+    <div class="panes">
+      <div class="pane">
+        <label for="in">Input — .srt / .vtt</label>
+        <textarea id="in" spellcheck="false" placeholder="1
+00:00:01,000 --> 00:00:04,000
+Paste your subtitle file here…"></textarea>
+      </div>
+      <div class="pane">
+        <label for="out">CSV output</label>
+        <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
+      </div>
+    </div>
+    
+    
+    
+    
+    <div class="row">
+      <button class="btn primary" id="copy">Copy result</button>
+      <button class="btn" id="download" data-name="subtitles.csv">Download CSV</button>
+      <button class="btn" id="clear">Clear</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
   </div>
-  <p class="updated">Last updated 2026-09-17. All tools run locally in your browser.</p>
+
+  <div class="privacy">
+    <h4>Your file never leaves your device</h4>
+    <p>This tool is plain JavaScript. There is no upload step and no server-side processing, so confidential captions, unreleased content and client material stay on your machine.</p>
+  </div>
+
+  <article>
+    <h2>What this does</h2>
+    <p>A subtitle file is awkward to work with in a spreadsheet, but translation, proofreading and timing review are all easier in rows. This converter flattens an SRT or VTT file into CSV — one row per cue, with the start time, end time, duration and text as separate columns.</p>
+
+    <h2>How to use it</h2>
+    <ol><li>Paste or drop your subtitle file.</li><li>The CSV is generated locally as you type.</li><li>Download it and open it in Excel, Google Sheets, Numbers or a CAT tool.</li></ol>
+
+    <div class="note">
+      <h4>Good to know</h4>
+      <ul><li>Text is quoted, so commas and quotation marks inside a cue survive the round trip.</li><li>Multi-line cues become a single row with line breaks replaced by spaces.</li><li>The file is UTF-8. If your spreadsheet shows garbled characters, import it and choose UTF-8 explicitly rather than double-clicking the file.</li><li>This export is one-way by design — it is for review and translation, not for turning a spreadsheet back into subtitles.</li></ul>
+    </div>
+
+    <h2>What the columns are for</h2>
+    <p><strong>index</strong> is the cue number, starting at 1. It keeps rows identifiable after sorting or filtering, which matters because most review workflows reorder rows.</p>
+    <p><strong>start</strong> and <strong>end</strong> use SubRip's <code>hh:mm:ss,mmm</code> form. They are written as text rather than a spreadsheet time so that no application silently reinterpret them.</p>
+    <p><strong>duration_ms</strong> is the cue's length in milliseconds. This is the column to sort by when hunting for cues that are too short to read or too long to sit comfortably on screen.</p>
+    <p><strong>text</strong> has its internal line breaks collapsed to spaces so that one cue stays on one row. Quotes inside the text are escaped as <code>""</code>, which is the CSV standard.</p>
+
+    <h2>Worked example</h2>
+    <div class="example">
+      <div>
+        <h5>Input — .srt</h5>
+        <pre>1
+00:00:01,000 --&gt; 00:00:04,000
+Hello there.
+
+2
+00:00:04,200 --&gt; 00:00:07,000
+How are you?</pre>
+      </div>
+      <div>
+        <h5>Output — .csv</h5>
+        <pre>index,start,end,duration_ms,text
+1,&quot;00:00:01,000&quot;,&quot;00:00:04,000&quot;,3000,&quot;Hello there.&quot;
+2,&quot;00:00:04,200&quot;,&quot;00:00:07,000&quot;,2800,&quot;How are you?&quot;</pre>
+      </div>
+    </div>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">One row per cue. Duration in milliseconds makes it easy to sort by cue length and spot the ones that are too short to read.</p>
+
+    <h2>FAQ</h2>
+    <details class="faq"><summary>Can I convert the CSV back into subtitles?</summary><div class="body">Not with this tool. The export exists to get cues into a spreadsheet for review or translation; edit the original subtitle file to change timing.</div></details>
+    <details class="faq"><summary>Why are times written as text?</summary><div class="body">Because spreadsheets guess. A value like <code>00:01:05,000</code> can be silently reinterpreted as a date or a number depending on locale. Keeping it as text preserves exactly what the subtitle file said.</div></details>
+    <details class="faq"><summary>Does it keep the formatting tags?</summary><div class="body">Yes — tags such as <code>&lt;i&gt;</code> stay in the text column. Strip them beforehand with the <a href="/tools/clean-subtitles">clean subtitles tool</a> if you want plain text.</div></details>
+    <details class="faq"><summary>Is there a cue limit?</summary><div class="body">No. Nothing is uploaded, so the practical limit is your browser's memory. Files with several thousand cues convert instantly.</div></details>
+
+    <h2>Troubleshooting</h2>
+    <ol class="tshoot">
+      <li><span class="sym">The CSV is empty</span><span class="fix">No cues were recognised. Check that the file uses <code>--&gt;</code> between timestamps — a file renamed from SBV will not parse.</span></li>
+      <li><span class="sym">Characters look garbled in Excel</span><span class="fix">Excel often guesses the wrong encoding. Use Data → From Text/CSV and select UTF-8 rather than opening the file directly.</span></li>
+      <li><span class="sym">Rows are split in the wrong place</span><span class="fix">That happens when opening the file in a locale that uses semicolons as the separator. Import it manually and set the delimiter to a comma.</span></li>
+      <li><span class="sym">Quotes look doubled</span><span class="fix">That is correct CSV escaping. A quote inside a cue is written as <code>""</code> and will display as a single quote once imported.</span></li>
+    </ol>
+
+    <h2>Related tools</h2>
+    <div class="grid">
+      <a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/remove-timestamps"><h3>Remove Timestamps from Subtitles</h3><p>Strip timestamps and cue numbers to get a clean, readable transcript.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a>
+    </div>
+  </article>
+  <div class="note">
+    <h4>Further reading</h4>
+    <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li></ul>
+  </div>
+  <p class="updated">Last updated 2026-09-17. All conversions happen locally in your browser.</p>
 </div></main>
 <footer class="site">
   <div class="wrap">
