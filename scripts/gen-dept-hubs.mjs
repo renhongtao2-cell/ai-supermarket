@@ -10,6 +10,7 @@
 import fs from "fs";
 import path from "path";
 import { UPDATED } from "./site-meta.mjs";
+import { outbound } from "./affiliate.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SITE = "https://ai.toolboxes.top";
@@ -125,19 +126,25 @@ function buildHub(dept) {
       `  <script type="application/ld+json">\n${JSON.stringify(jsonLd(dept, tools, desc), null, 2)}\n  </script>`);
 
   /* --- 对比表 --- */
-  const rows = tools.map((t) => `<tr>
-        <td><a href="${esc(t.url)}" rel="nofollow noopener" target="_blank">${esc(t.name)}</a><br><span style="opacity:.6;font-size:12.5px">${esc(hostOf(t.url))}</span></td>
+  const rows = tools.map((t) => {
+    const o = outbound(t.name, t.url);
+    return `<tr>
+        <td><a href="${esc(o.href)}" ${o.attrs}>${esc(t.name)}</a><br><span style="opacity:.6;font-size:12.5px">${esc(hostOf(t.url))}</span></td>
         <td>${pricingLabel(t.pricing)}</td>
         <td class="q">${esc(freeTierText(t))}</td>
         <td>${esc(t.desc)}</td>
-      </tr>`).join("\n      ");
+      </tr>`;
+  }).join("\n      ");
 
   /* --- 卡片（保留站点货架视觉） --- */
-  const cards = tools.map((t) => `<a class="tool-card" href="${esc(t.url)}" rel="nofollow noopener" target="_blank">
+  const cards = tools.map((t) => {
+    const o = outbound(t.name, t.url);
+    return `<a class="tool-card" href="${esc(o.href)}" ${o.attrs}>
         <h3>${esc(t.name)}</h3>
         <p>${esc(t.desc)}</p>
         <span class="tool-meta">${pricingLabel(t.pricing)} · ${esc(hostOf(t.url))}</span>
-      </a>`).join("\n      ");
+      </a>`;
+  }).join("\n      ");
 
   /* --- 免费额度面板 --- */
   const quotaTools = tools.filter((t) => FACTS[t.name] && FACTS[t.name].freeQuota);

@@ -12,6 +12,7 @@ import fs from "fs";
 import path from "path";
 import { injectContentNav, CONTENT_LINKS } from "./site-nav.mjs";
 import { UPDATED } from "./site-meta.mjs";
+import { outboundAnchor } from "./affiliate.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SITE = "https://ai.toolboxes.top";
@@ -29,7 +30,8 @@ const deptIcon = Object.fromEntries(DEPARTMENTS.map((d) => [d.id, d.icon]));
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const pricingLabel = (p) => ({ free: "Free", freemium: "Freemium", paid: "Paid" }[p] || p);
 const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return ""; } };
-const link = (t) => `<a href="${esc(t.url)}" rel="nofollow noopener" target="_blank">${esc(t.name)}</a>`;
+// 出站链接统一走 affiliate.mjs：注册过联盟的自动换成联盟链接 + rel="sponsored"
+const link = (t) => outboundAnchor(t.name, t.url, esc(t.name));
 
 /* ---------- 外壳提取 ---------- */
 function chrome(file) {
@@ -784,8 +786,71 @@ fs.writeFileSync(
   }) + "\n" + ABOUT_CHROME.HEADER + "\n" + privacyBody + "\n" + ABOUT_CHROME.FOOTER
 );
 
-console.log("生成跨类目页 + about + privacy:");
-for (const f of ["about.html", "privacy.html", "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html", "best/free-tier-comparison.html", "guides/how-to-choose-an-ai-tool.html"]) {
+/* ============================================================
+   6. affiliate-disclosure.html —— 联盟披露
+   为什么必须有：FTC（美国）要求「清晰显著地」披露可能获得佣金；
+   Google 要求联盟链接标 rel="sponsored"。缺披露 = 合规风险，
+   而缺 rel="sponsored" 可能被判链接作弊。两件事都不是可选项。
+   链接由 scripts/inject-affiliate-disclosure.mjs 注入每个页面的页脚。
+   ============================================================ */
+const disclosureBody = `<main class="page">
+  <div class="hub">
+    <h1 style="font-size:30px;margin:6px 0 12px">Affiliate Disclosure</h1>
+    <p class="stat-line">Last updated ${UPDATED}. This page covers ai.toolboxes.top.</p>
+
+    <h2>The short version</h2>
+    <p>Some links on this site are affiliate links. If you click one and then buy something, we may earn a commission. <strong>It costs you nothing extra</strong> — the price is the same as if you had gone to the vendor directly.</p>
+
+    <h2>How it works</h2>
+    <p>When a vendor runs an affiliate programme, we can register as a partner and receive a special tracking link. If you arrive at the vendor through that link and later subscribe, the vendor pays us a percentage of the sale.</p>
+    <p>Affiliate links on this site carry the <code>rel="sponsored"</code> attribute in their HTML. That attribute is a machine-readable declaration to search engines that the link is commercial. You can see it by inspecting any outbound link, and it is the same signal Google's own guidelines ask publishers to use.</p>
+
+    <h2>What this does not change</h2>
+    <ul>
+      <li><strong>Which tools are listed.</strong> No vendor pays to be included here. Tools are listed because they are relevant to the department they appear in.</li>
+      <li><strong>The order tools appear in.</strong> There is no paid placement and no paid ranking. Position is determined by the same sorting rules for every tool.</li>
+      <li><strong>What we write.</strong> Descriptions and comparisons are written from published vendor information and our own evaluation, not supplied by vendors.</li>
+      <li><strong>Your price.</strong> Commission is paid by the vendor out of its own margin. Nothing is added to what you pay.</li>
+    </ul>
+
+    <h2>Why we do it at all</h2>
+    <p>Running this site costs money — hosting, domain registration and the time to keep entries accurate. Advertising and affiliate commissions are how that is funded without charging visitors. Both are disclosed rather than hidden.</p>
+
+    <h2>Advertising</h2>
+    <p>This site also displays advertising served by Google AdSense, which is a separate arrangement from affiliate links. Advertisers do not influence which tools are listed or how they are described. See the <a href="/privacy">privacy policy</a> for how advertising data is handled.</p>
+
+    <h2>If you would rather not use an affiliate link</h2>
+    <p>That is entirely fine, and nothing on the site depends on it. Search for the vendor by name and visit it directly — you will get the same product at the same price. If you want to support the site, the link is simply the free way to do it.</p>
+
+    <h2>Questions</h2>
+    <p>If anything here is unclear, or you believe a link is disclosed incorrectly, write to <a href="mailto:renhongtao2@gmail.com">renhongtao2@gmail.com</a>. We would rather fix a disclosure problem than have one.</p>
+  </div>
+</main>`;
+
+fs.writeFileSync(
+  path.join(ROOT, "affiliate-disclosure.html"),
+  rewriteHead(DEPT_CHROME, {
+    title: "Affiliate Disclosure | AI Supermarket",
+    desc: "How affiliate links work on this site: which links are commercial, what rel=sponsored means, what commission does not change, and how to avoid affiliate links entirely.",
+    canonPath: "/affiliate-disclosure",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@graph": [
+        crumbs("Affiliate Disclosure", "/affiliate-disclosure"),
+        {
+          "@type": "WebPage",
+          name: "Affiliate Disclosure",
+          url: SITE + "/affiliate-disclosure",
+          inLanguage: "en",
+          description: "Affiliate link disclosure: commercial link marking, and what commission does not influence.",
+        },
+      ],
+    },
+  }) + "\n" + DEPT_CHROME.HEADER + "\n" + disclosureBody + "\n" + DEPT_CHROME.FOOTER
+);
+
+console.log("生成跨类目页 + about + privacy + affiliate-disclosure:");
+for (const f of ["about.html", "privacy.html", "affiliate-disclosure.html", "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html", "best/free-tier-comparison.html", "guides/how-to-choose-an-ai-tool.html"]) {
   const h = fs.readFileSync(path.join(ROOT, f), "utf8");
   const w = h.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").split(/\s+/).filter((x) => x.length > 1).length;

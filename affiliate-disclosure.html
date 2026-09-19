@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Legal AI Tools — 9 Compared and Rated | AI Supermarket</title>
-  <meta name="description" content="9 AI tools for legal compared by pricing, what the free tier actually gives you, and which one to pick for each job.">
-  <link rel="canonical" href="https://ai.toolboxes.top/departments/legal">
+  <title>Affiliate Disclosure | AI Supermarket</title>
+  <meta name="description" content="How affiliate links work on this site: which links are commercial, what rel=sponsored means, what commission does not change, and how to avoid affiliate links entirely.">
+  <link rel="canonical" href="https://ai.toolboxes.top/affiliate-disclosure">
   <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt index for AI engines">
-  <meta property="og:title" content="Legal AI Tools — Compared | AI Supermarket">
-  <meta property="og:description" content="9 AI tools for legal compared by pricing, what the free tier actually gives you, and which one to pick for each job.">
+  <meta property="og:title" content="Affiliate Disclosure | AI Supermarket">
+  <meta property="og:description" content="How affiliate links work on this site: which links are commercial, what rel=sponsored means, what commission does not change, and how to avoid affiliate links entirely.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://ai.toolboxes.top/departments/legal">
+  <meta property="og:url" content="https://ai.toolboxes.top/affiliate-disclosure">
   <meta property="og:image" content="https://ai.toolboxes.top/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.72em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2255%22>🛒</text></svg>">
@@ -781,11 +781,9 @@ button {
   padding-top: 44px;
 }
 
-/* 4 栏：品牌 + Popular Departments + Store Info + Free Tier Data（内容页入口）。
-   加第 4 栏时忘了同步这里 → 新栏被挤到下一行，整块页脚错位。 */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr;
   gap: 32px;
   padding-bottom: 36px;
 }
@@ -961,8 +959,7 @@ button {
 
   .pricing-filters { flex-direction: row; gap: 16px; flex-wrap: wrap; }
 
-  /* 品牌占满一行，下面 3 个链接栏等宽（别用 1fr 1fr：第 3 栏会孤零零掉到第三行） */
-  .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }
 }
 
@@ -1047,14 +1044,8 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
       border-bottom:1px solid rgba(128,128,128,.22);vertical-align:top}
     table.cmp th{font-weight:700;background:rgba(128,128,128,.08)}
     table.cmp td{white-space:normal}
-    table.cmp td.q{font-variant-numeric:tabular-nums}
-    ul.jobs{list-style:none;padding:0;margin:14px 0}
-    ul.jobs li{padding:8px 0;border-bottom:1px solid rgba(128,128,128,.15);font-size:15px}
-    ul.jobs li:last-child{border-bottom:0}
-    ul.jobs .job{opacity:.7}
-    ul.jobs .pick{font-weight:700}
     .stat-line{font-size:13.5px;opacity:.65}
-    @media(max-width:640px){.hub h2{font-size:19px}}
+    .page .hub{max-width:none;padding:0}
   </style>
   <script type="application/ld+json">
 {
@@ -1072,201 +1063,17 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Legal",
-          "item": "https://ai.toolboxes.top/departments/legal"
+          "name": "Affiliate Disclosure",
+          "item": "https://ai.toolboxes.top/affiliate-disclosure"
         }
       ]
     },
     {
-      "@type": "CollectionPage",
-      "name": "Legal AI Tools",
-      "description": "9 AI tools for legal compared by pricing, what the free tier actually gives you, and which one to pick for each job.",
-      "url": "https://ai.toolboxes.top/departments/legal",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "AI Supermarket",
-        "url": "https://ai.toolboxes.top/"
-      },
-      "mainEntity": {
-        "@type": "ItemList",
-        "numberOfItems": 9,
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Harvey",
-              "url": "https://www.harvey.ai",
-              "applicationCategory": "BusinessApplication",
-              "description": "AI for elite law firms — research, drafting and analysis.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "CoCounsel",
-              "url": "https://casetext.com",
-              "applicationCategory": "BusinessApplication",
-              "description": "AI legal assistant for research, review and deposition prep.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Luminance",
-              "url": "https://www.luminance.com",
-              "applicationCategory": "BusinessApplication",
-              "description": "AI for contract review, negotiation and due diligence.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Robin AI",
-              "url": "https://www.robinai.com",
-              "applicationCategory": "BusinessApplication",
-              "description": "Contract copilot that reviews and drafts to your playbook.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 5,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Spellbook",
-              "url": "https://www.spellbook.legal",
-              "applicationCategory": "BusinessApplication",
-              "description": "Contract drafting AI that lives inside Microsoft Word.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 6,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "LawGeex",
-              "url": "https://www.lawgeex.com",
-              "applicationCategory": "BusinessApplication",
-              "description": "Automated contract review against your legal policies.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 7,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "DoNotPay",
-              "url": "https://donotpay.com",
-              "applicationCategory": "BusinessApplication",
-              "description": "Consumer AI lawyer for disputes, tickets and refunds.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 8,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Lexis+ AI",
-              "url": "https://www.lexisnexis.com",
-              "applicationCategory": "BusinessApplication",
-              "description": "Legal research with grounded citations from LexisNexis.",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "USD",
-                "description": "Paid"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 9,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Genie AI",
-              "url": "https://www.genieai.co",
-              "applicationCategory": "BusinessApplication",
-              "description": "AI contract editor with a large legal template library.",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD",
-                "description": "Freemium"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Can AI replace a lawyer?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. It can compress the time spent on document review, drafting and first-pass research, which is a large share of billable hours. Judgement, strategy, negotiation and accountability remain with a qualified lawyer, and in most jurisdictions only a licensed lawyer can give legal advice."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why do AI legal tools cite cases that do not exist?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Language models generate plausible text rather than retrieving verified facts. Unless the tool is explicitly grounded in a retrievable database and shows you the source, it can produce a convincing but invented citation. This has already led to court sanctions."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is it safe to upload contracts to an AI tool?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Only with an enterprise agreement that covers confidentiality and retention. Consumer tools may use inputs for training. For privileged material, confirm the data terms in writing before uploading anything."
-          }
-        }
-      ]
+      "@type": "WebPage",
+      "name": "Affiliate Disclosure",
+      "url": "https://ai.toolboxes.top/affiliate-disclosure",
+      "inLanguage": "en",
+      "description": "Affiliate link disclosure: commercial link marking, and what commission does not influence."
     }
   ]
 }
@@ -1292,184 +1099,39 @@ details.faq-item p{opacity:.75;font-size:14px;margin-top:8px;max-width:760px}
       <div class="header-actions"><a class="list-btn" href="/" style="text-decoration:none"><span aria-hidden="true">🏪</span> All departments</a></div>
     </div>
   </header>
-
-<div class="dept-hero">
-    <div class="crumb"><a href="/">AI Supermarket</a> / Legal</div>
-    <h1>⚖️ AI Tools for Legal</h1>
-    <p class="intro">Legal AI is the highest-value, highest-risk category in this directory — the tools are genuinely capable and the consequences of an error are severe.</p>
-    <p class="intro stat-line">9 tools · 1 free or freemium · <a href="/best/ai-tools-with-free-tier">1 with a published free allowance</a> · updated 2026-09-18</p>
-    <details class="ai-summary" open id="ai-summary">
-      <summary><strong>TL;DR for AI assistants &amp; search engines</strong></summary>
-      <p><strong>Legal</strong> — 9 AI tools reviewed on AI Supermarket, including Harvey, CoCounsel, Luminance, Robin AI. 1 of 9 have a free or freemium tier, and 1 publish a concrete free allowance. Every entry links to the vendor's official site. Machine-readable index: <a href="/llms.txt">/llms.txt</a>.</p>
-    </details>
-  </div>
-
+<main class="page">
   <div class="hub">
-    <h2>What AI actually does in legal today</h2>
-    <p>Contract work is where adoption is deepest. Luminance, Robin AI, Spellbook, LawGeex and Genie AI review, draft and negotiate against a playbook. The task is structured, the volume is high, and the output is reviewed by a lawyer before it matters.</p>
-    <p>Legal research is the second application. Harvey, CoCounsel and Lexis+ AI search case law and statutes, with Lexis+ emphasising grounded citations. This is also where the most public failures have occurred — models have cited cases that do not exist, and courts have sanctioned lawyers for filing them.</p>
-    <p>The dividing line is verification. A tool that summarises a contract you can read is low-risk. A tool that asserts what the law says must be checked against the primary source, every time, because the cost of a fabricated citation is professional sanction.</p>
+    <h1 style="font-size:30px;margin:6px 0 12px">Affiliate Disclosure</h1>
+    <p class="stat-line">Last updated 2026-09-18. This page covers ai.toolboxes.top.</p>
 
-    <h2>How to choose</h2>
-    <ul><li><strong>Does it ground answers in retrievable sources?</strong> If the tool cannot show you the underlying document or case, treat its output as a draft to verify.</li><li><strong>Privilege and confidentiality.</strong> Sending client material to a third-party service raises privilege questions. Establish where data is processed and whether it is retained.</li><li><strong>Jurisdiction coverage.</strong> Training data is heavily US-weighted. Quality outside your jurisdiction must be tested, not assumed.</li><li><strong>Where it fits your playbook.</strong> Tools that encode your own standards beat generic drafting assistance.</li><li><strong>Whether a lawyer reviews output.</strong> Non-negotiable for anything filed or signed.</li></ul>
+    <h2>The short version</h2>
+    <p>Some links on this site are affiliate links. If you click one and then buy something, we may earn a commission. <strong>It costs you nothing extra</strong> — the price is the same as if you had gone to the vendor directly.</p>
+
+    <h2>How it works</h2>
+    <p>When a vendor runs an affiliate programme, we can register as a partner and receive a special tracking link. If you arrive at the vendor through that link and later subscribe, the vendor pays us a percentage of the sale.</p>
+    <p>Affiliate links on this site carry the <code>rel="sponsored"</code> attribute in their HTML. That attribute is a machine-readable declaration to search engines that the link is commercial. You can see it by inspecting any outbound link, and it is the same signal Google's own guidelines ask publishers to use.</p>
+
+    <h2>What this does not change</h2>
+    <ul>
+      <li><strong>Which tools are listed.</strong> No vendor pays to be included here. Tools are listed because they are relevant to the department they appear in.</li>
+      <li><strong>The order tools appear in.</strong> There is no paid placement and no paid ranking. Position is determined by the same sorting rules for every tool.</li>
+      <li><strong>What we write.</strong> Descriptions and comparisons are written from published vendor information and our own evaluation, not supplied by vendors.</li>
+      <li><strong>Your price.</strong> Commission is paid by the vendor out of its own margin. Nothing is added to what you pay.</li>
+    </ul>
+
+    <h2>Why we do it at all</h2>
+    <p>Running this site costs money — hosting, domain registration and the time to keep entries accurate. Advertising and affiliate commissions are how that is funded without charging visitors. Both are disclosed rather than hidden.</p>
+
+    <h2>Advertising</h2>
+    <p>This site also displays advertising served by Google AdSense, which is a separate arrangement from affiliate links. Advertisers do not influence which tools are listed or how they are described. See the <a href="/privacy">privacy policy</a> for how advertising data is handled.</p>
+
+    <h2>If you would rather not use an affiliate link</h2>
+    <p>That is entirely fine, and nothing on the site depends on it. Search for the vendor by name and visit it directly — you will get the same product at the same price. If you want to support the site, the link is simply the free way to do it.</p>
+
+    <h2>Questions</h2>
+    <p>If anything here is unclear, or you believe a link is disclosed incorrectly, write to <a href="mailto:renhongtao2@gmail.com">renhongtao2@gmail.com</a>. We would rather fix a disclosure problem than have one.</p>
   </div>
-
-  <h2 style="max-width:1100px;margin:34px auto 0;padding:0 20px;font-size:21px">The tools, side by side</h2>
-  <div class="hub">
-    <table class="cmp">
-      <thead><tr><th>Tool</th><th>Pricing</th><th>Free tier</th><th>What it does</th></tr></thead>
-      <tbody>
-      <tr>
-        <td><a href="https://www.harvey.ai" rel="nofollow noopener" target="_blank">Harvey</a><br><span style="opacity:.6;font-size:12.5px">harvey.ai</span></td>
-        <td>Paid</td>
-        <td class="q">—</td>
-        <td>AI for elite law firms — research, drafting and analysis.</td>
-      </tr>
-      <tr>
-        <td><a href="https://casetext.com" rel="nofollow noopener" target="_blank">CoCounsel</a><br><span style="opacity:.6;font-size:12.5px">casetext.com</span></td>
-        <td>Paid</td>
-        <td class="q">—</td>
-        <td>AI legal assistant for research, review and deposition prep.</td>
-      </tr>
-      <tr>
-        <td><a href="https://www.luminance.com" rel="nofollow noopener" target="_blank">Luminance</a><br><span style="opacity:.6;font-size:12.5px">luminance.com</span></td>
-        <td>Paid</td>
-        <td class="q">—</td>
-        <td>AI for contract review, negotiation and due diligence.</td>
-      </tr>
-      <tr>
-        <td><a href="https://www.robinai.com" rel="nofollow noopener" target="_blank">Robin AI</a><br><span style="opacity:.6;font-size:12.5px">robinai.com</span></td>
-        <td>Paid</td>
-        <td class="q">—</td>
-        <td>Contract copilot that reviews and drafts to your playbook.</td>
-      </tr>
-      <tr>
-        <td><a href="https://www.spellbook.legal" rel="nofollow noopener" target="_blank">Spellbook</a><br><span style="opacity:.6;font-size:12.5px">spellbook.legal</span></td>
-        <td>Paid</td>
-        <td class="q">Free trial, 7 days</td>
-        <td>Contract drafting AI that lives inside Microsoft Word.</td>
-      </tr>
-      <tr>
-        <td><a href="https://www.lawgeex.com" rel="nofollow noopener" target="_blank">LawGeex</a><br><span style="opacity:.6;font-size:12.5px">lawgeex.com</span></td>
-        <td>Paid</td>
-        <td class="q">—</td>
-        <td>Automated contract review against your legal policies.</td>
-      </tr>
-      <tr>
-        <td><a href="https://donotpay.com" rel="nofollow noopener" target="_blank">DoNotPay</a><br><span style="opacity:.6;font-size:12.5px">donotpay.com</span></td>
-        <td>Paid</td>
-        <td class="q">Free trial</td>
-        <td>Consumer AI lawyer for disputes, tickets and refunds.</td>
-      </tr>
-      <tr>
-        <td><a href="https://www.lexisnexis.com" rel="nofollow noopener" target="_blank">Lexis+ AI</a><br><span style="opacity:.6;font-size:12.5px">lexisnexis.com</span></td>
-        <td>Paid</td>
-        <td class="q">—</td>
-        <td>Legal research with grounded citations from LexisNexis.</td>
-      </tr>
-      <tr>
-        <td><a href="https://www.genieai.co" rel="nofollow noopener" target="_blank">Genie AI</a><br><span style="opacity:.6;font-size:12.5px">genieai.co</span></td>
-        <td>Freemium</td>
-        <td class="q">100,000 tokens</td>
-        <td>AI contract editor with a large legal template library.</td>
-      </tr>
-      </tbody>
-    </table>
-
-    <h2>Which tool for which job</h2>
-    <ul class="jobs"><li><span class="job">Contract review and due diligence at volume</span> → <span class="pick">Luminance</span></li><li><span class="job">Drafting inside Microsoft Word</span> → <span class="pick">Spellbook</span></li><li><span class="job">Contract review against your playbook</span> → <span class="pick">Robin AI</span></li><li><span class="job">Legal research with grounded citations</span> → <span class="pick">Lexis+ AI</span></li><li><span class="job">Research, review and deposition prep</span> → <span class="pick">CoCounsel</span></li><li><span class="job">Contract drafting with a template library</span> → <span class="pick">Genie AI</span></li><li><span class="job">Consumer disputes and refunds</span> → <span class="pick">DoNotPay</span></li></ul>
-
-    <h2>What the free tiers actually give you</h2>
-    <div class="panel">
-      <h3>Published free allowances in Legal</h3>
-      <ul><li><strong>Genie AI</strong> — 100,000 tokens</li></ul>
-    </div>
-    <p>These figures were read from each vendor's own pricing page rather than from a summary. Allowances change without notice, so confirm on the vendor's site before you commit a workflow to one. Two things worth checking before you compare these numbers: the <a href="/best/free-tier-comparison">free tier comparison</a> groups all 36 recorded allowances by what the unit actually measures and by how each one renews — a one-off grant and a monthly reset are not interchangeable. The full list, including the other departments, is on <a href="/best/ai-tools-with-free-tier">AI tools with a free tier</a>.</p>
-
-    <h2>What to watch out for</h2>
-    <ul><li>Fabricated citations are the defining failure of legal AI. Models have invented plausible case names, and courts have imposed sanctions on lawyers who filed them. Verify every citation against the primary source.</li><li>Do not paste privileged material into a consumer AI tool. Use an enterprise deployment with contractual confidentiality, or redact first.</li><li>AI output is not legal advice, and using it does not create a lawyer-client relationship. The professional responsibility remains with the lawyer who signs.</li></ul>
-
-    <h2>FAQ</h2>
-    <details class="faq-item"><summary>Can AI replace a lawyer?</summary><p>No. It can compress the time spent on document review, drafting and first-pass research, which is a large share of billable hours. Judgement, strategy, negotiation and accountability remain with a qualified lawyer, and in most jurisdictions only a licensed lawyer can give legal advice.</p></details>
-    <details class="faq-item"><summary>Why do AI legal tools cite cases that do not exist?</summary><p>Language models generate plausible text rather than retrieving verified facts. Unless the tool is explicitly grounded in a retrievable database and shows you the source, it can produce a convincing but invented citation. This has already led to court sanctions.</p></details>
-    <details class="faq-item"><summary>Is it safe to upload contracts to an AI tool?</summary><p>Only with an enterprise agreement that covers confidentiality and retention. Consumer tools may use inputs for training. For privileged material, confirm the data terms in writing before uploading anything.</p></details>
-
-    <p class="stat-line" style="margin-top:26px">Last reviewed 2026-09-18. Pricing and free allowances are read from vendor pages and change without notice — verify before committing. This page is an independent directory and is not affiliated with the tools listed.</p>
-  </div>
-
-  <div class="dept-tools">
-      <a class="tool-card" href="https://www.harvey.ai" rel="nofollow noopener" target="_blank">
-        <h3>Harvey</h3>
-        <p>AI for elite law firms — research, drafting and analysis.</p>
-        <span class="tool-meta">Paid · harvey.ai</span>
-      </a>
-      <a class="tool-card" href="https://casetext.com" rel="nofollow noopener" target="_blank">
-        <h3>CoCounsel</h3>
-        <p>AI legal assistant for research, review and deposition prep.</p>
-        <span class="tool-meta">Paid · casetext.com</span>
-      </a>
-      <a class="tool-card" href="https://www.luminance.com" rel="nofollow noopener" target="_blank">
-        <h3>Luminance</h3>
-        <p>AI for contract review, negotiation and due diligence.</p>
-        <span class="tool-meta">Paid · luminance.com</span>
-      </a>
-      <a class="tool-card" href="https://www.robinai.com" rel="nofollow noopener" target="_blank">
-        <h3>Robin AI</h3>
-        <p>Contract copilot that reviews and drafts to your playbook.</p>
-        <span class="tool-meta">Paid · robinai.com</span>
-      </a>
-      <a class="tool-card" href="https://www.spellbook.legal" rel="nofollow noopener" target="_blank">
-        <h3>Spellbook</h3>
-        <p>Contract drafting AI that lives inside Microsoft Word.</p>
-        <span class="tool-meta">Paid · spellbook.legal</span>
-      </a>
-      <a class="tool-card" href="https://www.lawgeex.com" rel="nofollow noopener" target="_blank">
-        <h3>LawGeex</h3>
-        <p>Automated contract review against your legal policies.</p>
-        <span class="tool-meta">Paid · lawgeex.com</span>
-      </a>
-      <a class="tool-card" href="https://donotpay.com" rel="nofollow noopener" target="_blank">
-        <h3>DoNotPay</h3>
-        <p>Consumer AI lawyer for disputes, tickets and refunds.</p>
-        <span class="tool-meta">Paid · donotpay.com</span>
-      </a>
-      <a class="tool-card" href="https://www.lexisnexis.com" rel="nofollow noopener" target="_blank">
-        <h3>Lexis+ AI</h3>
-        <p>Legal research with grounded citations from LexisNexis.</p>
-        <span class="tool-meta">Paid · lexisnexis.com</span>
-      </a>
-      <a class="tool-card" href="https://www.genieai.co" rel="nofollow noopener" target="_blank">
-        <h3>Genie AI</h3>
-        <p>AI contract editor with a large legal template library.</p>
-        <span class="tool-meta">Freemium · genieai.co</span>
-      </a>
-  </div>
-
-  <div class="other-depts">
-    <h2 style="font-size:18px;margin-bottom:10px">Browse other departments</h2>
-    <a href="/departments/assistants">🤖 AI Assistants</a>
-    <a href="/departments/writing">✍️ Writing &amp; Content</a>
-    <a href="/departments/marketing">📣 Marketing &amp; SEO</a>
-    <a href="/departments/design">🎨 Design &amp; Art</a>
-    <a href="/departments/video">🎬 Video &amp; Audio</a>
-    <a href="/departments/dev">💻 Software &amp; Dev</a>
-    <a href="/departments/productivity">⚡ Productivity</a>
-    <a href="/departments/ecommerce">🛍️ E-commerce</a>
-    <a href="/departments/sales">📈 Sales &amp; CRM</a>
-    <a href="/departments/support">🎧 Customer Support</a>
-    <a href="/departments/hr">🧑‍💼 HR &amp; Recruiting</a>
-    <a href="/departments/finance">💰 Finance &amp; Accounting</a>
-    <a href="/departments/health">🩺 Healthcare</a>
-    <a href="/departments/education">🎓 Education</a>
-    <a href="/departments/realestate">🏠 Real Estate</a>
-    <a href="/departments/data">📊 Data &amp; Analytics</a>
-    <a href="/departments/travel">✈️ Travel</a>
-    <a href="/departments/gaming">🎮 Gaming</a>
-    <a href="/departments/manufacturing">🏭 Manufacturing</a>
-    <a href="/departments/agriculture">🌾 Agriculture</a>
-    <a href="/">🏪 All 221 tools</a>
-  </div>
-
+</main>
   <footer class="site-footer">
     <div class="container" data-content-nav="1" style="padding:20px 20px 6px;border-top:1px solid rgba(128,128,128,.18);margin-top:18px">
       <p style="margin:0 0 9px;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.55">Free tier data &amp; guides</p>

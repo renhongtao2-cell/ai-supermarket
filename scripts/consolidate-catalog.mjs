@@ -98,6 +98,7 @@ const urls = [
   { loc: "/guides/how-to-choose-an-ai-tool", pri: "0.8", freq: "monthly" },
   { loc: "/about", pri: "0.4", freq: "yearly" },
   { loc: "/privacy", pri: "0.3", freq: "yearly" },
+  { loc: "/affiliate-disclosure", pri: "0.3", freq: "yearly" },
 ];
 const sm = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

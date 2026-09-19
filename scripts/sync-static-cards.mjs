@@ -7,6 +7,7 @@
 // 运行: node scripts/sync-static-cards.mjs
 import fs from "fs";
 import path from "path";
+import { outbound } from "./affiliate.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const raw = fs.readFileSync(path.join(ROOT, "js", "data.js"), "utf8");
@@ -19,9 +20,10 @@ const pricingLabel = (p) => ({ free: "Free", freemium: "Freemium", paid: "Paid" 
 function card(t) {
   const d = deptById[t.dept];
   const domain = t.url.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+  const o = outbound(t.name, t.url);
   return `<article class="tool-card">
       <button class="cart-add" data-tool="${esc(t.name)}" aria-label="Add to my list" title="Save to my list">+</button>
-      <a class="tool-main" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">
+      <a class="tool-main" href="${esc(o.href)}" ${o.attrs}>
         <div class="tool-head">
           <span class="tool-logo" style="--dept:${d.color}">${esc(t.name[0])}
             <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" alt="" loading="lazy" onerror="this.remove()">

@@ -47,6 +47,7 @@ const PAGES = [
   { file: "guides/how-to-choose-an-ai-tool.html", url: "/guides/how-to-choose-an-ai-tool", min: 700, kind: "guide" },
   { file: "about.html", url: "/about", min: 400, kind: "static" },
   { file: "privacy.html", url: "/privacy", min: 300, kind: "static" },
+  { file: "affiliate-disclosure.html", url: "/affiliate-disclosure", min: 400, kind: "static" },
 ];
 
 console.log("\n[1] 页面存在性 / 广告代码 / canonical / 字数");
@@ -85,8 +86,8 @@ console.log("\n[2] 404 页：真实 404 且不含广告代码");
 console.log("\n[3] 无活页链接到已删除的 /tool/ 路径");
 {
   const files = [
-    "index.html", "about.html", "privacy.html", "404.html", "sitemap.xml", "llms.txt", "robots.txt",
-    "js/app.js", "js/data.js",
+    "index.html", "about.html", "privacy.html", "affiliate-disclosure.html", "404.html", "sitemap.xml", "llms.txt", "robots.txt",
+    "js/app.js", "js/data.js", "js/affiliate-map.js",
     ...DEPARTMENTS.map((d) => `departments/${d.id}.html`),
     "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html",
     "best/free-tier-comparison.html",
@@ -146,7 +147,7 @@ console.log("\n[6] HTML 标签平衡（已剥离 style/script 内容）");
 {
   const VOID = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
   const files = [
-    "index.html", "about.html", "privacy.html", "404.html",
+    "index.html", "about.html", "privacy.html", "affiliate-disclosure.html", "404.html",
     ...DEPARTMENTS.map((d) => `departments/${d.id}.html`),
     "best/free-ai-tools.html", "best/ai-tools-with-free-tier.html",
     "best/free-tier-comparison.html",
@@ -222,6 +223,55 @@ console.log("\n[8] 内联样式新鲜度：每个活页的内联 CSS 必须等�
     if (m[1].trim() !== css) { fail(`${f}: 内联样式与 css/style.css 不一致（改完 CSS 没跑 version-assets）`); stale++; }
   }
   if (!stale) ok(`${files.length} 个活页内联样式全部与 css/style.css 一致`);
+}
+
+console.log("\n[9] 联盟合规：页脚披露 + rel=sponsored 与注册表一致");
+{
+  const livePages = ["index.html", "about.html", "privacy.html", "affiliate-disclosure.html"];
+  for (const dir of ["departments", "best", "guides"]) {
+    const abs = path.join(ROOT, dir);
+    if (!fs.existsSync(abs)) continue;
+    for (const f of fs.readdirSync(abs)) if (f.endsWith(".html")) livePages.push(path.join(dir, f));
+  }
+
+  // (a) 每个活页都必须带页脚披露（FTC 要求「清晰显著」）
+  const MARK = "Some outbound links are affiliate links";
+  const noDisc = livePages.filter((f) => !read(f).includes(MARK));
+  if (noDisc.length) fail(`${noDisc.length} 个页面缺页脚联盟披露（inject-affiliate-disclosure.mjs 没跑？）：${noDisc.slice(0, 4).join(", ")}`);
+  else ok(`${livePages.length} 个活页均带页脚联盟披露`);
+
+  // (b) 注册表 ↔ HTML 双向一致
+  const mapRaw = read("js/affiliate-map.js");
+  const mapMatch = mapRaw.match(/window\.AFFILIATE_MAP\s*=\s*(\{[\s\S]*?\});/);
+  if (!mapMatch) {
+    fail("js/affiliate-map.js 无法解析（gen-affiliate-map.mjs 没跑？）");
+  } else {
+    let map = {};
+    try { map = JSON.parse(mapMatch[1]); } catch (e) { fail("js/affiliate-map.js 不是合法 JSON：" + e.message); }
+    const affUrls = new Set(Object.values(map));
+    const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    // 正向：联盟链接必须标 sponsored —— 漏标可能被 Google 判链接作弊
+    let bad = 0, hits = 0;
+    for (const f of livePages) {
+      const h = read(f);
+      for (const u of affUrls) {
+        if (!h.includes(u)) continue;
+        for (const m of h.matchAll(new RegExp(`<a\\s[^>]*href="${reEsc(u)}"[^>]*>`, "g"))) {
+          hits++;
+          if (!/rel="[^"]*sponsored/.test(m[0])) { fail(`${f}: 联盟链接缺 rel="sponsored" → ${u}`); bad++; }
+        }
+      }
+    }
+    // 反向：标了 sponsored 的必须真是联盟链接 —— 虚假声明同样有害
+    for (const f of livePages) {
+      for (const m of read(f).matchAll(/<a\s[^>]*rel="[^"]*sponsored[^"]*"[^>]*>/g)) {
+        const href = (m[0].match(/href="([^"]*)"/) || [])[1] || "";
+        if (!affUrls.has(href)) { fail(`${f}: 非联盟链接被标成 sponsored → ${href}`); bad++; }
+      }
+    }
+    if (!bad) ok(`联盟链接 ${affUrls.size} 条 / HTML 中命中 ${hits} 处，rel 标注双向一致`);
+  }
 }
 
 /* ---------- 汇总 ---------- */

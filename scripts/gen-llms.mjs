@@ -38,6 +38,7 @@ const out = [
   `- [Genuinely free AI tools](${SITE}/best/free-ai-tools): tools with no paid gate at all`,
   `- [About](${SITE}/about): curation policy and contact`,
   `- [Privacy Policy](${SITE}/privacy)`,
+  `- [Affiliate Disclosure](${SITE}/affiliate-disclosure): which outbound links are commercial and what commission does not influence`,
   "",
   `Every tool is documented on its department page rather than on a separate per-tool page. Individual tool URLs under /tool/ no longer exist; they redirect to the relevant department.`,
   "",

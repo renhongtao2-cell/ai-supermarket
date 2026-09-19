@@ -17,6 +17,15 @@
 
   const DEPT_BY_ID = Object.fromEntries(DEPARTMENTS.map(d => [d.id, d]));
 
+  /* ---------- 出站链接：联盟注册表 ----------
+     注册表由 scripts/affiliate.mjs 维护，导出成 js/affiliate-map.js。
+     未注册的工具不在 map 里 → 自动回退到官网，rel 也不带 sponsored。
+     注册过的工具 → 换成联盟链接 + rel="sponsored"（Google 对联盟链接的硬要求）。 */
+  const AFF = (typeof window !== "undefined" && window.AFFILIATE_MAP) || {};
+  const affLink = (name) => (AFF[name] && /^https?:\/\//.test(AFF[name]) ? AFF[name] : "");
+  const outHref = (t) => affLink(t.name) || t.url;
+  const outRel  = (t) => (affLink(t.name) ? "sponsored nofollow noopener" : "noopener noreferrer");
+
   const DEPT_COUNTS = {};
   TOOLS.forEach(t => { DEPT_COUNTS[t.dept] = (DEPT_COUNTS[t.dept] || 0) + 1; });
 
@@ -50,7 +59,7 @@
       <button class="cart-add${inCart ? " on" : ""}" data-tool="${esc(t.name)}"
               aria-label="${inCart ? "Remove from" : "Add to"} my list"
               title="${inCart ? "Remove from my list" : "Save to my list"}">${inCart ? "✓" : "+"}</button>
-      <a class="tool-main" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">
+      <a class="tool-main" href="${esc(outHref(t))}" target="_blank" rel="${outRel(t)}">
         <div class="tool-head">
           <span class="tool-logo" style="--dept:${dept.color}">${esc(t.name.charAt(0))}
             <img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64"
@@ -125,7 +134,7 @@
   function renderSamples() {
     const free = TOOLS.filter(t => t.pricing === "free").slice(0, 10);
     $("#sampleChips").innerHTML =
-      free.map(t => `<a class="sample-chip" href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">${esc(t.name)}</a>`).join("") +
+      free.map(t => `<a class="sample-chip" href="${esc(outHref(t))}" target="_blank" rel="${outRel(t)}">${esc(t.name)}</a>`).join("") +
       `<a class="sample-more" href="#all" id="allFreeLink">see all free tools →</a>`;
   }
 
@@ -144,7 +153,7 @@
       ? `<div class="cart-empty"><p>🧺</p><p>Your list is empty.<br>Add tools with the <strong>+</strong> button as you browse.</p></div>`
       : items.map(t => `
         <div class="cart-item">
-          <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer">
+          <a href="${esc(outHref(t))}" target="_blank" rel="${outRel(t)}">
             <strong>${esc(t.name)}</strong><span>${esc(domainOf(t.url))}</span>
           </a>
           <button class="cart-remove" data-tool="${esc(t.name)}" aria-label="Remove ${esc(t.name)}">✕</button>

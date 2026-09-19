@@ -93,6 +93,20 @@ function clearStage(dir) {
     autoSync("regen-seo-blocks.mjs");
     autoSync("gen-llms.mjs");
     autoSync("consolidate-catalog.mjs");
+    // 联盟链接映射表：失败 = 浏览器拿不到联盟链接，全部静默退回官网（零报错）。
+    try {
+      execSync("node scripts/gen-affiliate-map.mjs", { cwd: ROOT, stdio: "inherit" });
+    } catch (e) {
+      console.error("gen-affiliate-map.mjs 失败，联盟链接不会生效，中止部署。");
+      process.exit(1);
+    }
+    // 页脚联盟披露：FTC/Google 合规项。脚本自带自检，失败必须中止。
+    try {
+      execSync("node scripts/inject-affiliate-disclosure.mjs", { cwd: ROOT, stdio: "inherit" });
+    } catch (e) {
+      console.error("联盟披露注入未通过自检，中止部署。");
+      process.exit(1);
+    }
     // 样式内联是硬依赖：活页没有外部 <link>，内联块没更新 = 线上还是旧样式。
     // 这里必须中止。曾经写成 warning 并继续部署，导致 CSS 改动整整一轮静默失效。
     try {

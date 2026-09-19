@@ -11,6 +11,7 @@
 - [Genuinely free AI tools](https://ai.toolboxes.top/best/free-ai-tools): tools with no paid gate at all
 - [About](https://ai.toolboxes.top/about): curation policy and contact
 - [Privacy Policy](https://ai.toolboxes.top/privacy)
+- [Affiliate Disclosure](https://ai.toolboxes.top/affiliate-disclosure): which outbound links are commercial and what commission does not influence
 
 Every tool is documented on its department page rather than on a separate per-tool page. Individual tool URLs under /tool/ no longer exist; they redirect to the relevant department.
 

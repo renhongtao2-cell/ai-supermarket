@@ -11,13 +11,16 @@ import crypto from "crypto";
 const ROOT = path.resolve(import.meta.dirname, "..");
 const css = fs.readFileSync(path.join(ROOT, "css", "style.css"), "utf8");
 
-const jsVersion = crypto
-  .createHash("sha1")
-  .update(css)
-  .update(fs.readFileSync(path.join(ROOT, "js", "app.js")))
-  .update(fs.readFileSync(path.join(ROOT, "js", "data.js")))
-  .digest("hex")
-  .slice(0, 8);
+// 参与哈希的文件：任何「浏览器会执行的 js」都必须在这里，否则改了它浏览器还吃旧缓存。
+const JS_ASSETS = ["app.js", "data.js", "affiliate-map.js"];
+const jsVersion = (() => {
+  const h = crypto.createHash("sha1").update(css);
+  for (const f of JS_ASSETS) {
+    const p = path.join(ROOT, "js", f);
+    if (fs.existsSync(p)) h.update(fs.readFileSync(p));
+  }
+  return h.digest("hex").slice(0, 8);
+})();
 
 const MARKER = "<style>/* asm-inline-css */";
 const inlineStyle = `${MARKER}\n${css}\n</style>`;
@@ -57,10 +60,17 @@ for (const rel of files) {
       `<link href="${href}" rel="stylesheet" media="print" onload="this.media='all'">\n  <noscript><link href="${href}" rel="stylesheet"></noscript>`,
   );
 
+  // affiliate-map.js 的 <script> 标签：自愈式补全。
+  // 谁都有可能重写 index.html（sync-static-cards / site-nav），把标签擦掉是静默失效
+  // —— 联盟链接会悄悄全部退回官网，而页面上看不出任何异常。所以放在这里兜底。
+  if (html.includes("js/app.js") && !html.includes("js/affiliate-map.js")) {
+    html = html.replace(/(\s*)(<script src="js\/app\.js)/, `$1<script src="js/affiliate-map.js?v=${jsVersion}"></script>$1$2`);
+  }
+
   // js 引用刷新 ?v= 版本号（仅 src="js/..." 属性形式，不影响页脚 /js/data.js 链接）
   html = html
-    .replace(/(?<=")(js\/(?:app|data)\.js)\?v=[0-9a-f]+/g, "$1")
-    .replace(/(?<=")(js\/(?:app|data)\.js)(?=["\s])/g, `$1?v=${jsVersion}`);
+    .replace(/(?<=")(js\/(?:app|data|affiliate-map)\.js)\?v=[0-9a-f]+/g, "$1")
+    .replace(/(?<=")(js\/(?:app|data|affiliate-map)\.js)(?=["\s])/g, `$1?v=${jsVersion}`);
 
   // AdSense 审核代码：注入到 </head> 前（幂等，已存在则跳过）
   if (!html.includes("adsbygoogle")) {
