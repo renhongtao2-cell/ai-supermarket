@@ -30,8 +30,9 @@ if (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID) {
 const siteArg = process.argv.find((a) => a.startsWith("--site="));
 const SITE = siteArg ? siteArg.split("=")[1] : "catalog";
 const IS_TOOLS = SITE === "tools";
+const IS_SEO = SITE === "seo";
 
-const DEFAULTS = { catalog: "ai-supermarket", tools: "toolboxhub" };
+const DEFAULTS = { catalog: "ai-supermarket", tools: "toolboxhub", seo: "serpprism" };
 const PROJ = process.env.CF_PROJ || DEFAULTS[SITE] || DEFAULTS.catalog;
 
 // 部署后清缓存用：每个站点对应的 zone 与主机。
@@ -88,6 +89,22 @@ function clearStage(dir) {
       console.error("工具站内容体检未通过，中止部署。");
       process.exit(1);
     }
+  } else if (IS_SEO) {
+    // SerpPrism（SEO 工具站）：重新生成 → 单测 → 内容闸门。
+    // 两道都必须过：工具算错等于站是坏的，而页面看起来完全正常。
+    autoSync("gen-seosite.mjs");
+    try {
+      execSync("node scripts/test-seosite.mjs", { cwd: ROOT, stdio: "inherit" });
+    } catch (e) {
+      console.error("SerpPrism 工具逻辑测试失败，中止部署。");
+      process.exit(1);
+    }
+    try {
+      execSync("node scripts/check-seosite.mjs", { cwd: ROOT, stdio: "inherit" });
+    } catch (e) {
+      console.error("SerpPrism 内容闸门未通过，中止部署。");
+      process.exit(1);
+    }
   } else {
     // 目录站：全量重建 —— 部门 hub → 跨类目页 → 卡片/SEO → llms → sitemap+_redirects → 版本号
     // 顺序有依赖：hub 必须先于 regen-seo-blocks（后者不再碰部门页）；
@@ -133,8 +150,8 @@ function clearStage(dir) {
   }
 
   // 构建干净 staging 目录（白名单 + 安全自检）
-  const stageArg = IS_TOOLS ? "--site=tools" : "";
-  const STAGE = path.join(ROOT, IS_TOOLS ? ".deploy-tools" : ".deploy");
+  const stageArg = IS_TOOLS ? "--site=tools" : IS_SEO ? "--site=seo" : "";
+  const STAGE = path.join(ROOT, IS_TOOLS ? ".deploy-tools" : IS_SEO ? ".deploy-seo" : ".deploy");
   clearStage(STAGE);
   execSync(`node scripts/prepare-deploy-dir.mjs ${stageArg}`.trim(), { cwd: ROOT, stdio: "inherit" });
 
