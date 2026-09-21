@@ -13,13 +13,26 @@ import path from "path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const OUT = path.join(ROOT, "seosite");
-const SITE = "https://serpprism.com";
 
-// 与 check-toolsite-content.mjs 同一口径：
-//   只有 tools/ 和 guides/ 下的页面卡 650 词（它们是排名页、也是审核员会点开的页）。
-//   首页 / about / contact / privacy / 404 只需存在且真实，不卡词数。
+// 站点 origin 从生成器里读，不在这里硬编码 ——
+// 之前这里写死 "https://serpprism.com"，生成器换成 www 之后两边不同步，
+// 闸门把所有页面都判成「sitemap URL 无对应文件」。改域名只改 gen-seosite.mjs 一处。
+const SITE = (() => {
+  const src = fs.readFileSync(path.join(ROOT, "scripts", "gen-seosite.mjs"), "utf8");
+  const m = src.match(/^const SITE\s*=\s*"([^"]+)"/m);
+  if (!m) throw new Error("读不到 gen-seosite.mjs 里的 SITE 常量");
+  return m[1].replace(/\/+$/, "");
+})();
+
+// 站点词数与 canonical 闸门：tools/ 和 guides/ 下的页面卡 650 词（排名页、审核员会点开），
+// 其他"信息型"页面（首页 / about / contact / privacy / 404）只需存在不卡词数。
+//
+// 特殊豁免：根目录下形如 google<token>.html 的 GSC 站点所有权验证文件
+// （token 是 32 位十六进制）—— 这些不是页面，是 Google 用来验证域所有权的
+// 静态资源，**不应该**有 canonical / 词数 / JSON-LD。闸门必须跳过它们。
 const MIN_WORDS = 650;
 const applies = (f) => f.startsWith("tools/") || f.startsWith("guides/");
+const isGscVerify = (f) => /^google[a-f0-9]{16}\.html$/i.test(path.basename(f));
 
 if (!fs.existsSync(OUT)) {
   console.error("❌ seosite/ 不存在，先跑 node scripts/gen-seosite.mjs");
@@ -31,7 +44,7 @@ const files = [];
   for (const e of fs.readdirSync(d, { withFileTypes: true })) {
     const f = path.join(d, e.name);
     if (e.isDirectory()) walk(f);
-    else if (f.endsWith(".html")) files.push(path.relative(OUT, f).split(path.sep).join("/"));
+    else if (f.endsWith(".html") && !isGscVerify(f)) files.push(path.relative(OUT, f).split(path.sep).join("/"));
   }
 })(OUT);
 

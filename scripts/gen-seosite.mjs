@@ -16,9 +16,9 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const OUT = path.join(ROOT, "seosite");
 
 /* ===== 站点常量：换域名/品牌只改这里 ===== */
-const SITE = "https://serpprism.com";
+const SITE = "https://www.serpprism.com";
 const BRAND = "SerpPrism";
-const DOMAIN_LABEL = "serpprism.com";
+const DOMAIN_LABEL = "www.serpprism.com";
 const UPDATED = "2026-09-21";
 const LAUNCH = "2026-09-21";
 const ADSENSE_CLIENT = "ca-pub-9901133369141996";
@@ -1709,6 +1709,19 @@ ${GUIDES.map((g) => `- [${g.h1}](${SITE}/guides/${g.slug}): ${g.lead}`).join("\n
 All processing is client-side JavaScript. There is no API; tool behaviour is deterministic given the same input.
 `
 );
+
+// GSC 站点所有权验证文件。文件名 token 是 Google Search Console 给的，
+// 换站或重新验证时改 GSC_TOKEN 一行；文件名会自动跟着变。
+// 同时也要在 scripts/prepare-deploy-dir.mjs 的 seo.files 白名单里登记新文件名，
+// 否则会被静默丢弃（这个坑踩过：toolboxes.top 的 contact.html）。
+//
+// 同时输出两份：有 .html 扩展名的（GSC 给的标准文件名）+ 无扩展名的备份。
+// 原因：CF Pages 默认对所有 .html 走 308 跳到无扩展名（"漂亮 URL"），
+// 部分 GSC fetcher 不跟 308 直接判定失败。两份都备，无论访问哪种 URL 都能拿到。
+const GSC_TOKEN = "google11ba110197545384";
+const gscBody = `google-site-verification: ${GSC_TOKEN}\n`;
+write(`${GSC_TOKEN}.html`, gscBody);
+write(GSC_TOKEN, gscBody);
 
 /* ---------- 报告 ---------- */
 const htmlFiles = [];

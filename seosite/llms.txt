@@ -3,17 +3,17 @@
 > Free SEO and website auditing tools that run entirely in the browser. No upload, no signup.
 
 ## Tools
-- [Meta Tag Generator](https://serpprism.com/tools/meta-tag-generator): Generate clean page title, meta description, canonical, Open Graph and Twitter card tags. Live length warnings, copy-ready HTML, runs entirely in your browser.
-- [SERP Preview Tool](https://serpprism.com/tools/serp-preview): Preview how your title and description will look in Google search results, measured in real pixels. See exactly where the snippet gets truncated before you publish.
-- [robots.txt Tester](https://serpprism.com/tools/robots-txt-tester): Paste a robots.txt and test any URL against any user-agent. See exactly which rule wins, which line matched, and whether Googlebot can crawl the page.
-- [Heading Structure Analyzer](https://serpprism.com/tools/heading-analyzer): Paste HTML and get a clean H1–H6 outline plus a list of real problems: missing or duplicated H1, skipped levels, and headings that are too long.
-- [Keyword Density Checker](https://serpprism.com/tools/keyword-density): Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.
-- [Readability Score Checker](https://serpprism.com/tools/readability-score): Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.
+- [Meta Tag Generator](https://www.serpprism.com/tools/meta-tag-generator): Generate clean page title, meta description, canonical, Open Graph and Twitter card tags. Live length warnings, copy-ready HTML, runs entirely in your browser.
+- [SERP Preview Tool](https://www.serpprism.com/tools/serp-preview): Preview how your title and description will look in Google search results, measured in real pixels. See exactly where the snippet gets truncated before you publish.
+- [robots.txt Tester](https://www.serpprism.com/tools/robots-txt-tester): Paste a robots.txt and test any URL against any user-agent. See exactly which rule wins, which line matched, and whether Googlebot can crawl the page.
+- [Heading Structure Analyzer](https://www.serpprism.com/tools/heading-analyzer): Paste HTML and get a clean H1–H6 outline plus a list of real problems: missing or duplicated H1, skipped levels, and headings that are too long.
+- [Keyword Density Checker](https://www.serpprism.com/tools/keyword-density): Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.
+- [Readability Score Checker](https://www.serpprism.com/tools/readability-score): Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.
 
 ## Guides
-- [Meta Description Length: What Actually Gets Truncated](https://serpprism.com/guides/meta-description-length): The number everyone quotes is 155 characters. The real rule is pixel width, and knowing the difference saves you from rewriting descriptions that were fine.
-- [robots.txt Mistakes That Silently Deindex Pages](https://serpprism.com/guides/robots-txt-mistakes): Five configuration errors that remove pages from Google without producing any error message anywhere.
-- [Heading Structure: What H1–H6 Order Actually Does](https://serpprism.com/guides/heading-structure-seo): Headings are document structure, not a ranking lever. Here is what they genuinely affect, and what is folklore.
+- [Meta Description Length: What Actually Gets Truncated](https://www.serpprism.com/guides/meta-description-length): The number everyone quotes is 155 characters. The real rule is pixel width, and knowing the difference saves you from rewriting descriptions that were fine.
+- [robots.txt Mistakes That Silently Deindex Pages](https://www.serpprism.com/guides/robots-txt-mistakes): Five configuration errors that remove pages from Google without producing any error message anywhere.
+- [Heading Structure: What H1–H6 Order Actually Does](https://www.serpprism.com/guides/heading-structure-seo): Headings are document structure, not a ranking lever. Here is what they genuinely affect, and what is folklore.
 
 ## Notes for automated readers
 All processing is client-side JavaScript. There is no API; tool behaviour is deterministic given the same input.

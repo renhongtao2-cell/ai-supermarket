@@ -34,6 +34,11 @@ const SITES = {
     files: [
       "index.html", "about.html", "contact.html", "privacy.html", "404.html",
       "sitemap.xml", "robots.txt", "ads.txt", "_headers", "_redirects", "llms.txt",
+      // GSC 站点所有权验证文件（文件名是 Google 给的 token，全平台通用）。
+      // 新加验证文件时同步往这里补一行，否则会被静默丢弃，验证永远不过。
+      // 文件名带 .html 是 GSC 给的标准名；无扩展名版本是 CF Pages 308 跳的备份。
+      "google11ba110197545384.html",
+      "google11ba110197545384",
     ],
     dirs: ["css", "js", "tools", "guides"],
   },
