@@ -9,6 +9,7 @@ worker.js
 wrangler.toml
 README.md
 .deploy-tools/
+.deploy-seo/
 
 # 部署日志（本地临时）
 deploy.log

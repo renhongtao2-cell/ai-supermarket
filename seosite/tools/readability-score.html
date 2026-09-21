@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readability Score Checker — Free, No Upload | SerpPrism</title>
+<meta name="description" content="Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.">
+<link rel="canonical" href="https://serpprism.com/tools/readability-score">
+<meta property="og:title" content="Readability Score Checker — Free, No Upload | SerpPrism">
+<meta property="og:description" content="Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://serpprism.com/tools/readability-score">
+<meta property="og:site_name" content="SerpPrism">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://serpprism.com/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
+<style>
+:root{
+  --bg:#ffffff; --panel:#f7f9fc; --line:#e4e8ef; --ink:#151821; --ink-2:#5a6373;
+  --accent:#2f6df6; --good:#0f7b4f; --warn:#a8630a; --bad:#b3261e;
+  --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+[data-theme="dark"]{
+  --bg:#0f1218; --panel:#171b24; --line:#262c38; --ink:#e8ecf3; --ink-2:#9aa4b5;
+  --accent:#6b9bff; --good:#4cc38a; --warn:#e0a458; --bad:#ff7b6e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+.wrap.narrow{max-width:760px}
+a{color:var(--accent)}
+h1,h2,h3,h4{line-height:1.28;letter-spacing:-.2px}
+h2{font-size:21px;margin:30px 0 10px}
+h3{font-size:17px;margin:22px 0 8px}
+p{margin:0 0 14px}
+code{font-family:var(--mono);font-size:.9em;background:var(--panel);padding:1px 5px;border-radius:4px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;background:var(--bg);padding:8px 12px;z-index:9;border:1px solid var(--line)}
+header.site{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+header.site .wrap{display:flex;align-items:center;gap:16px;min-height:58px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:17px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:7px}
+.logo .mark{font-size:19px}
+.logo em{font-style:normal;color:var(--accent)}
+header.site nav{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;align-items:center}
+header.site nav a{font-size:13.5px;color:var(--ink-2);text-decoration:none;padding:5px 8px;border-radius:7px}
+header.site nav a:hover{background:var(--panel);color:var(--ink)}
+#theme{background:none;border:1px solid var(--line);border-radius:8px;cursor:pointer;padding:4px 8px;margin-left:4px}
+main{padding:34px 0 60px}
+footer.site{border-top:1px solid var(--line);padding:34px 0 40px;background:var(--panel);font-size:14px}
+footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
+footer.site h5{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+footer.site ul{list-style:none;margin:0;padding:0}
+footer.site li{margin-bottom:5px}
+footer.site a{color:var(--ink-2);text-decoration:none}
+footer.site a:hover{color:var(--accent)}
+.legal{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:13px}
+.crumb{font-size:13px;color:var(--ink-2);margin:0 0 6px}
+.crumb a{color:var(--ink-2)}
+.lead{font-size:17.5px;color:var(--ink-2);margin:0 0 22px}
+.hero{background:var(--panel);border-bottom:1px solid var(--line);padding:40px 0 38px;margin:-34px 0 34px}
+.hero h1{font-size:clamp(26px,4.2vw,38px);margin:0 0 12px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.badge{font-size:12.5px;padding:4px 11px;border:1px solid var(--line);border-radius:20px;background:var(--bg);color:var(--ink-2)}
+.badge.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.grid-tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:22px 0}
+.tcard{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:var(--bg);text-decoration:none;color:inherit;display:block}
+.tcard:hover{border-color:var(--accent)}
+.tcard h3{margin:0 0 6px;font-size:16px}
+.tcard p{margin:0;font-size:14px;color:var(--ink-2)}
+.tool{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--panel);margin:22px 0}
+label{display:block;margin-bottom:13px;font-size:13.5px;color:var(--ink-2);font-weight:600}
+label input,label textarea,label select{
+  display:block;width:100%;margin-top:6px;padding:9px 11px;font:inherit;font-size:15px;
+  border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+label textarea{font-family:var(--mono);font-size:13.5px;line-height:1.6;resize:vertical}
+label input:focus,label textarea:focus,label select:focus{outline:2px solid var(--accent);outline-offset:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+@media(max-width:620px){.grid2,.grid3{grid-template-columns:1fr}}
+.meter{height:7px;background:var(--line);border-radius:20px;overflow:hidden;margin:10px 0 4px}
+.meter-fill{height:100%;border-radius:20px}
+.meter-fill.good{background:var(--good)}.meter-fill.warn{background:var(--warn)}.meter-fill.bad{background:var(--bad)}
+.meter-note{font-size:12.5px;font-weight:600}
+.meter-note.good{color:var(--good)}.meter-note.warn{color:var(--warn)}.meter-note.bad{color:var(--bad)}
+.out-head{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;font-weight:700;font-size:14px}
+.mini{font:inherit;font-size:12.5px;padding:4px 11px;border:1px solid var(--line);background:var(--bg);
+  color:var(--ink);border-radius:7px;cursor:pointer}
+.mini:hover{border-color:var(--accent)}
+pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:13px;overflow:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;margin:0;max-height:340px}
+.muted{color:var(--ink-2)}
+.small{font-size:12.5px}
+.serp-box{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;max-width:620px}
+[data-theme="dark"] .serp-box{background:#11151c}
+.serp-url{display:flex;align-items:center;gap:7px;font-size:13px;color:#202124;margin-bottom:3px}
+[data-theme="dark"] .serp-url{color:#c9d1dc}
+.serp-fav{width:22px;height:22px;border-radius:50%;background:#e8eaed;flex:none}
+.serp-site{font-weight:600}
+.serp-path{color:#5f6368}
+.serp-title{color:#1a0dab;font-size:19px;line-height:1.35;margin-bottom:3px}
+[data-theme="dark"] .serp-title{color:#8ab4f8}
+.serp-desc{color:#4d5156;font-size:13.5px;line-height:1.58}
+[data-theme="dark"] .serp-desc{color:#bdc1c6}
+.serp-cut{color:#9aa0a6;text-decoration:line-through}
+.verdict{margin-top:6px}
+.verdict-box{border:1px solid var(--line);border-left-width:4px;border-radius:9px;padding:13px 15px;background:var(--bg);margin-bottom:10px}
+.verdict-box.ok{border-left-color:var(--good)}
+.verdict-box.no{border-left-color:var(--bad)}
+.verdict-word{font-weight:800;font-size:17px;letter-spacing:.02em}
+.verdict-box.ok .verdict-word{color:var(--good)}
+.verdict-box.no .verdict-word{color:var(--bad)}
+.verdict-why{font-size:14px;color:var(--ink-2)}
+.mini-table{border-collapse:collapse;font-size:13px;margin-top:10px}
+.mini-table th,.mini-table td{border:1px solid var(--line);padding:5px 10px;text-align:left}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-size:12.5px;padding:3px 10px;border:1px solid var(--line);border-radius:20px}
+.chip.dim{opacity:.45}
+.outline{border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--bg);max-height:380px;overflow:auto}
+.h-row{padding:3px 0;font-size:14px;display:flex;gap:9px;align-items:baseline}
+.h-tag{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);flex:none;min-width:26px}
+.h-1 .h-text{font-weight:700;font-size:16px}
+.h-2{padding-left:14px}.h-3{padding-left:28px}.h-4{padding-left:42px}
+.h-5{padding-left:56px}.h-6{padding-left:70px}
+.issue-list{display:flex;flex-direction:column;gap:7px}
+.issue{border:1px solid var(--line);border-left-width:3px;border-radius:8px;padding:9px 12px;font-size:14px;background:var(--bg)}
+.issue.warn{border-left-color:var(--warn)}
+.issue.ok{border-left-color:var(--good)}
+.issue.info{border-left-color:var(--line)}
+.kw-table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:10px}
+.kw-table th,.kw-table td{border-bottom:1px solid var(--line);padding:6px 9px;text-align:left}
+.kw-table .num{text-align:right;font-variant-numeric:tabular-nums;width:64px}
+.bar{height:6px;background:var(--line);border-radius:20px;overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);border-radius:20px}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+@media(max-width:680px){.score-grid{grid-template-columns:repeat(2,1fr)}}
+.score{border:1px solid var(--line);border-radius:var(--radius);padding:14px;text-align:center;background:var(--bg)}
+.score-n{font-size:27px;font-weight:800;line-height:1.1}
+.score.good .score-n{color:var(--good)}.score.warn .score-n{color:var(--warn)}.score.bad .score-n{color:var(--bad)}
+.score-l{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+.score-b{font-size:11.5px;color:var(--ink-2);opacity:.8;margin-top:2px}
+.faq{margin:26px 0 0}
+.faq details{border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:9px;background:var(--panel)}
+.faq summary{cursor:pointer;font-weight:600;font-size:15px}
+.faq p{margin:9px 0 0;font-size:14.5px;color:var(--ink-2)}
+.privacy{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
+  padding:14px 16px;background:var(--panel);margin:22px 0}
+.privacy h4{margin:0 0 7px;font-size:15px}
+.privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+</style>
+<script>try{var t=localStorage.getItem("sp-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://serpprism.com/#organization","name":"SerpPrism","url":"https://serpprism.com/","description":"Free browser-based SEO and website auditing tools.","email":"renhongtao2@gmail.com"},{"@type":"WebSite","@id":"https://serpprism.com/#website","name":"SerpPrism","url":"https://serpprism.com/","inLanguage":"en","publisher":{"@id":"https://serpprism.com/#organization"}},{"@type":"WebPage","@id":"https://serpprism.com/tools/readability-score#webpage","url":"https://serpprism.com/tools/readability-score","name":"Readability Score Checker — Free, No Upload | SerpPrism","description":"Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.","isPartOf":{"@id":"https://serpprism.com/#website"},"inLanguage":"en","datePublished":"2026-09-21","dateModified":"2026-09-21"},{"@type":"BreadcrumbList","@id":"https://serpprism.com/tools/readability-score#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://serpprism.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://serpprism.com/tools/"},{"@type":"ListItem","position":3,"name":"Readability Score Checker","item":"https://serpprism.com/tools/readability-score"}]},{"@type":"WebApplication","@id":"https://serpprism.com/tools/readability-score#app","name":"Readability Score Checker","url":"https://serpprism.com/tools/readability-score","applicationCategory":"BusinessApplication","operatingSystem":"Any (runs in a browser)","browserRequirements":"Requires JavaScript. No installation.","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste your text.","Read the Flesch score and grade level together — one without the other is easy to misread.","Open the longest sentences list and split anything over about 25 words."],"publisher":{"@id":"https://serpprism.com/#organization"}},{"@type":"HowTo","@id":"https://serpprism.com/tools/readability-score#howto","name":"How to use the Readability Score Checker","totalTime":"PT1M","tool":[{"@type":"HowToTool","name":"A web browser"}],"step":[{"@type":"HowToStep","position":1,"text":"Paste your text."},{"@type":"HowToStep","position":2,"text":"Read the Flesch score and grade level together — one without the other is easy to misread."},{"@type":"HowToStep","position":3,"text":"Open the longest sentences list and split anything over about 25 words."}]},{"@type":"FAQPage","@id":"https://serpprism.com/tools/readability-score#faq","mainEntity":[{"@type":"Question","name":"What is a good Flesch score for web content?","acceptedAnswer":{"@type":"Answer","text":"60–70 is plain English and a reasonable target for general-audience pages. 50–60 is fairly difficult and normal for trade publications; below 30 is graduate-level."}},{"@type":"Question","name":"Does readability affect SEO?","acceptedAnswer":{"@type":"Answer","text":"Not directly. There is no readability score in the ranking systems. It affects how many people finish your page, which affects everything else you care about."}},{"@type":"Question","name":"How accurate is the syllable count?","acceptedAnswer":{"@type":"Answer","text":"It uses a vowel-group heuristic with common English corrections. It is accurate enough to compare two drafts of the same text, which is the useful comparison."}}]}]}</script>
+</head>
+<body data-tool="readability">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">🔍</span>Serp<em>Prism</em></a>
+    <nav><a href="/tools/">All tools</a><a href="/tools/meta-tag-generator">Meta tags</a><a href="/tools/serp-preview">SERP preview</a><a href="/tools/robots-txt-tester">robots.txt</a><a href="/tools/heading-analyzer">Headings</a><a href="/tools/keyword-density">Keyword density</a><a href="/tools/readability-score">Readability</a><a href="/guides/">Guides</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/tools/">Tools</a> › Readability Score Checker</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">Readability Score Checker</h1>
+  <p class="lead">Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.</p>
+
+  <div class="tool">
+    
+      <label>Text<textarea id="rd-text" rows="12" placeholder="Paste the article or page copy here."></textarea></label>
+      <div id="rd-out" aria-live="polite"></div>
+  </div>
+
+  <p>Paste your text for a readability breakdown — the standard scores plus the specific sentences that are hardest to read, so you know where to cut rather than just how bad it is.</p>
+
+  <h2>How to use it</h2>
+  <ol><li>Paste your text.</li><li>Read the Flesch score and grade level together — one without the other is easy to misread.</li><li>Open the longest sentences list and split anything over about 25 words.</li></ol>
+
+  <h2>How to read the two scores together</h2><p>Flesch Reading Ease runs from 0 to 100, higher being easier; 60 to 70 is plain English. Flesch-Kincaid grade level expresses the same signal as US school years. A text can score 65 (fine) and grade 9 (also fine) — they agree more often than not.</p><p>Both formulas are built from exactly two inputs: sentence length and syllables per word. That means there are only two levers available to you — shorter sentences, and shorter words.</p><h2>Where these formulas mislead</h2><p>Syllable counting is a heuristic, and it treats every polysyllabic word as equally hard. 'Photography' and 'responsibility' are not equally difficult, but both cost the same in the formula. Technical vocabulary is necessary in technical writing and should not be removed to chase a number.</p><p>Use the score to spot sentences that are structurally tangled, not as a target to hit. A page at grade 12 about distributed databases is not failing; a page at grade 16 about choosing a kettle probably is.</p><h2>The three edits that actually move the number</h2><p>Split sentences at conjunctions. Most sentences over 30 words contain an 'and', a 'but' or a 'which' that marks a natural seam. Cutting there produces two sentences that read better than the original and need no rewriting of the ideas.</p><p>Replace nominalisations with verbs. 'The implementation of the configuration requires the specification of parameters' is four nouns doing a verb's work. 'To configure the tool, specify its parameters' says the same thing in a third of the words and drops the syllable count sharply.</p><p>Delete the throat-clearing. Phrases like 'it is important to note that' and 'in order to' add syllables without adding meaning. Removing them is the cheapest readability win available, and it almost always improves the writing rather than just the score.</p><p>Do those three things and the Flesch score moves on its own. Rewriting specifically to raise the number — swapping 'use' for 'utilise' in reverse, or breaking sentences at arbitrary points — produces text that scores well and reads worse.</p>
+
+  <div class="faq">
+    <h2>Questions</h2>
+    <details><summary>What is a good Flesch score for web content?</summary><p>60–70 is plain English and a reasonable target for general-audience pages. 50–60 is fairly difficult and normal for trade publications; below 30 is graduate-level.</p></details><details><summary>Does readability affect SEO?</summary><p>Not directly. There is no readability score in the ranking systems. It affects how many people finish your page, which affects everything else you care about.</p></details><details><summary>How accurate is the syllable count?</summary><p>It uses a vowel-group heuristic with common English corrections. It is accurate enough to compare two drafts of the same text, which is the useful comparison.</p></details>
+  </div>
+
+  <h2>Related tools</h2><div class="grid-tools"><a class="tcard" href="/tools/keyword-density"><h3>Keyword Density Checker</h3><p>Count single words, two-word and three-word phrases with stopwords filtered out.</p></a><a class="tcard" href="/tools/heading-analyzer"><h3>Heading Structure Analyzer</h3><p>Paste HTML and get a clean H1–H6 outline plus a list of real problems: missing or duplicated H1, skipped levels, and headings that are too long.</p></a><a class="tcard" href="/tools/serp-preview"><h3>SERP Preview Tool</h3><p>Preview how your title and description will look in Google search results, measured in real pixels.</p></a></div>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>SerpPrism</h5>
+        <p style="margin:0">Free SEO and website auditing tools that run entirely in your browser. Nothing you paste is uploaded or stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul>
+          <li><a href="/tools/"><strong>All tools</strong></a></li>
+          <li><a href="/tools/meta-tag-generator">Meta Tag Generator</a></li><li><a href="/tools/serp-preview">SERP Preview Tool</a></li><li><a href="/tools/robots-txt-tester">robots.txt Tester</a></li><li><a href="/tools/heading-analyzer">Heading Structure Analyzer</a></li><li><a href="/tools/keyword-density">Keyword Density Checker</a></li><li><a href="/tools/readability-score">Readability Score Checker</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul>
+          <li><a href="/guides/"><strong>All guides</strong></a></li>
+          <li><a href="/guides/meta-description-length">Meta Description Length: What Actually Gets Truncated</a></li><li><a href="/guides/robots-txt-mistakes">robots.txt Mistakes That Silently Deindex Pages</a></li><li><a href="/guides/heading-structure-seo">Heading Structure: What H1–H6 Order Actually Does</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 SerpPrism — serpprism.com. All analysis happens locally in your browser. Last updated 2026-09-21.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js?v=04fbbd84"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("sp-theme",n)}catch(e){}});})();</script>
+</body>
+</html>

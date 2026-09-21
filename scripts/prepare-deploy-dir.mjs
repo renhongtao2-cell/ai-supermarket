@@ -26,6 +26,17 @@ const SITES = {
     ],
     dirs: ["css", "js", "departments", "best", "guides"],
   },
+  // SerpPrism — SEO 工具站（serpprism.com）
+  // 生成器：scripts/gen-seosite.mjs；闸门：scripts/check-seosite.mjs
+  seo: {
+    src: path.join(ROOT, "seosite"),
+    out: path.join(ROOT, ".deploy-seo"),
+    files: [
+      "index.html", "about.html", "contact.html", "privacy.html", "404.html",
+      "sitemap.xml", "robots.txt", "ads.txt", "_headers", "_redirects", "llms.txt",
+    ],
+    dirs: ["css", "js", "tools", "guides"],
+  },
   // Subtitle Tools 工具站（toolboxes.top / www）
   tools: {
     src: path.join(ROOT, "toolsite"),

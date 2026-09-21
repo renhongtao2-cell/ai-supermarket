@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Density Checker — Free, No Upload | SerpPrism</title>
+<meta name="description" content="Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.">
+<link rel="canonical" href="https://serpprism.com/tools/keyword-density">
+<meta property="og:title" content="Keyword Density Checker — Free, No Upload | SerpPrism">
+<meta property="og:description" content="Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://serpprism.com/tools/keyword-density">
+<meta property="og:site_name" content="SerpPrism">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" type="text/plain" href="https://serpprism.com/llms.txt" title="LLM-friendly index">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
+<style>
+:root{
+  --bg:#ffffff; --panel:#f7f9fc; --line:#e4e8ef; --ink:#151821; --ink-2:#5a6373;
+  --accent:#2f6df6; --good:#0f7b4f; --warn:#a8630a; --bad:#b3261e;
+  --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+[data-theme="dark"]{
+  --bg:#0f1218; --panel:#171b24; --line:#262c38; --ink:#e8ecf3; --ink-2:#9aa4b5;
+  --accent:#6b9bff; --good:#4cc38a; --warn:#e0a458; --bad:#ff7b6e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+.wrap.narrow{max-width:760px}
+a{color:var(--accent)}
+h1,h2,h3,h4{line-height:1.28;letter-spacing:-.2px}
+h2{font-size:21px;margin:30px 0 10px}
+h3{font-size:17px;margin:22px 0 8px}
+p{margin:0 0 14px}
+code{font-family:var(--mono);font-size:.9em;background:var(--panel);padding:1px 5px;border-radius:4px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;background:var(--bg);padding:8px 12px;z-index:9;border:1px solid var(--line)}
+header.site{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+header.site .wrap{display:flex;align-items:center;gap:16px;min-height:58px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:17px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:7px}
+.logo .mark{font-size:19px}
+.logo em{font-style:normal;color:var(--accent)}
+header.site nav{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;align-items:center}
+header.site nav a{font-size:13.5px;color:var(--ink-2);text-decoration:none;padding:5px 8px;border-radius:7px}
+header.site nav a:hover{background:var(--panel);color:var(--ink)}
+#theme{background:none;border:1px solid var(--line);border-radius:8px;cursor:pointer;padding:4px 8px;margin-left:4px}
+main{padding:34px 0 60px}
+footer.site{border-top:1px solid var(--line);padding:34px 0 40px;background:var(--panel);font-size:14px}
+footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
+footer.site h5{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+footer.site ul{list-style:none;margin:0;padding:0}
+footer.site li{margin-bottom:5px}
+footer.site a{color:var(--ink-2);text-decoration:none}
+footer.site a:hover{color:var(--accent)}
+.legal{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:13px}
+.crumb{font-size:13px;color:var(--ink-2);margin:0 0 6px}
+.crumb a{color:var(--ink-2)}
+.lead{font-size:17.5px;color:var(--ink-2);margin:0 0 22px}
+.hero{background:var(--panel);border-bottom:1px solid var(--line);padding:40px 0 38px;margin:-34px 0 34px}
+.hero h1{font-size:clamp(26px,4.2vw,38px);margin:0 0 12px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.badge{font-size:12.5px;padding:4px 11px;border:1px solid var(--line);border-radius:20px;background:var(--bg);color:var(--ink-2)}
+.badge.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.grid-tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:22px 0}
+.tcard{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:var(--bg);text-decoration:none;color:inherit;display:block}
+.tcard:hover{border-color:var(--accent)}
+.tcard h3{margin:0 0 6px;font-size:16px}
+.tcard p{margin:0;font-size:14px;color:var(--ink-2)}
+.tool{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--panel);margin:22px 0}
+label{display:block;margin-bottom:13px;font-size:13.5px;color:var(--ink-2);font-weight:600}
+label input,label textarea,label select{
+  display:block;width:100%;margin-top:6px;padding:9px 11px;font:inherit;font-size:15px;
+  border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+label textarea{font-family:var(--mono);font-size:13.5px;line-height:1.6;resize:vertical}
+label input:focus,label textarea:focus,label select:focus{outline:2px solid var(--accent);outline-offset:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+@media(max-width:620px){.grid2,.grid3{grid-template-columns:1fr}}
+.meter{height:7px;background:var(--line);border-radius:20px;overflow:hidden;margin:10px 0 4px}
+.meter-fill{height:100%;border-radius:20px}
+.meter-fill.good{background:var(--good)}.meter-fill.warn{background:var(--warn)}.meter-fill.bad{background:var(--bad)}
+.meter-note{font-size:12.5px;font-weight:600}
+.meter-note.good{color:var(--good)}.meter-note.warn{color:var(--warn)}.meter-note.bad{color:var(--bad)}
+.out-head{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;font-weight:700;font-size:14px}
+.mini{font:inherit;font-size:12.5px;padding:4px 11px;border:1px solid var(--line);background:var(--bg);
+  color:var(--ink);border-radius:7px;cursor:pointer}
+.mini:hover{border-color:var(--accent)}
+pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:13px;overflow:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;margin:0;max-height:340px}
+.muted{color:var(--ink-2)}
+.small{font-size:12.5px}
+.serp-box{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;max-width:620px}
+[data-theme="dark"] .serp-box{background:#11151c}
+.serp-url{display:flex;align-items:center;gap:7px;font-size:13px;color:#202124;margin-bottom:3px}
+[data-theme="dark"] .serp-url{color:#c9d1dc}
+.serp-fav{width:22px;height:22px;border-radius:50%;background:#e8eaed;flex:none}
+.serp-site{font-weight:600}
+.serp-path{color:#5f6368}
+.serp-title{color:#1a0dab;font-size:19px;line-height:1.35;margin-bottom:3px}
+[data-theme="dark"] .serp-title{color:#8ab4f8}
+.serp-desc{color:#4d5156;font-size:13.5px;line-height:1.58}
+[data-theme="dark"] .serp-desc{color:#bdc1c6}
+.serp-cut{color:#9aa0a6;text-decoration:line-through}
+.verdict{margin-top:6px}
+.verdict-box{border:1px solid var(--line);border-left-width:4px;border-radius:9px;padding:13px 15px;background:var(--bg);margin-bottom:10px}
+.verdict-box.ok{border-left-color:var(--good)}
+.verdict-box.no{border-left-color:var(--bad)}
+.verdict-word{font-weight:800;font-size:17px;letter-spacing:.02em}
+.verdict-box.ok .verdict-word{color:var(--good)}
+.verdict-box.no .verdict-word{color:var(--bad)}
+.verdict-why{font-size:14px;color:var(--ink-2)}
+.mini-table{border-collapse:collapse;font-size:13px;margin-top:10px}
+.mini-table th,.mini-table td{border:1px solid var(--line);padding:5px 10px;text-align:left}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-size:12.5px;padding:3px 10px;border:1px solid var(--line);border-radius:20px}
+.chip.dim{opacity:.45}
+.outline{border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--bg);max-height:380px;overflow:auto}
+.h-row{padding:3px 0;font-size:14px;display:flex;gap:9px;align-items:baseline}
+.h-tag{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);flex:none;min-width:26px}
+.h-1 .h-text{font-weight:700;font-size:16px}
+.h-2{padding-left:14px}.h-3{padding-left:28px}.h-4{padding-left:42px}
+.h-5{padding-left:56px}.h-6{padding-left:70px}
+.issue-list{display:flex;flex-direction:column;gap:7px}
+.issue{border:1px solid var(--line);border-left-width:3px;border-radius:8px;padding:9px 12px;font-size:14px;background:var(--bg)}
+.issue.warn{border-left-color:var(--warn)}
+.issue.ok{border-left-color:var(--good)}
+.issue.info{border-left-color:var(--line)}
+.kw-table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:10px}
+.kw-table th,.kw-table td{border-bottom:1px solid var(--line);padding:6px 9px;text-align:left}
+.kw-table .num{text-align:right;font-variant-numeric:tabular-nums;width:64px}
+.bar{height:6px;background:var(--line);border-radius:20px;overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);border-radius:20px}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+@media(max-width:680px){.score-grid{grid-template-columns:repeat(2,1fr)}}
+.score{border:1px solid var(--line);border-radius:var(--radius);padding:14px;text-align:center;background:var(--bg)}
+.score-n{font-size:27px;font-weight:800;line-height:1.1}
+.score.good .score-n{color:var(--good)}.score.warn .score-n{color:var(--warn)}.score.bad .score-n{color:var(--bad)}
+.score-l{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+.score-b{font-size:11.5px;color:var(--ink-2);opacity:.8;margin-top:2px}
+.faq{margin:26px 0 0}
+.faq details{border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:9px;background:var(--panel)}
+.faq summary{cursor:pointer;font-weight:600;font-size:15px}
+.faq p{margin:9px 0 0;font-size:14.5px;color:var(--ink-2)}
+.privacy{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
+  padding:14px 16px;background:var(--panel);margin:22px 0}
+.privacy h4{margin:0 0 7px;font-size:15px}
+.privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+</style>
+<script>try{var t=localStorage.getItem("sp-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://serpprism.com/#organization","name":"SerpPrism","url":"https://serpprism.com/","description":"Free browser-based SEO and website auditing tools.","email":"renhongtao2@gmail.com"},{"@type":"WebSite","@id":"https://serpprism.com/#website","name":"SerpPrism","url":"https://serpprism.com/","inLanguage":"en","publisher":{"@id":"https://serpprism.com/#organization"}},{"@type":"WebPage","@id":"https://serpprism.com/tools/keyword-density#webpage","url":"https://serpprism.com/tools/keyword-density","name":"Keyword Density Checker — Free, No Upload | SerpPrism","description":"Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.","isPartOf":{"@id":"https://serpprism.com/#website"},"inLanguage":"en","datePublished":"2026-09-21","dateModified":"2026-09-21"},{"@type":"BreadcrumbList","@id":"https://serpprism.com/tools/keyword-density#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://serpprism.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://serpprism.com/tools/"},{"@type":"ListItem","position":3,"name":"Keyword Density Checker","item":"https://serpprism.com/tools/keyword-density"}]},{"@type":"WebApplication","@id":"https://serpprism.com/tools/keyword-density#app","name":"Keyword Density Checker","url":"https://serpprism.com/tools/keyword-density","applicationCategory":"BusinessApplication","operatingSystem":"Any (runs in a browser)","browserRequirements":"Requires JavaScript. No installation.","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste the text you want to analyse.","Choose phrase length — two-word phrases are usually the most informative.","Look at the repeated phrases; those are your real topic terms, not the ones you planned."],"publisher":{"@id":"https://serpprism.com/#organization"}},{"@type":"HowTo","@id":"https://serpprism.com/tools/keyword-density#howto","name":"How to use the Keyword Density Checker","totalTime":"PT1M","tool":[{"@type":"HowToTool","name":"A web browser"}],"step":[{"@type":"HowToStep","position":1,"text":"Paste the text you want to analyse."},{"@type":"HowToStep","position":2,"text":"Choose phrase length — two-word phrases are usually the most informative."},{"@type":"HowToStep","position":3,"text":"Look at the repeated phrases; those are your real topic terms, not the ones you planned."}]},{"@type":"FAQPage","@id":"https://serpprism.com/tools/keyword-density#faq","mainEntity":[{"@type":"Question","name":"What counts as a stopword here?","acceptedAnswer":{"@type":"Answer","text":"A built-in list of roughly 150 common English function words — articles, prepositions, pronouns, common verbs. You can switch the filter off to see raw counts."}},{"@type":"Question","name":"Why are two-word phrases more useful?","acceptedAnswer":{"@type":"Answer","text":"Single words are dominated by topic-generic terms. Phrases reveal what the page is actually about, because 'subtitle timing' says far more than 'subtitle'."}},{"@type":"Question","name":"Should I optimise for the top phrase?","acceptedAnswer":{"@type":"Answer","text":"Only if it matches your intent. Often the analysis reveals the page drifted off topic, and the right response is to rewrite a section rather than to adjust counts."}}]}]}</script>
+</head>
+<body data-tool="kwDensity">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">🔍</span>Serp<em>Prism</em></a>
+    <nav><a href="/tools/">All tools</a><a href="/tools/meta-tag-generator">Meta tags</a><a href="/tools/serp-preview">SERP preview</a><a href="/tools/robots-txt-tester">robots.txt</a><a href="/tools/heading-analyzer">Headings</a><a href="/tools/keyword-density">Keyword density</a><a href="/tools/readability-score">Readability</a><a href="/guides/">Guides</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/tools/">Tools</a> › Keyword Density Checker</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">Keyword Density Checker</h1>
+  <p class="lead">Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.</p>
+
+  <div class="tool">
+    
+      <label>Text to analyse<textarea id="k-text" rows="12" placeholder="Paste the article or page copy here."></textarea></label>
+      <div class="grid3">
+        <label>Phrase length
+          <select id="k-n">
+            <option value="1">Single words</option>
+            <option value="2" selected>Two-word phrases</option>
+            <option value="3">Three-word phrases</option>
+          </select>
+        </label>
+        <label>Stopwords
+          <select id="k-stop"><option value="on" selected>Filter common words</option><option value="off">Count everything</option></select>
+        </label>
+        <label>Show top
+          <select id="k-top"><option>10</option><option selected>20</option><option>30</option></select>
+        </label>
+      </div>
+      <div id="k-out" aria-live="polite"></div>
+  </div>
+
+  <p>Paste your text and get word and phrase frequency with common English stopwords removed, so the top of the list is actually informative instead of being 'the, and, of'.</p>
+
+  <h2>How to use it</h2>
+  <ol><li>Paste the text you want to analyse.</li><li>Choose phrase length — two-word phrases are usually the most informative.</li><li>Look at the repeated phrases; those are your real topic terms, not the ones you planned.</li></ol>
+
+  <h2>There is no ideal density number</h2><p>The idea that a page should contain a keyword between 1 and 3 percent of the time has no basis in how ranking systems work. Writing to hit a density target produces worse text, and worse text performs worse.</p><p>The useful question this tool answers is different: what is this page actually about, as measured by what it says? If the top phrases are not the topic you intended, the page is off-target and no density tweak will save it.</p><h2>What to do with the output</h2><p>If a phrase you want to rank for appears once or twice, the page probably does not cover that topic deeply enough yet. Add a section that genuinely addresses it.</p><p>If a phrase appears far more than everything else, the page may be too narrow, or you may be repeating yourself. Check whether those repetitions say something new each time.</p><h2>How to read the table without over-correcting</h2><p>Start with the phrase-length selector set to two words. Single words are dominated by generic topic terms that appear in every article on the subject, so they tell you almost nothing. Two-word phrases are where the actual subject of the page becomes visible.</p><p>Look for phrases you expected to see and did not. A page about subtitle timing that never produces the phrase 'subtitle timing' is a page that talks around its subject — usually because the writer assumed the topic was obvious. It is not obvious to a crawler.</p><p>Then look at the shape of the distribution. A long flat tail means the page covers many things shallowly. One phrase dominating everything else means the page says one thing repeatedly. Neither is automatically wrong, but both are worth knowing before you decide the page is finished.</p><p>What you should not do is edit the text to move numbers. If a term is missing, the fix is a paragraph that genuinely covers it. Adding the phrase without the substance produces a page that reads like it was written for a counter.</p>
+
+  <div class="faq">
+    <h2>Questions</h2>
+    <details><summary>What counts as a stopword here?</summary><p>A built-in list of roughly 150 common English function words — articles, prepositions, pronouns, common verbs. You can switch the filter off to see raw counts.</p></details><details><summary>Why are two-word phrases more useful?</summary><p>Single words are dominated by topic-generic terms. Phrases reveal what the page is actually about, because 'subtitle timing' says far more than 'subtitle'.</p></details><details><summary>Should I optimise for the top phrase?</summary><p>Only if it matches your intent. Often the analysis reveals the page drifted off topic, and the right response is to rewrite a section rather than to adjust counts.</p></details>
+  </div>
+
+  <h2>Related tools</h2><div class="grid-tools"><a class="tcard" href="/tools/readability-score"><h3>Readability Score Checker</h3><p>Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice.</p></a><a class="tcard" href="/tools/heading-analyzer"><h3>Heading Structure Analyzer</h3><p>Paste HTML and get a clean H1–H6 outline plus a list of real problems: missing or duplicated H1, skipped levels, and headings that are too long.</p></a><a class="tcard" href="/tools/meta-tag-generator"><h3>Meta Tag Generator</h3><p>Generate clean page title, meta description, canonical, Open Graph and Twitter card tags.</p></a></div>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>SerpPrism</h5>
+        <p style="margin:0">Free SEO and website auditing tools that run entirely in your browser. Nothing you paste is uploaded or stored.</p>
+      </div>
+      <div>
+        <h5>Tools</h5>
+        <ul>
+          <li><a href="/tools/"><strong>All tools</strong></a></li>
+          <li><a href="/tools/meta-tag-generator">Meta Tag Generator</a></li><li><a href="/tools/serp-preview">SERP Preview Tool</a></li><li><a href="/tools/robots-txt-tester">robots.txt Tester</a></li><li><a href="/tools/heading-analyzer">Heading Structure Analyzer</a></li><li><a href="/tools/keyword-density">Keyword Density Checker</a></li><li><a href="/tools/readability-score">Readability Score Checker</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Guides</h5>
+        <ul>
+          <li><a href="/guides/"><strong>All guides</strong></a></li>
+          <li><a href="/guides/meta-description-length">Meta Description Length: What Actually Gets Truncated</a></li><li><a href="/guides/robots-txt-mistakes">robots.txt Mistakes That Silently Deindex Pages</a></li><li><a href="/guides/heading-structure-seo">Heading Structure: What H1–H6 Order Actually Does</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Site</h5>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 SerpPrism — serpprism.com. All analysis happens locally in your browser. Last updated 2026-09-21.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js?v=04fbbd84"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("sp-theme",n)}catch(e){}});})();</script>
+</body>
+</html>
