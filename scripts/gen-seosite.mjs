@@ -1719,7 +1719,12 @@ All processing is client-side JavaScript. There is no API; tool behaviour is det
 // 原因：CF Pages 默认对所有 .html 走 308 跳到无扩展名（"漂亮 URL"），
 // 部分 GSC fetcher 不跟 308 直接判定失败。两份都备，无论访问哪种 URL 都能拿到。
 const GSC_TOKEN = "google11ba110197545384";
-const gscBody = `google-site-verification: ${GSC_TOKEN}\n`;
+// ⚠️ 文件内容结尾必须带 .html —— GSC 下载的那个文件原文就是
+// `google-site-verification: google11ba110197545384.html`。
+// 我第一次凭格式猜成不带后缀，GSC 报「验证文件内容错误」（逐字节匹配）。
+// 以后换 token 直接把 GSC 下载的文件内容抄过来，别自己拼。
+// 末尾不加换行 —— GSC 下载的原文就没有换行符，做到逐字节一致最保险。
+const gscBody = `google-site-verification: ${GSC_TOKEN}.html`;
 write(`${GSC_TOKEN}.html`, gscBody);
 write(GSC_TOKEN, gscBody);
 
