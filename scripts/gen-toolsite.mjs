@@ -8,6 +8,14 @@ import crypto from "node:crypto";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const OUT = path.join(ROOT, "toolsite");
+
+/* og:image 的来源。
+   注意：生成器每次都会 rmSync(OUT) 重建 toolsite/，
+   所以图片**不能放在 toolsite/ 里**（会被删掉）。放 assets/，由生成器复制过去。
+   图片不存在时自动跳过 og:image 标签 —— 不会产生指向 404 的 meta。 */
+const OG_SRC = path.join(ROOT, "assets", "og-toolsite.png");
+const OG_DEST = "og-image.png";
+const HAS_OG = fs.existsSync(OG_SRC);
 const SITE = "https://toolboxes.top";
 const BRAND = "Subtitle Toolkit";
 const UPDATED = "2026-09-21";
@@ -2445,7 +2453,16 @@ function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
 <meta property="og:type" content="website">
 <meta property="og:url" content="${url}">
 <meta property="og:site_name" content="${BRAND}">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary_large_image">${
+    HAS_OG
+      ? `
+<meta property="og:image" content="${SITE}/${OG_DEST}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Subtitle Toolkit — free browser-based subtitle tools">
+<meta name="twitter:image" content="${SITE}/${OG_DEST}">`
+      : ""
+  }
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="alternate" type="text/plain" href="${SITE}/llms.txt" title="LLM-friendly index">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2310b981%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2256%22>%F0%9F%92%AC</text></svg>">
@@ -2890,6 +2907,7 @@ const write = (rel, content) => {
 
 write("css/style.css", CSS);
 write("js/tools.js", TOOLS_JS);
+if (HAS_OG) fs.copyFileSync(OG_SRC, path.join(OUT, OG_DEST));
 
 /* 首页 */
 write(

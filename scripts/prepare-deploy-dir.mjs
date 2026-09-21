@@ -33,6 +33,9 @@ const SITES = {
     files: [
       "index.html", "about.html", "contact.html", "privacy.html", "404.html",
       "sitemap.xml", "robots.txt", "ads.txt", "_headers", "_redirects", "llms.txt",
+      // og:image 由 assets/og-toolsite.png 复制而来（生成器每次重建 toolsite/，
+      // 所以图片源不能放在 toolsite/ 里）。图片还没做时这里只会显示 missing，不会报错。
+      "og-image.png",
     ],
     dirs: ["css", "js", "tools", "guides"],
   },
