@@ -34,6 +34,14 @@ const IS_TOOLS = SITE === "tools";
 const DEFAULTS = { catalog: "ai-supermarket", tools: "toolboxhub" };
 const PROJ = process.env.CF_PROJ || DEFAULTS[SITE] || DEFAULTS.catalog;
 
+// 部署后清缓存用：每个站点对应的 zone 与主机。
+// 注意 ai.toolboxes.top 与 toolboxes.top 在同一个 zone 里，所以按主机清，
+// 避免清目录站时把工具站的缓存一起打掉（反之亦然）。
+const PURGE = {
+  tools: { zone: "toolboxes.top", hosts: "toolboxes.top,www.toolboxes.top" },
+  catalog: { zone: "toolboxes.top", hosts: "ai.toolboxes.top" },
+};
+
 const ROOT = path.join(__dirname, "..");
 const WRANGLER =
   process.env.WRANGLER_BIN ||
@@ -134,4 +142,22 @@ function clearStage(dir) {
     `"${process.execPath}" "${WRANGLER}" pages deploy "${STAGE}" --project-name=${PROJ} --branch=main --commit-dirty=true`,
     { cwd: ROOT, stdio: "inherit", env: process.env }
   );
+
+  // 部署后清边缘缓存。
+  // 不做这一步的话，Pages 的静态资源会带很长的边缘缓存，裸访问拿到的是旧文件——
+  // 曾因此误判"部署没生效"。部署本身已经成功，所以这里失败只告警、不回滚。
+  const purge = PURGE[SITE];
+  if (purge && process.env.CF_SKIP_PURGE !== "1") {
+    try {
+      execSync(
+        `node scripts/cf-purge.mjs ${purge.zone} --hosts=${purge.hosts}`,
+        { cwd: ROOT, stdio: "inherit" }
+      );
+    } catch (e) {
+      console.warn(
+        "\n⚠️  缓存未清除 —— 线上仍是旧文件（部署已成功，但访问者可能拿到缓存版本）。\n" +
+          "   手动执行: node scripts/cf-purge.mjs " + purge.zone + " --hosts=" + purge.hosts + "\n"
+      );
+    }
+  }
 })();

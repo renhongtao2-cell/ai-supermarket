@@ -12,3 +12,6 @@ README.md
 
 # 部署日志（本地临时）
 deploy.log
+
+# 助手本地记忆（工作日志 / 项目笔记）
+.workbuddy-ai/

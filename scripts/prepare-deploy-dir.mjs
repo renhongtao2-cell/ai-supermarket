@@ -31,7 +31,7 @@ const SITES = {
     src: path.join(ROOT, "toolsite"),
     out: path.join(ROOT, ".deploy-tools"),
     files: [
-      "index.html", "about.html", "privacy.html", "404.html",
+      "index.html", "about.html", "contact.html", "privacy.html", "404.html",
       "sitemap.xml", "robots.txt", "ads.txt", "_headers", "_redirects", "llms.txt",
     ],
     dirs: ["css", "js", "tools", "guides"],
@@ -102,3 +102,18 @@ if (bad.length) {
   process.exit(1);
 }
 console.log("security self-check: OK (no .workbuddy / cf.env / scripts / worker.js)");
+
+// 白名单漏检：根目录下的 .html 若不在 FILES 里，会被**静默丢掉**，
+// 线上表现为 404 —— 而且部署日志一切正常，极难发现。
+// （2026-09-21 踩过：新增 contact.html 忘了加白名单，/contact 上线即 404。）
+const dropped = fs
+  .readdirSync(SRC)
+  .filter((f) => f.endsWith(".html") && !FILES.includes(f));
+if (dropped.length) {
+  console.error(
+    "\n⚠️  以下根目录 HTML 不在白名单里，不会被部署（线上会 404）：\n" +
+      dropped.map((d) => "     " + d).join("\n") +
+      `\n   请把它们加入 scripts/prepare-deploy-dir.mjs 的 SITES.${key}.files\n`
+  );
+  process.exit(1);
+}

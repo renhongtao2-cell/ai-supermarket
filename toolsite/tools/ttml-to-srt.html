@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SRT to VTT Converter — Free, No Upload | Subtitle Toolkit</title>
-<meta name="description" content="Free SRT to VTT converter that runs entirely in your browser. No upload, no signup, no file size limit. Handles multi-line cues and non-standard timestamps.">
-<link rel="canonical" href="https://toolboxes.top/tools/srt-to-vtt">
-<meta property="og:title" content="SRT to VTT Converter — Free, No Upload | Subtitle Toolkit">
-<meta property="og:description" content="Free SRT to VTT converter that runs entirely in your browser. No upload, no signup, no file size limit. Handles multi-line cues and non-standard timestamps.">
+<title>TTML / DFXP to SRT Converter — Free, No Upload | Subtitle Toolkit</title>
+<meta name="description" content="Free TTML and DFXP to SRT converter that runs entirely in your browser. Reads clock times (hh:mm:ss.mmm), frame times (hh:mm:ss:ff) and offset times (10s, 100ms, 30f, 100t), decodes XML entities and strips styling. No upload, no signup.">
+<link rel="canonical" href="https://toolboxes.top/tools/ttml-to-srt">
+<meta property="og:title" content="TTML / DFXP to SRT Converter — Free, No Upload | Subtitle Toolkit">
+<meta property="og:description" content="Free TTML and DFXP to SRT converter that runs entirely in your browser. Reads clock times (hh:mm:ss.mmm), frame times (hh:mm:ss:ff) and offset times (10s, 100ms, 30f, 100t), decodes XML entities and strips styling. No upload, no signup.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://toolboxes.top/tools/srt-to-vtt">
+<meta property="og:url" content="https://toolboxes.top/tools/ttml-to-srt">
 <meta property="og:site_name" content="Subtitle Toolkit">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -172,9 +172,9 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </style>
 <script>try{var t=localStorage.getItem("st-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://toolboxes.top/#organization","name":"Subtitle Toolkit","url":"https://toolboxes.top/","description":"Free browser-based subtitle and caption utilities.","email":"renhongtao2@gmail.com"},{"@type":"WebSite","@id":"https://toolboxes.top/#website","name":"Subtitle Toolkit","url":"https://toolboxes.top/","inLanguage":"en","publisher":{"@id":"https://toolboxes.top/#organization"}},{"@type":"WebPage","@id":"https://toolboxes.top/tools/srt-to-vtt#webpage","url":"https://toolboxes.top/tools/srt-to-vtt","name":"SRT to VTT Converter","description":"Free SRT to VTT converter that runs entirely in your browser. No upload, no signup, no file size limit. Handles multi-line cues and non-standard timestamps.","isPartOf":{"@id":"https://toolboxes.top/#website"},"inLanguage":"en","datePublished":"2026-09-17","dateModified":"2026-09-21"},{"@type":"BreadcrumbList","@id":"https://toolboxes.top/tools/srt-to-vtt#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://toolboxes.top/tools/"},{"@type":"ListItem","position":3,"name":"SRT to VTT Converter","item":"https://toolboxes.top/tools/srt-to-vtt"}]},{"@type":"WebApplication","@id":"https://toolboxes.top/tools/srt-to-vtt#app","name":"SRT to VTT Converter","url":"https://toolboxes.top/tools/srt-to-vtt","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Free SRT to VTT converter that runs entirely in your browser. No upload, no signup, no file size limit. Handles multi-line cues and non-standard timestamps.","isPartOf":{"@id":"https://toolboxes.top/#website"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste your SRT content into the box, or drop the .srt file onto it.","The conversion runs locally as you type — no request is made to any server.","Copy the result or download it as a .vtt file."]},{"@type":"HowTo","@id":"https://toolboxes.top/tools/srt-to-vtt#howto","name":"How to use the SRT to VTT Converter","description":"Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.","inLanguage":"en","totalTime":"PT1M","tool":[{"@type":"HowToTool","name":"A web browser"}],"step":[{"@type":"HowToStep","position":1,"text":"Paste your SRT content into the box, or drop the .srt file onto it."},{"@type":"HowToStep","position":2,"text":"The conversion runs locally as you type — no request is made to any server."},{"@type":"HowToStep","position":3,"text":"Copy the result or download it as a .vtt file."}]},{"@type":"FAQPage","@id":"https://toolboxes.top/tools/srt-to-vtt#faq","mainEntity":[{"@type":"Question","name":"Why won't my .srt file work in an HTML5 video player?","acceptedAnswer":{"@type":"Answer","text":"Because HTML5 &lt;track&gt; elements only accept WebVTT. A file with an .srt extension, or with comma decimal separators in its timestamps, will be ignored by the browser without an error message."}},{"@type":"Question","name":"Does this upload my subtitle file anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. All parsing and conversion happens in JavaScript on your device. You can disconnect from the network after the page loads and the converter still works."}},{"@type":"Question","name":"Is there a file size limit?","acceptedAnswer":{"@type":"Answer","text":"No server-side limit, because nothing is uploaded. The practical limit is your browser's available memory — files of several megabytes convert instantly."}}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://toolboxes.top/#organization","name":"Subtitle Toolkit","url":"https://toolboxes.top/","description":"Free browser-based subtitle and caption utilities.","email":"renhongtao2@gmail.com"},{"@type":"WebSite","@id":"https://toolboxes.top/#website","name":"Subtitle Toolkit","url":"https://toolboxes.top/","inLanguage":"en","publisher":{"@id":"https://toolboxes.top/#organization"}},{"@type":"WebPage","@id":"https://toolboxes.top/tools/ttml-to-srt#webpage","url":"https://toolboxes.top/tools/ttml-to-srt","name":"TTML / DFXP to SRT Converter","description":"Free TTML and DFXP to SRT converter that runs entirely in your browser. Reads clock times (hh:mm:ss.mmm), frame times (hh:mm:ss:ff) and offset times (10s, 100ms, 30f, 100t), decodes XML entities and strips styling. No upload, no signup.","isPartOf":{"@id":"https://toolboxes.top/#website"},"inLanguage":"en","datePublished":"2026-09-21","dateModified":"2026-09-21"},{"@type":"BreadcrumbList","@id":"https://toolboxes.top/tools/ttml-to-srt#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://toolboxes.top/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://toolboxes.top/tools/"},{"@type":"ListItem","position":3,"name":"TTML / DFXP to SRT Converter","item":"https://toolboxes.top/tools/ttml-to-srt"}]},{"@type":"WebApplication","@id":"https://toolboxes.top/tools/ttml-to-srt#app","name":"TTML / DFXP to SRT Converter","url":"https://toolboxes.top/tools/ttml-to-srt","applicationCategory":"MultimediaApplication","operatingSystem":"Any (web browser)","description":"Free TTML and DFXP to SRT converter that runs entirely in your browser. Reads clock times (hh:mm:ss.mmm), frame times (hh:mm:ss:ff) and offset times (10s, 100ms, 30f, 100t), decodes XML entities and strips styling. No upload, no signup.","isPartOf":{"@id":"https://toolboxes.top/#website"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Paste the .ttml, .dfxp or .xml file into the box, or drop it onto the page.","Every &lt;p&gt; element is read, its begin time and its end or dur time are converted to milliseconds, and inline markup is stripped from the text.","Copy the result or download it as a .srt file."]},{"@type":"HowTo","@id":"https://toolboxes.top/tools/ttml-to-srt#howto","name":"How to use the TTML / DFXP to SRT Converter","description":"Turn TTML and DFXP captions (.ttml, .dfxp, .xml) into SubRip (.srt) in your browser — including offset times such as 10s, 100ms and 30f.","inLanguage":"en","totalTime":"PT1M","tool":[{"@type":"HowToTool","name":"A web browser"}],"step":[{"@type":"HowToStep","position":1,"text":"Paste the .ttml, .dfxp or .xml file into the box, or drop it onto the page."},{"@type":"HowToStep","position":2,"text":"Every &lt;p&gt; element is read, its begin time and its end or dur time are converted to milliseconds, and inline markup is stripped from the text."},{"@type":"HowToStep","position":3,"text":"Copy the result or download it as a .srt file."}]},{"@type":"FAQPage","@id":"https://toolboxes.top/tools/ttml-to-srt#faq","mainEntity":[{"@type":"Question","name":"Why does the timing drift towards the end of the file?","acceptedAnswer":{"@type":"Answer","text":"Almost always the frame rate. If the file uses hh:mm:ss:ff timestamps and declares no ttp:frameRate, the converter assumes 30 fps. A file authored at 25 fps then accumulates error in proportion to the timecode — small at the start, obvious by the end. Open the file, read the rate from the root element, and if it is not 30 you will want to re-time the result with the resync tool."}},{"@type":"Question","name":"Can I convert the other way, from SRT to TTML?","acceptedAnswer":{"@type":"Answer","text":"Not here. SRT to TTML is a rarer direction, and the parts TTML is usually chosen for — regions, positioning, named styles — have to be authored deliberately. Producing a bare TTML wrapper with no styling would not save you the work."}},{"@type":"Question","name":"The output is empty even though the file opens in a player","acceptedAnswer":{"@type":"Answer","text":"The parser looks for &lt;p&gt; elements carrying a begin attribute. Files that put the timing on &lt;span&gt; children, or that store cues in a non-standard element, have nothing to read. Check the first few lines of the body section."}},{"@type":"Question","name":"Does this upload my caption file anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The file is parsed in JavaScript on your device and never leaves it. You can load the page, disconnect from the network, and the converter still works."}},{"@type":"Question","name":"Why did my italics disappear?","acceptedAnswer":{"@type":"Answer","text":"SubRip carries only &lt;i&gt;, &lt;b&gt; and &lt;u&gt;, and TTML expresses italics as a tts:fontStyle attribute on a &lt;span&gt; or through a named style in a &lt;style&gt; block. Inline spans are unwrapped rather than translated, so the words survive and the emphasis does not."}}]}]}</script>
 </head>
-<body data-tool="convert-vtt">
+<body data-tool="ttml-to-srt">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
@@ -184,25 +184,27 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 </header>
 <main id="main">
 <div class="wrap narrow">
-  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › SRT to VTT Converter</p>
-  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">SRT to VTT Converter</h1>
-  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p>
+  <p class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › TTML / DFXP to SRT Converter</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px;letter-spacing:-.5px">TTML / DFXP to SRT Converter</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Turn TTML and DFXP captions (.ttml, .dfxp, .xml) into SubRip (.srt) in your browser — including offset times such as 10s, 100ms and 30f.</p>
 
   <div class="tool">
     <div id="drop">
       Drop a subtitle file here, or
-      <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
+      <input type="file" id="file" accept=".ttml,.dfxp,.xml,.txt,text/plain">
     </div>
     
     <div class="panes">
       <div class="pane">
-        <label for="in">Input — .srt / .vtt</label>
-        <textarea id="in" spellcheck="false" placeholder="1
-00:00:01,000 --> 00:00:04,000
-Paste your subtitle file here…"></textarea>
+        <label for="in">Input — .ttml / .dfxp / .xml</label>
+        <textarea id="in" spellcheck="false" placeholder="<tt xmlns="http://www.w3.org/ns/ttml" ttp:frameRate="25">
+  <body><div>
+    <p begin="00:00:01.000" end="00:00:04.000">Paste your TTML or DFXP file here…</p>
+  </div></body>
+</tt>"></textarea>
       </div>
       <div class="pane">
-        <label for="out">WebVTT output</label>
+        <label for="out">SRT output</label>
         <textarea id="out" spellcheck="false" readonly placeholder="Output appears here as you type."></textarea>
       </div>
     </div>
@@ -216,7 +218,7 @@ Paste your subtitle file here…"></textarea>
     
     <div class="row">
       <button class="btn primary" id="copy">Copy result</button>
-      <button class="btn" id="download" data-name="output.vtt">Download VTT</button>
+      <button class="btn" id="download" data-name="output.srt">Download SRT</button>
       <button class="btn" id="clear">Clear</button>
     </div>
     <div id="status" role="status" aria-live="polite"></div>
@@ -229,64 +231,67 @@ Paste your subtitle file here…"></textarea>
 
   <article>
     <h2>What this does</h2>
-    <p>WebVTT is the subtitle format HTML5 <code>&lt;track&gt;</code> elements expect, while most subtitles you download are SubRip (.srt). This converter rewrites the timestamps and adds the required <code>WEBVTT</code> header — without sending your file anywhere.</p>
+    <p>TTML is the format streaming platforms actually deliver. Netflix, Amazon, Disney+ and the BBC all ship captions as TTML or one of its profiles — DFXP and IMSC — which is why a caption file pulled from a broadcaster will not open in VLC and will not hand off cleanly to a video editor. The cues are XML <code>&lt;p&gt;</code> elements with <code>begin</code> and <code>end</code> attributes, and the times inside them can be written four different ways. This converter reads all four and writes SubRip.</p>
 
     <h2>How to use it</h2>
-    <ol><li>Paste your SRT content into the box, or drop the <code>.srt</code> file onto it.</li><li>The conversion runs locally as you type — no request is made to any server.</li><li>Copy the result or download it as a <code>.vtt</code> file.</li></ol>
+    <ol><li>Paste the <code>.ttml</code>, <code>.dfxp</code> or <code>.xml</code> file into the box, or drop it onto the page.</li><li>Every <code>&lt;p&gt;</code> element is read, its <code>begin</code> time and its <code>end</code> or <code>dur</code> time are converted to milliseconds, and inline markup is stripped from the text.</li><li>Copy the result or download it as a <code>.srt</code> file.</li></ol>
 
     <div class="note">
       <h4>Good to know</h4>
-      <ul><li>SRT uses <code>00:00:01,000</code> (comma); WebVTT uses <code>00:00:01.000</code> (period). This is the single most common cause of subtitles silently failing to load.</li><li>Cue numbers are optional in WebVTT but are kept here so you can diff the output against the input.</li><li>Styling tags such as <code>&lt;i&gt;</code> and <code>&lt;b&gt;</code> are valid in both formats and are preserved.</li></ul>
+      <ul><li>Profiles accepted: TTML 1.0, DFXP and IMSC. All three share the same <code>&lt;tt&gt;</code> / <code>&lt;body&gt;</code> / <code>&lt;div&gt;</code> / <code>&lt;p&gt;</code> structure, so one parser covers them.</li><li>If a cue declares <code>begin</code> but no <code>end</code>, the <code>dur</code> attribute is used instead. A cue with neither is skipped rather than given a guessed duration.</li><li><code>&lt;br/&gt;</code> becomes a real line break. Nested <code>&lt;span&gt;</code> elements are unwrapped and their text kept — the <code>tts:fontStyle</code>, <code>tts:color</code> and <code>tts:textDecoration</code> styling on them is dropped, because SubRip has nowhere to put it.</li><li>Regions, positioning and background images (<code>smpte:backgroundImage</code>) do not survive. TTML can place a caption anywhere on the frame; SubRip cannot.</li><li>The frame rate is read from the header only, not from per-cue overrides. Files that switch frame rate mid-stream are vanishingly rare, but they would need splitting by hand.</li></ul>
     </div>
 
-    <h2>Where each format is accepted</h2>
-    <p><strong>SubRip (.srt)</strong> is the safe default for desktop editing software, mobile players and the subtitle upload boxes used by most video platforms. If you are unsure which format to supply, supply SRT.</p>
-    <p><strong>WebVTT (.vtt)</strong> is required by the HTML5 <code>&lt;track&gt;</code> element, which means every browser-based player, custom web player and most streaming pipelines. It is also the format modern broadcast workflows expect.</p>
-    <p>Some tools accept both and detect the format from the content rather than the extension. Those tools are why a file can seem to work locally and then fail after upload — the upload box is stricter than the desktop editor you tested with.</p>
+    <h2>Four ways TTML writes a timestamp</h2>
+    <p><strong>Clock time with milliseconds</strong> — <code>00:01:02.350</code>. This is the common case and the one closest to SubRip. A comma separator (<code>00:01:02,350</code>) is accepted as well, because some exporters emit it by mistake.</p>
+    <p><strong>Clock time with frames</strong> — <code>00:01:02:11</code>. The fourth field is frames, not milliseconds, so it only means something once it has been divided by the frame rate. That rate comes from <code>ttp:frameRate</code> on the root <code>&lt;tt&gt;</code> element; when the file does not declare one, 30 fps is assumed. A file authored at 25 fps and read as if it were 30 fps drifts by roughly 17 percent, which is the single most common reason TTML-to-SRT timing is right at the start of a file and wrong at the end.</p>
+    <p><strong>Offset times</strong> — <code>10s</code>, <code>100ms</code>, <code>1.5m</code>, <code>3h</code>. These are durations rather than points on a clock, and TTML permits them in <code>begin</code> as well as in <code>dur</code>. The converter understands <code>h</code>, <code>m</code>, <code>s</code> and <code>ms</code>.</p>
+    <p><strong>Frame and tick offsets</strong> — <code>30f</code> and <code>100t</code>. Frames are divided by the frame rate, ticks by the rate declared as <code>ttp:tickRate</code>. Both turn up in broadcast files where timing is authored on a frame grid rather than in wall-clock seconds.</p>
+    <p><strong>Entities are decoded.</strong> Because the source is XML, an ampersand arrives as <code>&amp;amp;</code> and a quote as <code>&amp;quot;</code>. Named and numeric entities are both decoded before the text reaches SubRip, so what you see in the output is what the caption was meant to say.</p>
 
     <h2>Worked example</h2>
     <div class="example">
       <div>
-        <h5>Input — .srt</h5>
+        <h5>Input — .ttml</h5>
+        <pre>&lt;tt xmlns=&quot;http://www.w3.org/ns/ttml&quot; xmlns:ttp=&quot;http://www.w3.org/ns/ttml#parameter&quot; xmlns:tts=&quot;http://www.w3.org/ns/ttml#styling&quot; ttp:frameRate=&quot;25&quot;&gt;
+  &lt;body&gt;&lt;div&gt;
+    &lt;p begin=&quot;00:00:01.000&quot; end=&quot;00:00:04.000&quot;&gt;Hello there.&lt;/p&gt;
+    &lt;p begin=&quot;00:00:04.200&quot; dur=&quot;2.8s&quot;&gt;&lt;span tts:fontStyle=&quot;italic&quot;&gt;Music playing&lt;/span&gt;&lt;br/&gt;Sign on wall: EXIT&lt;/p&gt;
+  &lt;/div&gt;&lt;/body&gt;
+&lt;/tt&gt;</pre>
+      </div>
+      <div>
+        <h5>Output — .srt</h5>
         <pre>1
 00:00:01,000 --&gt; 00:00:04,000
 Hello there.
 
 2
 00:00:04,200 --&gt; 00:00:07,000
-&lt;i&gt;Music playing&lt;/i&gt;</pre>
-      </div>
-      <div>
-        <h5>Output — .vtt</h5>
-        <pre>WEBVTT
-
-1
-00:00:01.000 --&gt; 00:00:04.000
-Hello there.
-
-2
-00:00:04.200 --&gt; 00:00:07.000
-&lt;i&gt;Music playing&lt;/i&gt;</pre>
+Music playing
+Sign on wall: EXIT</pre>
       </div>
     </div>
-    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">The only structural change is the WEBVTT header plus a period instead of a comma in every timestamp. Text, italics and cue numbers survive untouched.</p>
+    <p style="color:var(--text-2);font-size:14.5px;margin:0 0 6px">The second cue had no end attribute — its dur of 2.8s was added to the begin time. The span was unwrapped and the br became a real line break.</p>
 
     <h2>FAQ</h2>
-    <details class="faq"><summary>Why won't my .srt file work in an HTML5 video player?</summary><div class="body">Because HTML5 <code>&lt;track&gt;</code> elements only accept WebVTT. A file with an .srt extension, or with comma decimal separators in its timestamps, will be ignored by the browser without an error message.</div></details>
-    <details class="faq"><summary>Does this upload my subtitle file anywhere?</summary><div class="body">No. All parsing and conversion happens in JavaScript on your device. You can disconnect from the network after the page loads and the converter still works.</div></details>
-    <details class="faq"><summary>Is there a file size limit?</summary><div class="body">No server-side limit, because nothing is uploaded. The practical limit is your browser's available memory — files of several megabytes convert instantly.</div></details>
+    <details class="faq"><summary>Why does the timing drift towards the end of the file?</summary><div class="body">Almost always the frame rate. If the file uses <code>hh:mm:ss:ff</code> timestamps and declares no <code>ttp:frameRate</code>, the converter assumes 30 fps. A file authored at 25 fps then accumulates error in proportion to the timecode — small at the start, obvious by the end. Open the file, read the rate from the root element, and if it is not 30 you will want to re-time the result with the <a href="/tools/resync-subtitles">resync tool</a>.</div></details>
+    <details class="faq"><summary>Can I convert the other way, from SRT to TTML?</summary><div class="body">Not here. SRT to TTML is a rarer direction, and the parts TTML is usually chosen for — regions, positioning, named styles — have to be authored deliberately. Producing a bare TTML wrapper with no styling would not save you the work.</div></details>
+    <details class="faq"><summary>The output is empty even though the file opens in a player</summary><div class="body">The parser looks for <code>&lt;p&gt;</code> elements carrying a <code>begin</code> attribute. Files that put the timing on <code>&lt;span&gt;</code> children, or that store cues in a non-standard element, have nothing to read. Check the first few lines of the body section.</div></details>
+    <details class="faq"><summary>Does this upload my caption file anywhere?</summary><div class="body">No. The file is parsed in JavaScript on your device and never leaves it. You can load the page, disconnect from the network, and the converter still works.</div></details>
+    <details class="faq"><summary>Why did my italics disappear?</summary><div class="body">SubRip carries only <code>&lt;i&gt;</code>, <code>&lt;b&gt;</code> and <code>&lt;u&gt;</code>, and TTML expresses italics as a <code>tts:fontStyle</code> attribute on a <code>&lt;span&gt;</code> or through a named style in a <code>&lt;style&gt;</code> block. Inline spans are unwrapped rather than translated, so the words survive and the emphasis does not.</div></details>
 
     <h2>Troubleshooting</h2>
     <ol class="tshoot">
-      <li><span class="sym">The .vtt file loads but no subtitles appear</span><span class="fix">Check the <code>&lt;track&gt;</code> tag uses <code>kind="subtitles"</code> and that the server sends the file as <code>text/vtt</code>. A server answering with <code>text/plain</code> makes some browsers ignore the track silently, with no console error.</span></li>
-      <li><span class="sym">Timestamps still contain a comma after conversion</span><span class="fix">A cue was not recognised, so it was passed through as-is. Every cue needs a blank line before it and a line containing <code>--&gt;</code>. Stray text between cues is the usual culprit.</span></li>
-      <li><span class="sym">Each cue holds two languages stacked on two lines</span><span class="fix">That is preserved exactly as written. Most players render both lines; if you need one language per track, split the file before converting.</span></li>
-      <li><span class="sym">The output contains empty cues</span><span class="fix">Cues whose text was only whitespace are kept so the numbering stays stable. Run the file through <a href="/tools/clean-subtitles">Clean subtitles</a> with <em>Drop empty cues</em> enabled.</span></li>
+      <li><span class="sym">No cues found at all</span><span class="fix">The file needs <code>&lt;p&gt;</code> elements that carry a <code>begin</code> attribute. A TTML file whose cues were emptied out, or a file that is really a plain XML config with a .ttml extension, will produce nothing. Open it in a text editor and look for the word <code>begin</code>.</span></li>
+      <li><span class="sym">Every cue is a few seconds off, and the error grows</span><span class="fix">A frame-rate mismatch. Times written as <code>hh:mm:ss:ff</code> were divided by the wrong rate. Note the <code>ttp:frameRate</code> value in the file header and re-time the output — the ratio presets on the <a href="/tools/resync-subtitles">resync tool</a> cover the common 23.976 / 24 / 25 / 30 combinations.</span></li>
+      <li><span class="sym">The text contains stray ampersands or question marks</span><span class="fix">The source used an entity the decoder does not know, or the file is not UTF-8. Re-save it as UTF-8 from the editor that produced it. Unrecognised named entities are left as written rather than guessed at.</span></li>
+      <li><span class="sym">Two languages came out in one cue</span><span class="fix">That is how the file was authored — one <code>&lt;p&gt;</code> containing both languages, usually separated by a <code>&lt;br/&gt;</code>. Split them into separate files if you need one language per track; the converter preserves the text exactly as written.</span></li>
+      <li><span class="sym">The player shows the subtitles but they look plain</span><span class="fix">Expected. SubRip has no font, colour or positioning fields, so all of that is discarded on the way through. Keep the original TTML as the master if appearance matters, and treat the SRT as a delivery or review copy.</span></li>
     </ol>
 
     <h2>Related tools</h2>
     <div class="grid">
-      <a class="card" href="/tools/vtt-to-srt"><h3>VTT to SRT Converter</h3><p>Turn WebVTT files back into SubRip (.srt) for editors, players and upload platforms.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/shift-subtitles"><h3>Shift Subtitle Timing</h3><p>Move every subtitle cue earlier or later to fix out-of-sync captions.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a>
+      <a class="card" href="/tools/srt-to-vtt"><h3>SRT to VTT Converter</h3><p>Convert .srt subtitle files to WebVTT (.vtt) for HTML5 video, right in your browser.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/ass-to-srt"><h3>ASS / SSA to SRT Converter</h3><p>Turn SubStation Alpha (.ass, .ssa) subtitles into clean SubRip (.srt) — in your browser, with nothing uploaded.</p><div class="go">Open tool →</div></a><a class="card" href="/tools/clean-subtitles"><h3>Clean Up AI-Generated Subtitles</h3><p>Remove sound cues, HTML tags, speaker labels and duplicate cues from auto-generated captions.</p><div class="go">Open tool →</div></a>
     </div>
   </article>
   <div class="note">

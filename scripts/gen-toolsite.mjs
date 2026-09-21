@@ -10,8 +10,18 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const OUT = path.join(ROOT, "toolsite");
 const SITE = "https://toolboxes.top";
 const BRAND = "Subtitle Toolkit";
-const UPDATED = "2026-09-17";
+const UPDATED = "2026-09-21";
 const ADSENSE_CLIENT = "ca-pub-9901133369141996";
+
+// 联系邮箱。AdSense 的「关于 / 联系 / 隐私」三大默认检查项里，本站原本缺「联系」——
+// 全站一个邮箱都没有，privacy.html 还指向了同样没有联系方式的目录站。
+// 改这里即可全站生效（页脚 + /contact + privacy）。
+//
+// 为什么不是 contact@toolboxes.top：这个 zone 拿不到 Cloudflare Email Routing
+// （后台侧栏没有该入口，API 的 email/routing 全部 403，规则端点更是 405
+//  —— 不接受 API token 认证）。用户 2026-09-21 决定先用 Gmail。
+// 将来若拿到域名邮箱，改这一行即可，全站自动跟着变。
+const CONTACT_EMAIL = "renhongtao2@gmail.com";
 
 /* ============================================================
    1. 工具清单（页面 + 元数据）
@@ -719,6 +729,261 @@ const TOOLS = [
        "One cue can break several rules at once. The summary counts rule violations; the flagged list counts cues."],
     ],
     related: ["subtitle-timing-check", "resync-subtitles", "shift-subtitles"],
+  },
+  {
+    slug: "ass-to-srt",
+    h1: "ASS / SSA to SRT Converter",
+    tagline: "Turn SubStation Alpha (.ass, .ssa) subtitles into clean SubRip (.srt) — in your browser, with nothing uploaded.",
+    metaDesc:
+      "Free ASS and SSA to SRT converter that runs entirely in your browser. Reads the [Events] section, strips override tags, converts \\N line breaks and keeps italics and bold as SRT tags. No upload, no signup.",
+    mode: "ass-to-srt",
+    intro:
+      "SubStation Alpha is the format fansub groups and heavily styled releases use. Dialogue lives in an <code>[Events]</code> section, one <code>Dialogue:</code> line per cue, and the order of the fields on those lines is declared by a <code>Format:</code> line above them. Most editors, mobile players and upload forms cannot read any of that, so this converter rewrites the cues as SubRip.",
+    steps: [
+      "Paste your <code>.ass</code> or <code>.ssa</code> file into the box, or drop it onto the page.",
+      "Dialogue lines are read in the order the file's own <code>Format:</code> line declares — the parser never assumes a fixed column order, which is what breaks most converters on SSA v4.00 files.",
+      "Copy the result or download it as a <code>.srt</code> file.",
+    ],
+    deep: {
+      h2: "What survives the conversion, and what cannot",
+      body: [
+        "<strong>Timing is preserved exactly.</strong> ASS writes times as <code>0:00:01.00</code> — one digit for hours, two for centiseconds. SubRip wants milliseconds with three digits and a comma. The converter multiplies the centiseconds by ten, so a cue at <code>0:01:02.35</code> comes out as <code>00:01:02,350</code> and lands in exactly the same place on the timeline.",
+        "<strong>Italics and bold come across.</strong> ASS marks them with override blocks such as <code>{\\i1}</code>, <code>{\\i0}</code>, <code>{\\b1}</code> and <code>{\\b0}</code>, which SubRip does not understand. Those are translated into the SRT tags <code>&lt;i&gt;</code> and <code>&lt;b&gt;</code>, and <code>{\\r}</code> closes whatever was open. Everything else inside an override block — fonts, colours, outlines, karaoke timing, vector drawings — is discarded, because SubRip has nowhere to put it.",
+        "<strong>Positioning is lost, and there is no way around that.</strong> ASS can place a line anywhere on the frame using <code>{\\pos()}</code>, <code>{\\an8}</code> or <code>{\\move()}</code>. SubRip has no positioning at all. Sign translations that sit beside a speaker, or captions pushed to the top of the frame so they do not cover a face, will jump to the bottom centre. If a release depends on that layout, keep the ASS as the master file and treat the SRT as a delivery copy only.",
+        "<strong>Line breaks are normalised.</strong> ASS uses <code>\\N</code> for a hard break and <code>\\n</code> for a soft one; both become real line breaks, which is what SubRip expects. <code>\\h</code>, a non-breaking space, becomes an ordinary space. Cue numbers are regenerated from 1 so the file opens in every editor.",
+      ],
+    },
+    notes: [
+      "Both <code>.ass</code> (v4.00+) and <code>.ssa</code> (v4.00) are accepted. The SSA variant adds a <code>Marked=0</code> field to each Dialogue line, which is handled by reading the <code>Format:</code> line rather than guessing.",
+      "A <code>Dialogue:</code> line is split on commas only as far as the declared field count — the Text field is last and keeps any commas of its own. This is why naive converters cut dialogue off at the first comma in the sentence.",
+      "Comments (<code>Comment:</code> lines), <code>Picture:</code> and <code>Sound:</code> lines are not dialogue and are skipped.",
+      "Karaoke effects (<code>{\\k}</code>, <code>{\\kf}</code>) are timing data, not text, so they are removed rather than rendered. The result is a plain reading copy.",
+    ],
+    faq: [
+      ["Does this upload my subtitle file anywhere?",
+       "No. The whole file is parsed in JavaScript on your device. You can disconnect from the network after the page loads and the converter still works."],
+      ["Why did my sign translations end up at the bottom of the screen?",
+       "Because SRT has no positioning. ASS places those lines with <code>{\\pos()}</code> or <code>{\\an8}</code>, and SubRip has no equivalent field to carry the coordinates. The text is kept; the placement is not."],
+      ["The output has no italics even though the original was italicised",
+       "Only <code>{\\i1}</code> and <code>{\\b1}</code> style overrides map to SRT tags. If a release styled italics through the <code>[V4+ Styles]</code> section instead of inline overrides, the styling lives in the style definition rather than the cue, and there is no inline marker to translate."],
+      ["Can I convert the other way, from SRT to ASS?",
+       "Yes — use the <a href=\"/tools/srt-to-ass\">SRT to ASS converter</a>. It writes a complete ASS v4+ script with a default style and <code>Dialogue:</code> lines."],
+    ],
+    example: {
+      inLabel: "Input — .ass",
+      outLabel: "Output — .srt",
+      before: "[Script Info]\nScriptType: v4.00+\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\nDialogue: 0,0:00:01.00,0:00:04.00,Default,,0,0,0,,Hello there.\nDialogue: 0,0:00:04.20,0:00:07.00,Default,,0,0,0,,{\\i1}Music playing{\\i0}\\NSign on wall: EXIT",
+      after: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\n<i>Music playing</i>\nSign on wall: EXIT",
+      cap: "Centiseconds became milliseconds, {\\i1} became <i>, and \\N became a real line break. Nothing else about the cues changed.",
+    },
+    troubleshoot: [
+      ["No dialogue lines found",
+       "The file needs an <code>[Events]</code> section, and that section needs a <code>Format:</code> line naming <code>Start</code>, <code>End</code> and <code>Text</code>. A file where the header was stripped out, or where cues were saved without the events block, has nothing to convert."],
+      ["Timestamps look wrong — everything is ten times too long",
+       "That is the signature of a file that was already converted from SRT by a tool that treated centiseconds as milliseconds. Re-export the original ASS and convert from that instead."],
+      ["The output is empty even though the file opens fine in a player",
+       "Check the extension and the first line. Some releases ship MicroDVD (<code>{0}{25}text</code>) or a plain script inside a file named <code>.ass</code>. Those have no <code>Dialogue:</code> lines at all, so they need a different converter."],
+      ["Styling beyond italics disappeared",
+       "Fonts, colours and outlines are stored in override blocks or in the <code>[V4+ Styles]</code> section. SubRip carries only inline <code>&lt;i&gt;</code>, <code>&lt;b&gt;</code> and <code>&lt;u&gt;</code>, so everything else is dropped by design rather than by mistake."],
+      ["Two languages came out stacked in one cue",
+       "That is how the source was written — one <code>Dialogue:</code> line containing both languages separated by <code>\\N</code>. Split it into two files if you need one language per track."],
+    ],
+    related: ["srt-to-vtt", "clean-subtitles", "subtitle-timing-check"],
+  },
+  {
+    slug: "srt-to-ass",
+    h1: "SRT to ASS Converter",
+    tagline: "Turn SubRip (.srt) subtitles into a complete ASS v4+ script with a default style, ready for styled players.",
+    metaDesc:
+      "Free SRT to ASS converter that runs in your browser. Produces a valid ASS v4+ file with Script Info, a V4+ Styles block and Dialogue events. Italics and bold convert to override tags. No upload, no signup.",
+    mode: "srt-to-ass",
+    intro:
+      "ASS is the format that supports fonts, colours, positioning and karaoke — which is why fansub groups and staged releases use it. SubRip supports none of that, so converting SRT upwards gives you a file a player like mpv, VLC or Aegisub can restyle, rather than a file that is already correct.",
+    steps: [
+      "Paste your <code>.srt</code> content into the box, or drop the file onto it.",
+      "A complete ASS v4+ script is written: <code>[Script Info]</code>, one <code>Default</code> style in <code>[V4+ Styles]</code>, and one <code>Dialogue:</code> line per cue in <code>[Events]</code>.",
+      "Copy the result or download it as an <code>.ass</code> file, then restyle it in Aegisub or your player of choice.",
+    ],
+    deep: {
+      h2: "Why the generated file looks plain at first",
+      body: [
+        "<strong>A converter cannot invent styling.</strong> SRT records text and timing, nothing else. So the ASS that comes out has one style — Arial at 64px, white with a black outline, centred near the bottom — and every cue points at it. That is a working baseline, not a finished look. The point of converting is to get the cues into a format where styling is <em>possible</em>; the styling itself is a design decision you make afterwards.",
+        "<strong>Timing converts cleanly in this direction.</strong> SubRip writes <code>00:00:01,000</code> with milliseconds. ASS writes <code>0:00:01.00</code> with centiseconds, so milliseconds are divided by ten and rounded down. A cue at <code>00:00:04,205</code> becomes <code>0:00:04.20</code> — a five millisecond difference, well below a frame at any normal frame rate.",
+        "<strong>Inline tags become override blocks.</strong> <code>&lt;i&gt;</code> and <code>&lt;b&gt;</code> in the SRT are rewritten as <code>{\\i1}</code> / <code>{\\i0}</code> and <code>{\\b1}</code> / <code>{\\b0}</code>, and any other markup is stripped rather than left to confuse the parser. Line breaks inside a cue become <code>\\N</code>, the ASS hard break.",
+        "<strong>The PlayRes is set to 1920×1080.</strong> ASS positioning and font sizes are relative to the resolution declared in <code>[Script Info]</code>. Matching that to your video's resolution keeps the styling proportional — if your source is 1280×720, change <code>PlayResX</code> and <code>PlayResY</code> before you start styling, otherwise every measurement you set will be scaled.",
+      ],
+    },
+    notes: [
+      "The output is ASS v4.00+, not SSA v4.00. v4.00+ is what modern tools expect; the older SSA variant is only needed for legacy hardware players.",
+      "Cue order and timing are preserved. Only the container changes.",
+      "A single <code>Default</code> style is written. Add more styles in Aegisub if you want to distinguish speakers or sign translations.",
+      "If the source SRT was itself converted from ASS, positioning and karaoke are already gone — this converter cannot bring them back, only supply a file that could carry them next time.",
+    ],
+    faq: [
+      ["Will my subtitles look the same in the player?",
+       "The text and timing will match. The appearance will not, because the generated file uses one plain style. That is deliberate: SRT carries no styling to preserve, so the converter supplies a neutral baseline instead of guessing at a look."],
+      ["Why 1920×1080?",
+       "It is the most common modern delivery resolution, and ASS measurements scale from it. If your video is a different size, edit <code>PlayResX</code> and <code>PlayResY</code> in the <code>[Script Info]</code> block to match."],
+      ["Can I convert back to SRT afterwards?",
+       "Yes — the <a href=\"/tools/ass-to-srt\">ASS to SRT converter</a> reads this file back. Italics and bold survive the round trip; anything you add in Aegisub beyond that will not."],
+      ["Does this upload my file?",
+       "No. The conversion runs entirely in your browser. Nothing is sent to a server, and there is no file size limit beyond your own memory."],
+    ],
+    example: {
+      inLabel: "Input — .srt",
+      outLabel: "Output — .ass",
+      before: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\n<i>Music playing</i>",
+      after: "[Script Info]\nScriptType: v4.00+\nWrapStyle: 0\nPlayResX: 1920\nPlayResY: 1080\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, ...\nStyle: Default,Arial,64,&H00FFFFFF,...\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\nDialogue: 0,0:00:01.00,0:00:04.00,Default,,0,0,0,,Hello there.\nDialogue: 0,0:00:04.20,0:00:07.00,Default,,0,0,0,,{\\i1}Music playing{\\i0}",
+      cap: "Milliseconds became centiseconds, <i> became {\\i1}, and the cues now sit in an [Events] block that a player can restyle.",
+    },
+    troubleshoot: [
+      ["The player shows the file but no subtitles",
+       "Check that the <code>[Events]</code> block still contains the <code>Format:</code> line — ASS needs it to know which column is which. If you edited the file by hand and removed it, the player will read the Dialogue lines as malformed."],
+      ["Text after a comma in a cue was cut off",
+       "That happens when a Dialogue line is edited by hand and the Text field is split at the wrong comma. The Text field is last, so it must absorb every remaining comma in the line."],
+      ["Fonts look enormous or tiny",
+       "The <code>PlayResX</code> / <code>PlayResY</code> values do not match your video. ASS sizes are relative to that declared resolution, so a mismatch scales every measurement."],
+      ["Italics show as literal {\\i1} text",
+       "The override block landed outside a cue, or the braces were escaped. Override codes only work inside the Text field of a Dialogue line."],
+      ["My styling disappeared after round-tripping through SRT",
+       "SRT has no field for positioning, fonts or karaoke, so any of that is lost the moment a file passes through it. Keep the ASS as the master and derive SRT copies from it, not the other way around."],
+    ],
+    related: ["ass-to-srt", "srt-to-vtt", "clean-subtitles"],
+  },
+  {
+    slug: "ttml-to-srt",
+    published: "2026-09-21",
+    h1: "TTML / DFXP to SRT Converter",
+    tagline: "Turn TTML and DFXP captions (.ttml, .dfxp, .xml) into SubRip (.srt) in your browser — including offset times such as 10s, 100ms and 30f.",
+    metaDesc:
+      "Free TTML and DFXP to SRT converter that runs entirely in your browser. Reads clock times (hh:mm:ss.mmm), frame times (hh:mm:ss:ff) and offset times (10s, 100ms, 30f, 100t), decodes XML entities and strips styling. No upload, no signup.",
+    mode: "ttml-to-srt",
+    intro:
+      "TTML is the format streaming platforms actually deliver. Netflix, Amazon, Disney+ and the BBC all ship captions as TTML or one of its profiles — DFXP and IMSC — which is why a caption file pulled from a broadcaster will not open in VLC and will not hand off cleanly to a video editor. The cues are XML <code>&lt;p&gt;</code> elements with <code>begin</code> and <code>end</code> attributes, and the times inside them can be written four different ways. This converter reads all four and writes SubRip.",
+    steps: [
+      "Paste the <code>.ttml</code>, <code>.dfxp</code> or <code>.xml</code> file into the box, or drop it onto the page.",
+      "Every <code>&lt;p&gt;</code> element is read, its <code>begin</code> time and its <code>end</code> or <code>dur</code> time are converted to milliseconds, and inline markup is stripped from the text.",
+      "Copy the result or download it as a <code>.srt</code> file.",
+    ],
+    deep: {
+      h2: "Four ways TTML writes a timestamp",
+      body: [
+        "<strong>Clock time with milliseconds</strong> — <code>00:01:02.350</code>. This is the common case and the one closest to SubRip. A comma separator (<code>00:01:02,350</code>) is accepted as well, because some exporters emit it by mistake.",
+        "<strong>Clock time with frames</strong> — <code>00:01:02:11</code>. The fourth field is frames, not milliseconds, so it only means something once it has been divided by the frame rate. That rate comes from <code>ttp:frameRate</code> on the root <code>&lt;tt&gt;</code> element; when the file does not declare one, 30 fps is assumed. A file authored at 25 fps and read as if it were 30 fps drifts by roughly 17 percent, which is the single most common reason TTML-to-SRT timing is right at the start of a file and wrong at the end.",
+        "<strong>Offset times</strong> — <code>10s</code>, <code>100ms</code>, <code>1.5m</code>, <code>3h</code>. These are durations rather than points on a clock, and TTML permits them in <code>begin</code> as well as in <code>dur</code>. The converter understands <code>h</code>, <code>m</code>, <code>s</code> and <code>ms</code>.",
+        "<strong>Frame and tick offsets</strong> — <code>30f</code> and <code>100t</code>. Frames are divided by the frame rate, ticks by the rate declared as <code>ttp:tickRate</code>. Both turn up in broadcast files where timing is authored on a frame grid rather than in wall-clock seconds.",
+        "<strong>Entities are decoded.</strong> Because the source is XML, an ampersand arrives as <code>&amp;amp;</code> and a quote as <code>&amp;quot;</code>. Named and numeric entities are both decoded before the text reaches SubRip, so what you see in the output is what the caption was meant to say.",
+      ],
+    },
+    notes: [
+      "Profiles accepted: TTML 1.0, DFXP and IMSC. All three share the same <code>&lt;tt&gt;</code> / <code>&lt;body&gt;</code> / <code>&lt;div&gt;</code> / <code>&lt;p&gt;</code> structure, so one parser covers them.",
+      "If a cue declares <code>begin</code> but no <code>end</code>, the <code>dur</code> attribute is used instead. A cue with neither is skipped rather than given a guessed duration.",
+      "<code>&lt;br/&gt;</code> becomes a real line break. Nested <code>&lt;span&gt;</code> elements are unwrapped and their text kept — the <code>tts:fontStyle</code>, <code>tts:color</code> and <code>tts:textDecoration</code> styling on them is dropped, because SubRip has nowhere to put it.",
+      "Regions, positioning and background images (<code>smpte:backgroundImage</code>) do not survive. TTML can place a caption anywhere on the frame; SubRip cannot.",
+      "The frame rate is read from the header only, not from per-cue overrides. Files that switch frame rate mid-stream are vanishingly rare, but they would need splitting by hand.",
+    ],
+    faq: [
+      ["Why does the timing drift towards the end of the file?",
+       "Almost always the frame rate. If the file uses <code>hh:mm:ss:ff</code> timestamps and declares no <code>ttp:frameRate</code>, the converter assumes 30 fps. A file authored at 25 fps then accumulates error in proportion to the timecode — small at the start, obvious by the end. Open the file, read the rate from the root element, and if it is not 30 you will want to re-time the result with the <a href=\"/tools/resync-subtitles\">resync tool</a>."],
+      ["Can I convert the other way, from SRT to TTML?",
+       "Not here. SRT to TTML is a rarer direction, and the parts TTML is usually chosen for — regions, positioning, named styles — have to be authored deliberately. Producing a bare TTML wrapper with no styling would not save you the work."],
+      ["The output is empty even though the file opens in a player",
+       "The parser looks for <code>&lt;p&gt;</code> elements carrying a <code>begin</code> attribute. Files that put the timing on <code>&lt;span&gt;</code> children, or that store cues in a non-standard element, have nothing to read. Check the first few lines of the body section."],
+      ["Does this upload my caption file anywhere?",
+       "No. The file is parsed in JavaScript on your device and never leaves it. You can load the page, disconnect from the network, and the converter still works."],
+      ["Why did my italics disappear?",
+       "SubRip carries only <code>&lt;i&gt;</code>, <code>&lt;b&gt;</code> and <code>&lt;u&gt;</code>, and TTML expresses italics as a <code>tts:fontStyle</code> attribute on a <code>&lt;span&gt;</code> or through a named style in a <code>&lt;style&gt;</code> block. Inline spans are unwrapped rather than translated, so the words survive and the emphasis does not."],
+    ],
+    example: {
+      inLabel: "Input — .ttml",
+      outLabel: "Output — .srt",
+      before: `<tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" xmlns:tts="http://www.w3.org/ns/ttml#styling" ttp:frameRate="25">
+  <body><div>
+    <p begin="00:00:01.000" end="00:00:04.000">Hello there.</p>
+    <p begin="00:00:04.200" dur="2.8s"><span tts:fontStyle="italic">Music playing</span><br/>Sign on wall: EXIT</p>
+  </div></body>
+</tt>`,
+      after: "1\n00:00:01,000 --> 00:00:04,000\nHello there.\n\n2\n00:00:04,200 --> 00:00:07,000\nMusic playing\nSign on wall: EXIT",
+      cap: "The second cue had no end attribute — its dur of 2.8s was added to the begin time. The span was unwrapped and the br became a real line break.",
+    },
+    troubleshoot: [
+      ["No cues found at all",
+       "The file needs <code>&lt;p&gt;</code> elements that carry a <code>begin</code> attribute. A TTML file whose cues were emptied out, or a file that is really a plain XML config with a .ttml extension, will produce nothing. Open it in a text editor and look for the word <code>begin</code>."],
+      ["Every cue is a few seconds off, and the error grows",
+       "A frame-rate mismatch. Times written as <code>hh:mm:ss:ff</code> were divided by the wrong rate. Note the <code>ttp:frameRate</code> value in the file header and re-time the output — the ratio presets on the <a href=\"/tools/resync-subtitles\">resync tool</a> cover the common 23.976 / 24 / 25 / 30 combinations."],
+      ["The text contains stray ampersands or question marks",
+       "The source used an entity the decoder does not know, or the file is not UTF-8. Re-save it as UTF-8 from the editor that produced it. Unrecognised named entities are left as written rather than guessed at."],
+      ["Two languages came out in one cue",
+       "That is how the file was authored — one <code>&lt;p&gt;</code> containing both languages, usually separated by a <code>&lt;br/&gt;</code>. Split them into separate files if you need one language per track; the converter preserves the text exactly as written."],
+      ["The player shows the subtitles but they look plain",
+       "Expected. SubRip has no font, colour or positioning fields, so all of that is discarded on the way through. Keep the original TTML as the master if appearance matters, and treat the SRT as a delivery or review copy."],
+    ],
+    related: ["srt-to-vtt", "ass-to-srt", "clean-subtitles"],
+  },
+  {
+    slug: "text-to-srt",
+    published: "2026-09-21",
+    h1: "Plain Text to SRT Converter",
+    tagline: "Turn a transcript — one line per caption — into a valid .srt file with evenly spaced timing you can retime later.",
+    metaDesc:
+      "Free plain text to SRT converter that runs in your browser. Paste a transcript, choose the cue duration, start offset and line length, and get a valid SubRip file with evenly spaced cues. No upload, no signup.",
+    mode: "text-to-srt",
+    intro:
+      "Sometimes there is no subtitle file to convert — only a transcript. A meeting recording, a YouTube transcript panel, a translated script, a set of narration lines. This tool turns that text into a structurally valid <code>.srt</code> so it can be loaded into an editor, handed to a client or played back immediately. The timing it produces is evenly spaced, which means it is a scaffold to align rather than a finished sync.",
+    steps: [
+      "Paste the transcript into the box — one caption per line. Blank lines are ignored, so pasted documents do not produce empty cues.",
+      "Set how many seconds each cue should last, an optional start offset, and a maximum line length if you want long lines wrapped automatically.",
+      "Copy the result or download it as a <code>.srt</code>, then align it to the audio in your editor.",
+    ],
+    deep: {
+      h2: "Evenly spaced timing is a scaffold, not a sync",
+      body: [
+        "<strong>Be clear about what this does.</strong> The tool cannot know when each line is spoken, because a plain transcript contains no timing information. So it assigns every cue the same duration, back to back. If your cue duration is 2.5 seconds and you have 200 lines, the file runs to roughly eight minutes and twenty seconds — regardless of how long the recording actually is.",
+        "<strong>What that is genuinely useful for.</strong> A scaffold gets you past the part of the job that is pure typing. Import the generated file into Subtitle Edit, Aegisub, Premiere or DaVinci Resolve and you have numbered cues with real timestamps to drag against the waveform. Retiming a cue that already exists is far faster than authoring one from an empty track, and it guarantees the numbering and structure are valid from the start.",
+        "<strong>Fixing the timing afterwards.</strong> If the whole file is uniformly too early or too late, the <a href=\"/tools/shift-subtitles\">shift tool</a> adds or subtracts a fixed offset in one step. If the text was transcribed at the wrong speed — a common outcome when a transcript is generated from a clip played back at the wrong rate — the <a href=\"/tools/resync-subtitles\">resync tool</a> scales every timestamp by a ratio instead.",
+        "<strong>Where the defaults come from.</strong> 2.5 seconds per cue is roughly 150 words per minute, which sits comfortably inside the reading speeds broadcasters work to. A maximum line length of 42 characters is the long-standing convention for subtitling and captions, chosen because it keeps a line inside the safe area of a 16:9 frame at typical font sizes. Wrapping is done on word boundaries, never mid-word.",
+        "<strong>If you already have a subtitle file, use a different tool.</strong> Text that already contains timestamps is not plain text, and running it through here would turn every timestamp line into its own cue. Use <a href=\"/tools/vtt-to-srt\">VTT to SRT</a> or <a href=\"/tools/sbv-to-srt\">SBV to SRT</a> instead.",
+      ],
+    },
+    notes: [
+      "One line becomes one cue. Blank lines and lines that are only whitespace are skipped entirely.",
+      "Cue duration applies to every cue equally. There is no per-line override — if you need variable durations, generate the file and adjust the cues you care about in an editor.",
+      "Maximum line length defaults to 42 characters, the long-standing subtitling convention — longer lines are split on word boundaries into as many lines as needed, and each piece becomes its own cue. Set it to <code>0</code> to disable wrapping and keep one source line per cue.",
+      "The start offset shifts the whole file later, which is useful when a recording opens with silence or a title card. It does not add an initial gap of its own.",
+      "No transcription happens here. This tool formats text you already have; it does not listen to audio.",
+    ],
+    faq: [
+      ["Will the timing line up with my audio?",
+       "No, and no tool of this kind could. A plain transcript carries no timing information, so every cue gets the same duration. The output is a starting point to align in an editor, not a finished subtitle track."],
+      ["Where do I get a transcript to start from?",
+       "YouTube's transcript panel gives you plain lines that paste in directly. Whisper and most speech-to-text services export plain text as well as SRT. Zoom and Teams meeting recordings produce transcripts too. Any of them will work."],
+      ["How do I keep a long sentence in one cue?",
+       "Leave the maximum line length at 0 so nothing is wrapped, and put the whole sentence on a single line. Blank lines are what separate cues — a line break in the source is a cue boundary, not a soft wrap."],
+      ["Does my text get uploaded anywhere?",
+       "No. The conversion runs in JavaScript on your device. Confidential transcripts, legal recordings and unreleased scripts stay on your machine."],
+      ["Can I go the other way — strip a subtitle file down to plain text?",
+       "Yes. The <a href=\"/tools/remove-timestamps\">remove timestamps</a> tool does exactly that, with an option to merge repeated lines."],
+    ],
+    example: {
+      inLabel: "Input — plain text",
+      outLabel: "Output — .srt",
+      before: "Welcome back to the channel.\nToday we are converting captions.\nLet's start with the timing.",
+      after: "1\n00:00:00,000 --> 00:00:02,500\nWelcome back to the channel.\n\n2\n00:00:02,500 --> 00:00:05,000\nToday we are converting captions.\n\n3\n00:00:05,000 --> 00:00:07,500\nLet's start with the timing.",
+      cap: "Three lines became three cues at the default 2.5 seconds each. The timestamps are placeholders — the next step is aligning them to the audio.",
+    },
+    troubleshoot: [
+      ["Every cue is exactly the same length",
+       "That is the design. A transcript has no timing data, so the duration you set is applied to every cue. Retime them in your editor, or use the shift and resync tools if the error is uniform."],
+      ["Lines were split in the middle of a sentence",
+       "The maximum line length is doing it. Wrapping only happens when a line exceeds that value, so raise it or set it to 0 to keep each source line as a single cue."],
+      ["The first cue starts at 00:00:00 when I wanted a delay",
+       "Set the start offset to the number of seconds of silence at the top of the recording. That value is added to every cue, so the gap stays consistent."],
+      ["Some lines are missing from the output",
+       "Blank lines are treated as separators and skipped, and so is any line that is only spaces. If a line you expected is gone, it was empty in the source."],
+      ["The output looks like a normal subtitle file but nothing lines up",
+       "Expected for the reason above. This tool produces valid structure with placeholder timing. Use the <a href=\"/tools/shift-subtitles\">shift</a> tool for a constant offset, or <a href=\"/tools/resync-subtitles\">resync</a> if the whole track is compressed or stretched."],
+    ],
+    related: ["remove-timestamps", "srt-to-vtt", "shift-subtitles"],
   },
 ];
 
@@ -1476,6 +1741,243 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     return cues;
   }
 
+  /* ---------- SubStation Alpha (.ass / .ssa) ----------
+     ASS is not a blank-line cue format: cues live in an [Events] section as
+     "Dialogue:" lines whose field order is declared by a preceding "Format:" line.
+     The Text field is always last and may itself contain commas. */
+  function looksAss(text) {
+    var h = String(text).slice(0, 4000);
+    return /^\s*\uFEFF?\[Script Info\]/im.test(h) ||
+           /^\s*\[Events\]/im.test(h) ||
+           /^\s*Dialogue\s*:/im.test(h);
+  }
+
+  /* "0:00:01.00" — H:MM:SS.cc, centiseconds (not milliseconds). */
+  function assTime(s) {
+    var m = /^\s*(\d{1,3}):(\d{1,2}):(\d{1,2})[.:](\d{1,2})\s*$/.exec(String(s));
+    if (!m) return null;
+    var cs = m[4].length === 1 ? parseInt(m[4], 10) * 10 : parseInt(m[4], 10);
+    return ((parseInt(m[1], 10) * 60 + parseInt(m[2], 10)) * 60 + parseInt(m[3], 10)) * 1000 + cs * 10;
+  }
+
+  function assFmt(ms) {
+    ms = Math.max(0, Math.round(ms));
+    var h = Math.floor(ms / 3600000);
+    var m = Math.floor((ms % 3600000) / 60000);
+    var s = Math.floor((ms % 60000) / 1000);
+    var cs = Math.floor((ms % 1000) / 10);
+    return h + ":" + pad(m, 2) + ":" + pad(s, 2) + "." + pad(cs, 2);
+  }
+
+  /* Override blocks: carry italics/bold across to SRT tags, drop the rest.
+     \N is a hard line break, \n a soft one, \h a non-breaking space. */
+  function assText(raw) {
+    var t = String(raw).replace(/\{[^}]*\}/g, function (block) {
+      var out = "";
+      if (/\\r/.test(block)) return "</i></b>";
+      if (/\\i1/.test(block) || /\\i(?!\d)/.test(block)) out += "<i>";
+      if (/\\i0/.test(block)) out += "</i>";
+      if (/\\b1/.test(block) || /\\b(?!\d)/.test(block)) out += "<b>";
+      if (/\\b0/.test(block)) out += "</b>";
+      return out;
+    });
+    t = t.replace(/\\N/g, "\n").replace(/\\n/g, "\n").replace(/\\h/g, " ");
+    return t.replace(/[ \t]+$/gm, "").replace(/^\s+|\s+$/g, "");
+  }
+
+  function assCues(text) {
+    var norm = String(text).replace(/\r\n?/g, "\n").replace(/^\uFEFF/, "");
+    var lines = norm.split("\n");
+    var inEvents = false, fields = null, cues = [];
+    for (var i = 0; i < lines.length; i++) {
+      var sec = /^\s*\[([^\]]+)\]\s*$/.exec(lines[i]);
+      if (sec) { inEvents = /^events$/i.test(sec[1].trim()); fields = null; continue; }
+      if (!inEvents) continue;
+
+      var fm = /^\s*Format\s*:\s*(.+)$/i.exec(lines[i]);
+      if (fm) {
+        fields = fm[1].split(",").map(function (x) { return x.trim().toLowerCase(); });
+        continue;
+      }
+      var dm = /^\s*Dialogue\s*:\s*(.*)$/i.exec(lines[i]);
+      if (!dm) continue;
+
+      var f = fields || ["marked", "start", "end", "style", "name", "marginl", "marginr", "marginv", "effect", "text"];
+      var si = f.indexOf("start"), ei = f.indexOf("end"), ti = f.indexOf("text");
+      if (si < 0 || ei < 0 || ti < 0) continue;
+
+      var parts = dm[1].split(",");
+      if (parts.length <= ti) continue;
+      /* Text is the last field, so it absorbs any commas of its own. */
+      var st = assTime(parts[si]), en = assTime(parts[ei]);
+      if (st === null || en === null) continue;
+      cues.push({ start: st, end: en, text: assText(parts.slice(ti).join(",")) });
+    }
+    return cues;
+  }
+
+  function toSrtFromAss(text) {
+    var c = assCues(text);
+    return c.length ? serialize(c, false) : "";
+  }
+
+  function srtTagsToAss(t) {
+    return String(t)
+      .replace(/<i>/gi, "{\\i1}").replace(/<\/i>/gi, "{\\i0}")
+      .replace(/<b>/gi, "{\\b1}").replace(/<\/b>/gi, "{\\b0}")
+      .replace(/<u>/gi, "{\\u1}").replace(/<\/u>/gi, "{\\u0}")
+      .replace(/<[^>]*>/g, "")
+      .replace(/\n/g, "\\N");
+  }
+
+  function toAss(text) {
+    var cues = parseCues(text);
+    if (!cues.length) return "";
+    var out = [
+      "[Script Info]",
+      "; Generated by Subtitle Toolkit — https://toolboxes.top/tools/srt-to-ass",
+      "Title: Subtitles",
+      "ScriptType: v4.00+",
+      "WrapStyle: 0",
+      "ScaledBorderAndShadow: yes",
+      "PlayResX: 1920",
+      "PlayResY: 1080",
+      "",
+      "[V4+ Styles]",
+      "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
+      "Style: Default,Arial,64,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,3,1,2,60,60,48,1",
+      "",
+      "[Events]",
+      "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"
+    ];
+    for (var i = 0; i < cues.length; i++) {
+      out.push("Dialogue: 0," + assFmt(cues[i].start) + "," + assFmt(cues[i].end) +
+        ",Default,,0,0,0,," + srtTagsToAss(cues[i].text));
+    }
+    return out.join("\n") + "\n";
+  }
+
+  /* ---------- TTML / DFXP (Timed Text Markup Language) ----------
+     XML, not a line format. Cues are <p> elements carrying begin/end (or begin + dur).
+     Time values come in several flavours: clock (hh:mm:ss.mmm or hh:mm:ss:ff),
+     and offsets (10s, 100ms, 5m, 2h, 30f frames, 100t ticks). */
+  function looksTtml(text) {
+    var h = String(text).slice(0, 5000);
+    return /<\s*tt[\s>]/i.test(h) || /<\s*p[^>]*\bbegin\s*=/i.test(h);
+  }
+
+  function xmlAttr(s, name) {
+    var m = new RegExp('\\b' + name + '\\s*=\\s*["\']([^"\']*)["\']', 'i').exec(s);
+    return m ? m[1] : null;
+  }
+
+  function decodeXmlEntities(s) {
+    return String(s)
+      .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
+      .replace(/&quot;/gi, '"').replace(/&apos;/gi, "'")
+      .replace(/&#x([0-9a-f]+);/gi, function (m, h) { return String.fromCharCode(parseInt(h, 16)); })
+      .replace(/&#(\d+);/g, function (m, d) { return String.fromCharCode(parseInt(d, 10)); })
+      .replace(/&amp;/gi, "&");
+  }
+
+  function ttmlTime(raw, frameRate) {
+    var s = String(raw == null ? "" : raw).trim();
+    if (!s) return null;
+    var m = /^(\d+(?:\.\d+)?)(h|ms|m|s|f|t)$/i.exec(s);
+    if (m) {
+      var v = parseFloat(m[1]), u = m[2].toLowerCase();
+      if (u === "h") return Math.round(v * 3600000);
+      if (u === "m") return Math.round(v * 60000);
+      if (u === "s") return Math.round(v * 1000);
+      if (u === "ms") return Math.round(v);
+      if (u === "f") return Math.round(v / frameRate * 1000);
+      return Math.round(v / (frameRate * 1000000) * 1000);   /* ticks */
+    }
+    /* hh:mm:ss:ff — frames as the fourth component */
+    m = /^(\d{1,3}):(\d{2}):(\d{2}):(\d{1,3})$/.exec(s);
+    if (m) {
+      return ((+m[1] * 60 + +m[2]) * 60 + +m[3]) * 1000 + Math.round(+m[4] / frameRate * 1000);
+    }
+    /* hh:mm:ss(.mmm | ,mmm) */
+    m = /^(\d{1,3}):(\d{2}):(\d{2})(?:[.,](\d{1,3}))?$/.exec(s);
+    if (m) {
+      var ms = 0;
+      if (m[4] != null) ms = m[4].length === 3 ? +m[4] : m[4].length === 2 ? +m[4] * 10 : +m[4] * 100;
+      return ((+m[1] * 60 + +m[2]) * 60 + +m[3]) * 1000 + ms;
+    }
+    return null;
+  }
+
+  function ttmlCues(text) {
+    var src = String(text).replace(/^\uFEFF/, "");
+    var fr = xmlAttr(src.slice(0, 4000), "ttp:frameRate") || xmlAttr(src.slice(0, 4000), "frameRate");
+    var frameRate = fr ? parseFloat(fr) : 30;
+    if (!(frameRate > 0)) frameRate = 30;
+
+    var cues = [];
+    var re = /<\s*p\b([^>]*)>([\s\S]*?)<\s*\/\s*p\s*>/gi;
+    var m;
+    while ((m = re.exec(src)) !== null) {
+      var attrs = m[1], inner = m[2];
+      var st = ttmlTime(xmlAttr(attrs, "begin"), frameRate);
+      if (st === null) continue;
+      var en = ttmlTime(xmlAttr(attrs, "end"), frameRate);
+      if (en === null) {
+        var d = ttmlTime(xmlAttr(attrs, "dur"), frameRate);
+        en = d === null ? st : st + d;
+      }
+      var t = inner
+        .replace(/<\s*br\s*\/?\s*>/gi, "\n")
+        .replace(/<[^>]*>/g, "");
+      t = decodeXmlEntities(t).replace(/[ \t]+/g, " ").replace(/ *\n */g, "\n").trim();
+      cues.push({ start: st, end: en, text: t });
+    }
+    return cues;
+  }
+
+  function toSrtFromTtml(text) {
+    var c = ttmlCues(text);
+    return c.length ? serialize(c, false) : "";
+  }
+
+  /* ---------- plain text -> timed SRT (placeholder timing) ---------- */
+  function splitByWords(s, maxChars) {
+    var words = String(s).split(/\s+/), lines = [], cur = "";
+    for (var i = 0; i < words.length; i++) {
+      if (!cur) { cur = words[i]; continue; }
+      if ((cur + " " + words[i]).length <= maxChars) cur += " " + words[i];
+      else { lines.push(cur); cur = words[i]; }
+    }
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [s];
+  }
+
+  function textToCues(text, o) {
+    var dur = o.durMs > 0 ? o.durMs : 2500;
+    var gap = o.gapMs > 0 ? o.gapMs : 0;
+    var start = o.startMs > 0 ? o.startMs : 0;
+    var maxChars = o.maxChars > 0 ? o.maxChars : 0;
+    var src = String(text).replace(/\r\n?/g, "\n").split("\n");
+    var out = [], t = start;
+    for (var i = 0; i < src.length; i++) {
+      var s = src[i].replace(/\s+/g, " ").trim();
+      if (!s) continue;
+      var chunks = (maxChars > 0 && s.length > maxChars) ? splitByWords(s, maxChars) : [s];
+      for (var c = 0; c < chunks.length; c++) {
+        out.push({ start: t, end: t + dur, text: chunks[c] });
+        t += dur + gap;
+      }
+    }
+    return out;
+  }
+
+  /* Which parser applies to this input — used for the status line. */
+  function countCues(text) {
+    if (looksAss(text)) return assCues(text).length;
+    if (looksTtml(text)) return ttmlCues(text).length;
+    return parseCues(text).length;
+  }
+
   function download(name, content) {
     var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     var a = document.createElement("a");
@@ -1547,6 +2049,26 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
       } else if (mode === "sbv-to-srt") {
         var sc = sbvCues(text);
         res = sc.length ? serialize(sc, false) : "";
+      } else if (mode === "ass-to-srt") {
+        res = toSrtFromAss(text);
+      } else if (mode === "srt-to-ass") {
+        res = toAss(text);
+      } else if (mode === "ttml-to-srt") {
+        res = toSrtFromTtml(text);
+      } else if (mode === "text-to-srt") {
+        var tc = textToCues(text, {
+          durMs: numVal("txt-dur", 2.5) * 1000,
+          startMs: numVal("txt-start", 0) * 1000,
+          maxChars: numVal("txt-max", 0)
+        });
+        output.value = tc.length ? serialize(tc, false) : "";
+        if (status) {
+          status.textContent = tc.length
+            ? tc.length + " cue" + (tc.length === 1 ? "" : "s") +
+              " generated — the timing is evenly spaced, so treat it as a starting point."
+            : "";
+        }
+        return;
       } else if (mode === "merge") {
         var g = gap ? Math.round((parseFloat(gap.value) || 0) * 1000) : 0;
         cues = mergeCues(text, in2 ? in2.value : "", g);
@@ -1607,10 +2129,16 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
       }
       output.value = res;
       if (status) {
-        var n = parseCues(text).length;
+        var n = countCues(text);
+        var assMode = mode === "ass-to-srt";
+        var ttmlMode = mode === "ttml-to-srt";
         status.textContent = n
           ? n + " cue" + (n === 1 ? "" : "s") + " processed"
-          : "No subtitle cues found — check that the file uses \"-->\" between timestamps.";
+          : assMode
+            ? "No ASS/SSA dialogue lines found — the file needs an [Events] section with Dialogue: lines."
+            : ttmlMode
+            ? "No timed cues found — TTML cues need <p> elements carrying a begin attribute."
+            : "No subtitle cues found — check that the file uses \"-->\" between timestamps.";
       }
     }
 
@@ -1638,6 +2166,10 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
     if (splitAt) splitAt.addEventListener("input", run);
     if (part) part.addEventListener("change", run);
     chkIds.forEach(function (id) { var el = $(id); if (el) el.addEventListener("input", run); });
+    ["txt-dur", "txt-start", "txt-max"].forEach(function (id) {
+      var el = $(id);
+      if (el) el.addEventListener("input", run);
+    });
     ["enc-src", "enc-twice"].forEach(function (id) {
       var el = $(id);
       if (el) el.addEventListener(el.tagName === "SELECT" ? "change" : "change", run);
@@ -1709,6 +2241,11 @@ const TOOLS_JS = String.raw`/* Subtitle Toolkit — client-side core. No network
       cleanCues: cleanCues, shiftCues: shiftCues, serialize: serialize, looksVtt: looksVtt,
       resyncCues: resyncCues, mergeCues: mergeCues, toCsv: toCsv, sbvCues: sbvCues,
       splitCues: splitCues, parseLooseTime: parseLooseTime,
+      assCues: assCues, toSrtFromAss: toSrtFromAss, toAss: toAss, looksAss: looksAss,
+      assTime: assTime, assFmt: assFmt, countCues: countCues,
+      looksTtml: looksTtml, ttmlCues: ttmlCues, ttmlTime: ttmlTime, toSrtFromTtml: toSrtFromTtml,
+      textToCues: textToCues, splitByWords: splitByWords, decodeXmlEntities: decodeXmlEntities,
+      xmlAttr: xmlAttr,
       repairEncoding: repairEncoding, mojiCount: mojiCount, utf8Decode: utf8Decode,
       timingReport: timingReport, plainOf: plainOf
     };
@@ -1877,7 +2414,13 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
    ============================================================ */
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-const nav = () => TOOLS.map((t) => `<a href="/tools/${t.slug}">${esc(t.h1.replace(/ Converter| from Subtitles| Timing| Up AI-Generated Subtitles| from AI-Generated Subtitles/, ""))}</a>`).join("");
+const nav = () =>
+  `<a href="/tools/">All tools</a>` +
+  TOOLS.map(
+    (t) =>
+      `<a href="/tools/${t.slug}">${esc(t.h1.replace(/ Converter| from Subtitles| Timing| Up AI-Generated Subtitles| from AI-Generated Subtitles/, ""))}</a>`
+  ).join("") +
+  `<a href="/guides/">Guides</a>`;
 
 // 资源版本号：内容变了才变。用于给 /js/tools.js 破缓存。
 const ASSET_V = crypto
@@ -1932,16 +2475,23 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
       </div>
       <div>
         <h5>Tools</h5>
-        <ul>${TOOLS.map((t) => `<li><a href="/tools/${t.slug}">${esc(t.h1)}</a></li>`).join("")}</ul>
+        <ul>
+          <li><a href="/tools/"><strong>All tools</strong></a></li>
+          ${TOOLS.map((t) => `<li><a href="/tools/${t.slug}">${esc(t.h1)}</a></li>`).join("")}
+        </ul>
       </div>
       <div>
         <h5>Guides</h5>
-        <ul>${GUIDES.map((g) => `<li><a href="/guides/${g.slug}">${esc(g.h1)}</a></li>`).join("")}</ul>
+        <ul>
+          <li><a href="/guides/"><strong>All guides</strong></a></li>
+          ${GUIDES.map((g) => `<li><a href="/guides/${g.slug}">${esc(g.h1)}</a></li>`).join("")}
+        </ul>
       </div>
       <div>
         <h5>Site</h5>
         <ul>
           <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
           <li><a href="/privacy">Privacy</a></li>
           <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
         </ul>
@@ -2027,20 +2577,43 @@ function toolBody(t) {
   const isEnc = t.slug === "fix-subtitle-encoding";
   const isCheck = t.slug === "subtitle-timing-check";
   const isText = t.slug === "remove-timestamps";
+  const isAssIn = t.slug === "ass-to-srt";
+  const isAssOut = t.slug === "srt-to-ass";
+  const isTtmlIn = t.slug === "ttml-to-srt";
+  const isTextToSrt = t.slug === "text-to-srt";
   const OUT_META = {
     "remove-timestamps": ["transcript.txt", "Plain text"],
     "srt-to-csv": ["subtitles.csv", "CSV output"],
     "srt-to-vtt": ["output.vtt", "WebVTT output"],
     "fix-subtitle-encoding": ["fixed.txt", "Repaired text"],
     "subtitle-timing-check": ["timing-report.txt", "Timing report"],
+    "srt-to-ass": ["output.ass", "ASS output"],
   };
   const outMeta = OUT_META[t.slug] || ["output.srt", "SRT output"];
   const outName = outMeta[0], outLabel = outMeta[1];
+  const ASS_SAMPLE = "[Script Info]\nScriptType: v4.00+\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\nDialogue: 0,0:00:01.00,0:00:04.00,Default,,0,0,0,,Paste your .ass file here\u2026";
+  const TTML_SAMPLE = "<tt xmlns=\"http://www.w3.org/ns/ttml\" ttp:frameRate=\"25\">\n  <body><div>\n    <p begin=\"00:00:01.000\" end=\"00:00:04.000\">Paste your TTML or DFXP file here\u2026</p>\n  </div></body>\n</tt>";
+  const TEXT_SAMPLE = "Paste your transcript here, one caption per line\u2026\nEach line becomes its own cue.\nBlank lines are ignored.";
   const placeholder = isEnc
     ? "Paste the garbled text here — e.g. Caf\u00c3\u00a9 ouvert jusqu'\u00c3\u00a0 minuit"
+    : isAssIn
+    ? ASS_SAMPLE
+    : isTtmlIn
+    ? TTML_SAMPLE
+    : isTextToSrt
+    ? TEXT_SAMPLE
     : isCheck
     ? "1\n00:00:01,000 --> 00:00:04,000\nPaste your subtitle file here\u2026"
     : "1\n00:00:01,000 --> 00:00:04,000\nPaste your subtitle file here\u2026";
+  const inLabel = isEnc ? "Input — garbled text"
+    : isAssIn ? "Input — .ass / .ssa"
+    : isTtmlIn ? "Input — .ttml / .dfxp / .xml"
+    : isTextToSrt ? "Input — plain text, one line per cue"
+    : "Input — .srt / .vtt";
+  const acceptAttr = isAssIn ? ".ass,.ssa,.txt,text/plain"
+    : isTtmlIn ? ".ttml,.dfxp,.xml,.txt,text/plain"
+    : isTextToSrt ? ".txt,text/plain"
+    : ".srt,.vtt,.sbv,.txt,text/plain";
 
   return `
 <div class="wrap narrow">
@@ -2051,7 +2624,7 @@ function toolBody(t) {
   <div class="tool">
     <div id="drop">
       Drop a subtitle file here, or
-      <input type="file" id="file" accept=".srt,.vtt,.sbv,.txt,text/plain">
+      <input type="file" id="file" accept="${acceptAttr}">
     </div>
     ${isMerge ? `<div class="panes">
       <div class="pane">
@@ -2065,7 +2638,7 @@ function toolBody(t) {
     </div>` : ""}
     <div class="panes">
       <div class="pane">
-        <label for="in">${isEnc ? "Input — garbled text" : "Input — .srt / .vtt"}</label>
+        <label for="in">${inLabel}</label>
         <textarea id="in" spellcheck="false" placeholder="${placeholder}"></textarea>
       </div>
       <div class="pane">
@@ -2098,6 +2671,11 @@ function toolBody(t) {
     </div>` : ""}
     ${isText ? `<div class="opts">
       <label><input type="checkbox" id="opt-dedupe" checked> Merge repeated lines</label>
+    </div>` : ""}
+    ${isTextToSrt ? `<div class="opts">
+      <span class="field">Each cue lasts <input type="number" id="txt-dur" step="0.1" min="0.1" value="2.5" aria-label="Seconds per cue"> seconds</span>
+      <span class="field">Start at <input type="number" id="txt-start" step="0.1" min="0" value="0" aria-label="Start offset in seconds"> s</span>
+      <span class="field">Wrap lines at <input type="number" id="txt-max" step="1" min="0" value="42" aria-label="Maximum characters per line"> characters (0 = no wrap)</span>
     </div>` : ""}
     ${isSplit ? `<div class="opts">
       <span class="field">Split at <input type="text" id="split-at" value="45:00" size="9" aria-label="Split point"> (seconds, <code>m:ss</code> or <code>h:mm:ss</code>)</span>
@@ -2185,37 +2763,117 @@ ${t.troubleshoot ? `
 </div>`;
 }
 
+/* ------------------------------------------------------------
+   结构化数据
+   之前每页输出 2–3 个互不相关的 <script> 块，Google 看不出从属关系。
+   改成单个 @graph + @id 互联，对齐排名竞品（subtitlekit.com）的做法：
+     Organization → WebSite → WebPage → WebApplication / HowTo / FAQPage
+
+   两个补上的字段很关键：
+   - datePublished / dateModified：之前完全没有 → 页面没有任何时效信号
+   - HowTo：工具页本质就是「怎么做 X」的操作步骤，之前只声明了
+     WebApplication，丢掉了 HowTo 这一整类结构化数据。
+   ------------------------------------------------------------ */
+const LAUNCH = "2026-09-17"; // 工具站独立上线日（git 0893503）
+const ORG_ID = `${SITE}/#organization`;
+const SITE_ID = `${SITE}/#website`;
+
+const stripTags = (s) => String(s).replace(/<[^>]*>/g, "");
+
+const siteNodes = () => [
+  {
+    "@type": "Organization",
+    "@id": ORG_ID,
+    name: BRAND,
+    url: `${SITE}/`,
+    description: "Free browser-based subtitle and caption utilities.",
+    email: CONTACT_EMAIL,
+  },
+  {
+    "@type": "WebSite",
+    "@id": SITE_ID,
+    name: BRAND,
+    url: `${SITE}/`,
+    inLanguage: "en",
+    publisher: { "@id": ORG_ID },
+  },
+];
+
+const webPageNode = ({ path, title, desc, published = LAUNCH, modified = UPDATED }) => ({
+  "@type": "WebPage",
+  "@id": `${SITE}${path}#webpage`,
+  url: `${SITE}${path}`,
+  name: title,
+  description: desc,
+  isPartOf: { "@id": SITE_ID },
+  inLanguage: "en",
+  datePublished: published,
+  dateModified: modified,
+});
+
+const breadcrumbNode = (path, trail) => ({
+  "@type": "BreadcrumbList",
+  "@id": `${SITE}${path}#breadcrumb`,
+  itemListElement: trail.map(([name, item], i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name,
+    item,
+  })),
+});
+
+const graphOf = (...nodes) => ({
+  "@context": "https://schema.org",
+  "@graph": [...siteNodes(), ...nodes.flat()],
+});
+
 function toolJsonLd(t) {
-  return [
+  const path = `/tools/${t.slug}`;
+  const url = `${SITE}${path}`;
+  const steps = t.steps.map(stripTags);
+  return graphOf(
+    webPageNode({ path, title: t.h1, desc: t.metaDesc, published: t.published || LAUNCH }),
+    breadcrumbNode(path, [
+      ["Home", `${SITE}/`],
+      ["Tools", `${SITE}/tools/`],
+      [t.h1, url],
+    ]),
     {
-      "@context": "https://schema.org",
       "@type": "WebApplication",
+      "@id": `${url}#app`,
       name: t.h1,
-      url: `${SITE}/tools/${t.slug}`,
+      url,
       applicationCategory: "MultimediaApplication",
       operatingSystem: "Any (web browser)",
       description: t.metaDesc,
+      isPartOf: { "@id": SITE_ID },
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      featureList: t.steps.map((s) => s.replace(/<[^>]*>/g, "")),
+      featureList: steps,
     },
     {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: t.faq.map(([q, a]) => ({
-        "@type": "Question",
-        name: q,
-        acceptedAnswer: { "@type": "Answer", text: a.replace(/<[^>]*>/g, "") },
+      "@type": "HowTo",
+      "@id": `${url}#howto`,
+      name: `How to use the ${t.h1}`,
+      description: t.tagline,
+      inLanguage: "en",
+      totalTime: "PT1M",
+      tool: [{ "@type": "HowToTool", name: "A web browser" }],
+      step: steps.map((text, i) => ({
+        "@type": "HowToStep",
+        position: i + 1,
+        text,
       })),
     },
     {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: SITE + "/" },
-        { "@type": "ListItem", position: 2, name: t.h1, item: `${SITE}/tools/${t.slug}` },
-      ],
-    },
-  ];
+      "@type": "FAQPage",
+      "@id": `${url}#faq`,
+      mainEntity: t.faq.map(([q, a]) => ({
+        "@type": "Question",
+        name: q,
+        acceptedAnswer: { "@type": "Answer", text: stripTags(a) },
+      })),
+    }
+  );
 }
 
 /* ============================================================
@@ -2241,25 +2899,25 @@ write(
     desc: "Convert, clean and resync .srt and .vtt subtitle files in your browser. No upload, no signup, no file size limit. Your captions never leave your device.",
     canonicalPath: "/",
     body: homeBody,
-    jsonLd: [
+    jsonLd: graphOf(
+      webPageNode({
+        path: "/",
+        title: `${BRAND} — Free browser-based subtitle tools (SRT & VTT)`,
+        desc: "Convert, clean and resync .srt and .vtt subtitle files in your browser. No upload, no signup, no file size limit.",
+      }),
       {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        name: BRAND,
-        url: SITE + "/",
-        description: "Free browser-based subtitle and caption utilities.",
-      },
-      {
-        "@context": "https://schema.org",
         "@type": "ItemList",
+        "@id": `${SITE}/#tools`,
+        name: "Subtitle tools",
+        numberOfItems: TOOLS.length,
         itemListElement: TOOLS.map((t, i) => ({
           "@type": "ListItem",
           position: i + 1,
           name: t.h1,
           url: `${SITE}/tools/${t.slug}`,
         })),
-      },
-    ],
+      }
+    ),
   })
 );
 
@@ -2297,27 +2955,186 @@ for (const g of GUIDES) {
   </div>
   <p class="updated">Last updated ${UPDATED}. All tools run locally in your browser.</p>
 </div>`,
-      jsonLd: [
+      jsonLd: graphOf(
+        webPageNode({ path: `/guides/${g.slug}`, title: g.title, desc: g.desc }),
+        breadcrumbNode(`/guides/${g.slug}`, [
+          ["Home", `${SITE}/`],
+          ["Guides", `${SITE}/guides/`],
+          [g.h1, `${SITE}/guides/${g.slug}`],
+        ]),
         {
-          "@context": "https://schema.org",
           "@type": "TechArticle",
+          "@id": `${SITE}/guides/${g.slug}#article`,
           headline: g.h1,
           description: g.desc,
           url: `${SITE}/guides/${g.slug}`,
           inLanguage: "en",
-        },
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: SITE + "/" },
-            { "@type": "ListItem", position: 2, name: g.h1, item: `${SITE}/guides/${g.slug}` },
-          ],
-        },
-      ],
+          isPartOf: { "@id": SITE_ID },
+          datePublished: LAUNCH,
+          dateModified: UPDATED,
+          author: { "@id": ORG_ID },
+          publisher: { "@id": ORG_ID },
+        }
+      ),
     })
   );
 }
+
+/* 工具索引页 —— 之前不存在，导航直接铺 16 条链接到每个工具，
+   导致全站没有层级、面包屑也没有中间层可指。补一个真正的 hub。 */
+const toolHubBody = `<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> \u203a Tools</p>
+  <h1 style="font-size:clamp(26px,3.8vw,36px);margin:8px 0 10px;letter-spacing:-.5px">Subtitle tools</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Sixteen free utilities for converting, repairing and quality-checking subtitle files. Every one runs entirely in your browser \u2014 no upload, no account, no file size limit.</p>
+  <article>
+    <h2>Why these run in your browser</h2>
+    <p>Subtitle files are often confidential. An unreleased product demo, a client interview, a medical lecture or a legal deposition can all arrive as a caption file. Uploading that to an unknown server to change a comma into a period is a bad trade, so none of these tools has an upload endpoint. You can load a page, disconnect from the internet, and the tool still works.</p>
+
+    <h2>Which tool do I need?</h2>
+    <p>Most subtitle problems fall into one of five buckets. Find yours first \u2014 it saves you from converting a file you did not need to convert.</p>
+    <h3>The file will not open or will not upload</h3>
+    <p>That is a <strong>format</strong> problem. Players, editors and upload forms accept different things, and the mismatch is usually invisible until something refuses the file. Convert to the format your destination wants: <a href="/tools/srt-to-vtt">SRT \u2192 VTT</a> for the web, <a href="/tools/vtt-to-srt">VTT \u2192 SRT</a> for desktop editors, <a href="/tools/ass-to-srt">ASS \u2192 SRT</a> for styled anime releases, <a href="/tools/sbv-to-srt">SBV \u2192 SRT</a> for YouTube exports, or <a href="/tools/ttml-to-srt">TTML \u2192 SRT</a> for broadcast and streaming deliverables.</p>
+    <h3>The timing is wrong</h3>
+    <p>Timing faults come in two shapes and they need different tools. A <strong>constant</strong> offset \u2014 everything is late by the same amount \u2014 is fixed with <a href="/tools/shift-subtitles">Shift Subtitles</a>. A <strong>growing</strong> offset, where the subtitles drift further out of sync as the video plays, means a frame-rate or speed mismatch and needs <a href="/tools/resync-subtitles">Resync Subtitles</a>, which resamples the whole timeline rather than moving it. If you are not sure which one you have, <a href="/guides/fix-subtitles-out-of-sync">this guide walks through the diagnosis</a>.</p>
+    <h3>The text itself is broken</h3>
+    <p>Stray timestamps baked into the dialogue, doubled blank lines, HTML tags, speaker labels, or mojibake from a file that was decoded as the wrong encoding. <a href="/tools/clean-subtitles">Clean Up Subtitles</a> handles the first group, <a href="/tools/remove-timestamps">Remove Timestamps</a> strips embedded timecodes from transcripts, and <a href="/tools/fix-subtitle-encoding">Fix Encoding</a> repairs \u00e2\u0080\u0099-style corruption.</p>
+    <h3>I need to check it before delivery</h3>
+    <p><a href="/tools/subtitle-timing-check">Subtitle Timing Check</a> produces a quality-control report: characters per second, minimum and maximum cue duration, line width and overlaps. It tells you what a client or platform would reject, before they do. <a href="/guides/subtitle-reading-speed">This guide explains the thresholds</a> and where they come from.</p>
+    <h3>I need to restructure the file</h3>
+    <p>Merging two files, splitting one at a point, or exporting the text for a translator. Use <a href="/tools/merge-subtitles">Merge Subtitles</a>, <a href="/tools/split-subtitles">Split Subtitles</a> and <a href="/tools/srt-to-csv">SRT \u2192 CSV</a>. If you are sending files out for translation, read <a href="/guides/translate-subtitles">the translation workflow guide</a> first \u2014 the order of operations matters more than the tool choice.</p>
+
+    <h2>All tools</h2>
+    <div class="grid">
+      ${TOOLS.map((t) => `<a class="card" href="/tools/${t.slug}"><h3>${esc(t.h1)}</h3><p>${esc(t.tagline)}</p><div class="go">Open tool \u2192</div></a>`).join("\n      ")}
+    </div>
+
+    <h2>What these tools will not do</h2>
+    <p>They do not transcribe audio, translate text, or \u201cimprove\u201d your wording. Every operation here is a deterministic transformation of text and timestamps: given the same input you get the same output, and nothing is invented. Automated rewriting of captions risks changing meaning, which is a far worse failure than awkward phrasing.</p>
+    <p>Conversions that are inherently lossy are documented on the relevant page rather than silently applied \u2014 WebVTT cue settings are dropped when converting to SRT, and ASS positioning and effects do not survive either. If you need those preserved, keep the original file.</p>
+
+    <h2>Questions</h2>
+    <p>Send them to <a href="/contact">the contact page</a>. Bug reports with the input that broke are the most useful thing you can send \u2014 a subtitle file that fails is worth more than a description of a failure.</p>
+    <p class="updated">Last updated ${UPDATED}. All tools run locally in your browser.</p>
+  </article>
+</div>`;
+
+write(
+  "tools/index.html",
+  layout({
+    title: `Subtitle Tools — 16 Free Browser-Based Converters | ${BRAND}`,
+    desc: "All 16 Subtitle Toolkit utilities in one place: convert between SRT, VTT, ASS, SBV and TTML, fix timing drift, repair encoding, and run a subtitle QC check. Free, no upload, no signup.",
+    canonicalPath: "/tools/",
+    body: toolHubBody,
+    jsonLd: graphOf(
+      webPageNode({
+        path: "/tools/",
+        title: "Subtitle Tools — 16 Free Browser-Based Converters",
+        desc: "All 16 Subtitle Toolkit utilities in one place: convert between SRT, VTT, ASS, SBV and TTML, fix timing drift, repair encoding, and run a subtitle QC check.",
+      }),
+      breadcrumbNode("/tools/", [
+        ["Home", `${SITE}/`],
+        ["Tools", `${SITE}/tools/`],
+      ]),
+      {
+        "@type": "CollectionPage",
+        "@id": `${SITE}/tools#collection`,
+        url: `${SITE}/tools`,
+        name: "Subtitle tools",
+        isPartOf: { "@id": SITE_ID },
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: TOOLS.length,
+          itemListElement: TOOLS.map((t, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: t.h1,
+            description: t.tagline,
+            url: `${SITE}/tools/${t.slug}`,
+          })),
+        },
+      }
+    ),
+  })
+);
+
+/* 指南索引页 */
+const guideHubBody = `<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> \u203a Guides</p>
+  <h1 style="font-size:clamp(26px,3.8vw,36px);margin:8px 0 10px;letter-spacing:-.5px">Subtitle guides</h1>
+  <p class="lead" style="font-size:17px;color:var(--text-2);margin:0 0 6px">Six long-form references on subtitle formats, timing and delivery. Written for people who have a broken file in front of them and need to know why.</p>
+  <article>
+    <h2>Start here if\u2026</h2>
+    <p>These are troubleshooting references, not tutorials. Each one assumes you already have a file and something is wrong with it. Read the one that matches your symptom.</p>
+
+    <h3>\u2026you do not know which format to use</h3>
+    <p><a href="/guides/subtitle-formats">Subtitle formats compared</a> covers what SRT, WebVTT, ASS/SSA, TTML, SBV and the rest actually are, which platforms accept which, and what you lose in each conversion. Read this before converting anything \u2014 it is cheaper than converting twice.</p>
+
+    <h3>\u2026the subtitles are out of sync</h3>
+    <p><a href="/guides/fix-subtitles-out-of-sync">Fixing out-of-sync subtitles</a> separates constant offset from progressive drift and tells you which tool fixes which. Getting this wrong is the most common way people waste an hour: shifting a drifting file moves the whole timeline when the problem is the frame rate.</p>
+
+    <h3>\u2026the subtitles will not display at all</h3>
+    <p><a href="/guides/subtitles-not-showing">Why subtitles are not showing</a> is a seven-cause checklist \u2014 wrong container, missing track flag, burned-in assumptions, player settings, encoding, path issues and timing that falls outside the video. Work down the list rather than guessing.</p>
+
+    <h3>\u2026you need to check reading speed or compliance</h3>
+    <p><a href="/guides/subtitle-reading-speed">Subtitle reading speed</a> explains characters per second, minimum and maximum cue duration, line limits, and where the widely-cited thresholds come from \u2014 including which ones are platform requirements and which are just convention.</p>
+
+    <h3>\u2026you are embedding captions in a web page</h3>
+    <p><a href="/guides/add-subtitles-to-html5-video">Adding subtitles to HTML5 video</a> covers the <code>&lt;track&gt;</code> element, the WebVTT requirement, CORS, and the accessibility reasons to use real captions rather than a styled overlay.</p>
+
+    <h3>\u2026you are sending subtitles out for translation</h3>
+    <p><a href="/guides/translate-subtitles">Translating subtitles</a> covers the CSV round trip, why line breaks and cue counts must be preserved, and the three checks to run before delivering. Machine translation of a full subtitle file rarely produces something you can ship without this workflow.</p>
+
+    <h2>How the guides relate to the tools</h2>
+    <p>The guides explain diagnosis; the <a href="/tools/">tools</a> do the work. Most pages here link to the specific tool they are describing, so you can read the reasoning and apply the fix in one pass. Where a transformation is lossy or irreversible, the guide says so explicitly rather than leaving you to discover it after the fact.</p>
+
+    <h2>What is not covered here</h2>
+    <p>There is no guide on creating subtitles from scratch, because that is a transcription problem rather than a file problem \u2014 it needs audio, not a converter. There is also nothing on styling or karaoke effects: those live in ASS/SSA authoring tools, and the approach changes with every release of every editor, so a written guide would go stale faster than it would help.</p>
+    <p>What is covered is everything that goes wrong <em>after</em> a file exists and before it ships: wrong format, wrong timing, broken text, unreadable speed, missing captions on the web, and the handoff to a translator. Those six failure modes account for most of the support questions this kind of tooling attracts, and each one has a page.</p>
+
+    <h2>Corrections</h2>
+    <p>If something here is wrong, or a platform requirement has changed, tell us through <a href="/contact">the contact page</a>. Subtitle specifications move \u2014 container support, caption styling rules and platform limits are all subject to change, and a guide that quietly goes stale is worse than no guide.</p>
+    <p class="updated">Last updated ${UPDATED}.</p>
+  </article>
+</div>`;
+
+write(
+  "guides/index.html",
+  layout({
+    title: `Subtitle Guides — Formats, Timing, Sync and Delivery | ${BRAND}`,
+    desc: "Six troubleshooting guides for subtitle work: format comparison, out-of-sync diagnosis, why captions do not show, reading speed limits, HTML5 video embedding, and the translation workflow.",
+    canonicalPath: "/guides/",
+    body: guideHubBody,
+    jsonLd: graphOf(
+      webPageNode({
+        path: "/guides/",
+        title: "Subtitle Guides — Formats, Timing, Sync and Delivery",
+        desc: "Six troubleshooting guides for subtitle work: format comparison, out-of-sync diagnosis, why captions do not show, reading speed limits, HTML5 video embedding, and the translation workflow.",
+      }),
+      breadcrumbNode("/guides/", [
+        ["Home", `${SITE}/`],
+        ["Guides", `${SITE}/guides/`],
+      ]),
+      {
+        "@type": "CollectionPage",
+        "@id": `${SITE}/guides#collection`,
+        url: `${SITE}/guides`,
+        name: "Subtitle guides",
+        isPartOf: { "@id": SITE_ID },
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: GUIDES.length,
+          itemListElement: GUIDES.map((g, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: g.h1,
+            description: g.desc,
+            url: `${SITE}/guides/${g.slug}`,
+          })),
+        },
+      }
+    ),
+  })
+);
 
 /* about */
 write(
@@ -2380,7 +3197,48 @@ write(
       <p>If this policy changes materially, the “last updated” date above will change. Continued use of the site after an update constitutes acceptance of the revised policy.</p>
 
       <h2>Contact</h2>
-      <p>Questions about this policy can be raised through the <a href="https://ai.toolboxes.top/about">contact details on the related AI tool directory</a>.</p>
+      <p>Questions about this policy, or about how this site handles data, can be sent to <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
+    </article></div>`,
+  })
+);
+
+/* contact */
+write(
+  "contact.html",
+  layout({
+    title: `Contact — ${BRAND}`,
+    desc: "How to reach Subtitle Toolkit: bug reports, format requests and corrections. One address, read by a person, no ticket system.",
+    canonicalPath: "/contact",
+    body: `<div class="wrap narrow"><article>
+      <h1 style="font-size:30px;margin:26px 0 12px">Contact</h1>
+      <p>Subtitle Toolkit is maintained by a small team, and there is exactly one way to reach us. No ticket system, no chat widget, no contact form that swallows your message — just an address that a person reads.</p>
+
+      <h2>Email</h2>
+      <p><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
+      <p>We aim to reply within a few working days. If your message is about a specific page, including the URL saves a round trip.</p>
+
+      <h2>What to include in a bug report</h2>
+      <p>Most reports we cannot act on are missing the same three things. Including them makes the difference between a fix and a guessing game:</p>
+      <ul>
+        <li><strong>The exact input.</strong> Paste the few lines of subtitle content that trigger the problem. If the file is confidential, reproduce it with dummy lines that have the same shape — the same format, the same timestamp style, the same punctuation.</li>
+        <li><strong>What you expected, and what you got.</strong> “The output is wrong” is hard to act on; “the second cue came out as <code>00:00:04,200</code> but the source said <code>0:00:04.20</code>” is something we can reproduce in a minute.</li>
+        <li><strong>Your browser and operating system.</strong> Every tool here runs locally in JavaScript, so behaviour can differ between browsers — particularly around file reading and clipboard access.</li>
+      </ul>
+
+      <h2>Requesting a format or a tool</h2>
+      <p>Requests for a new subtitle format or a new conversion direction are welcome, and several tools on this site started as one. Two things help: name the format and where you met it (a particular player, broadcaster or platform), and describe what you need to do with the output. A format nobody can export is not worth building a converter for, and knowing the destination tells us what the output has to preserve.</p>
+
+      <h2>Corrections</h2>
+      <p>If something on this site is factually wrong — a format claim, a compatibility note, a timestamp rule — please say so. The guides are written to be checked against the specifications, and corrections are taken seriously.</p>
+
+      <h2>What we cannot help with</h2>
+      <p>We cannot recover a file you have lost, and we cannot see your files in the first place: every tool here runs entirely in your browser and nothing is uploaded. If a conversion produced a result you did not keep, the original is still on your device, and re-running the conversion takes seconds.</p>
+      <p>We also cannot transcribe or translate audio. This site formats subtitle files; it does not listen to them. The <a href="https://ai.toolboxes.top/">AI tool directory</a> lists services that do.</p>
+
+      <h2>Privacy</h2>
+      <p>Email you send us is kept only as long as it takes to deal with the matter. It is never added to a mailing list, and it is never shared. See the <a href="/privacy">privacy policy</a> for how the site itself handles data.</p>
+
+      <p class="updated">Last updated ${UPDATED}.</p>
     </article></div>`,
   })
 );
@@ -2408,9 +3266,12 @@ write(
 /* sitemap */
 const urls = [
   { loc: "/", pri: "1.0", freq: "weekly" },
+  { loc: "/tools/", pri: "0.9", freq: "weekly" },
   ...TOOLS.map((t) => ({ loc: `/tools/${t.slug}`, pri: "0.9", freq: "monthly" })),
+  { loc: "/guides/", pri: "0.8", freq: "weekly" },
   ...GUIDES.map((g) => ({ loc: `/guides/${g.slug}`, pri: "0.8", freq: "monthly" })),
   { loc: "/about", pri: "0.4", freq: "yearly" },
+  { loc: "/contact", pri: "0.3", freq: "yearly" },
   { loc: "/privacy", pri: "0.3", freq: "yearly" },
 ];
 write(

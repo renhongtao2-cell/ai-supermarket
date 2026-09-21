@@ -280,6 +280,88 @@ ok("lower CPS limit flags more", (C.timingReport(CLEAN_SRT, { maxCps: 3, minMs: 
 const STYLED = "1\n00:00:01,000 --> 00:00:04,000\n<i>Short styled line</i>\n";
 ok("markup stripped before measuring", C.timingReport(STYLED, { maxCps: 20, minMs: 833, maxMs: 7000, maxLine: 42 }).includes("Nothing flagged"));
 
+console.log("\n--- ASS / SSA ---");
+const ASS = `[Script Info]
+Title: Test
+ScriptType: v4.00+
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour
+Style: Default,Arial,20,&H00FFFFFF
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:01.00,0:00:04.00,Default,,0,0,0,,Hello there.
+Dialogue: 0,0:00:04.20,0:00:07.00,Default,,0,0,0,,{\\i1}Music playing{\\i0}
+Dialogue: 0,0:00:07.00,0:00:09.00,Default,,0,0,0,,Line one\\NLine two
+Dialogue: 0,0:00:09.00,0:00:11.00,Default,,0,0,0,,Has, a comma, in it
+Comment: 0,0:00:11.00,0:00:12.00,Default,,0,0,0,,not dialogue
+`;
+
+ok("looksAss detects ASS", C.looksAss(ASS) === true);
+ok("looksAss ignores SRT", C.looksAss(SRT) === false);
+eq("assTime centiseconds", C.assTime("0:00:01.00"), 1000);
+eq("assTime h:mm:ss.cc", C.assTime("1:02:03.35"), 3723350);
+eq("assTime one-digit cs", C.assTime("0:00:01.5"), 1500);
+eq("assTime garbage -> null", C.assTime("nope"), null);
+eq("assFmt to centiseconds", C.assFmt(3723350), "1:02:03.35");
+eq("assFmt truncates to cs", C.assFmt(4205), "0:00:04.20");
+eq("assFmt clamps negative", C.assFmt(-100), "0:00:00.00");
+
+const ac = C.assCues(ASS);
+eq("ass cue count (Comment skipped)", ac.length, 4);
+eq("ass cue1 start", ac[0].start, 1000);
+eq("ass cue1 end", ac[0].end, 4000);
+eq("ass cue1 text", ac[0].text, "Hello there.");
+eq("ass italics -> <i>", ac[1].text, "<i>Music playing</i>");
+eq("ass \\N -> newline", ac[2].text, "Line one\nLine two");
+eq("ass text keeps commas", ac[3].text, "Has, a comma, in it");
+
+const assOut = C.toSrtFromAss(ASS);
+ok("ass->srt has comma timestamps", assOut.includes("00:00:01,000 --> 00:00:04,000"));
+ok("ass->srt no WEBVTT", !assOut.includes("WEBVTT"));
+ok("ass->srt keeps italics tag", assOut.includes("<i>Music playing</i>"));
+ok("ass->srt drops Comment", !assOut.includes("not dialogue"));
+eq("ass->srt roundtrip count", C.parseCues(assOut).length, 4);
+eq("ass->srt roundtrip start", C.parseCues(assOut)[3].start, 9000);
+eq("empty ass -> empty", C.toSrtFromAss("no events here"), "");
+
+// SSA v4.00 has a "Marked" field first — must be read from the Format line
+const SSA = `[Script Info]
+ScriptType: v4.00
+
+[Events]
+Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: Marked=0,0:00:02.00,0:00:05.00,Default,,0,0,0,,SSA style cue
+`;
+const ssaCues = C.assCues(SSA);
+eq("ssa cue count", ssaCues.length, 1);
+eq("ssa start (Marked not misread)", ssaCues[0].start, 2000);
+eq("ssa text", ssaCues[0].text, "SSA style cue");
+
+// SRT -> ASS
+const ass = C.toAss(SRT);
+ok("ass has Script Info", ass.includes("[Script Info]"));
+ok("ass has ScriptType v4.00+", ass.includes("ScriptType: v4.00+"));
+ok("ass has V4+ Styles", ass.includes("[V4+ Styles]"));
+ok("ass has Events", ass.includes("[Events]"));
+ok("ass has Dialogue lines", ass.includes("Dialogue: 0,0:00:01.00,0:00:04.00,Default,,0,0,0,,Hello world."));
+ok("ass uses centiseconds", /Dialogue: 0,\d:\d{2}:\d{2}\.\d{2},\d:\d{2}:\d{2}\.\d{2},/.test(ass));
+ok("ass has no SRT-style timestamps", !/\d{2}:\d{2}:\d{2},\d{3}/.test(ass));
+eq("ass roundtrip cue count", C.assCues(ass).length, 3);
+eq("ass roundtrip start", C.assCues(ass)[0].start, 1000);
+eq("ass roundtrip end", C.assCues(ass)[0].end, 4000);
+eq("empty srt -> empty ass", C.toAss("no cues"), "");
+const ASS_STYLED = C.toAss("1\n00:00:01,000 --> 00:00:04,000\n<i>ital</i> and <b>bold</b>\n");
+ok("srt <i> -> ass override", ASS_STYLED.includes("{\\i1}ital{\\i0}"));
+ok("srt <b> -> ass override", ASS_STYLED.includes("{\\b1}bold{\\b0}"));
+ok("no raw html left in ass", !/<[ib]>/.test(ASS_STYLED));
+
+console.log("\n--- countCues (status line helper) ---");
+eq("countCues on srt", C.countCues(SRT), 3);
+eq("countCues on ass", C.countCues(ASS), 4);
+eq("countCues on garbage", C.countCues("nothing"), 0);
+
 console.log("\n--- resync / merge / csv (regression) ---");
 eq("resync x1.04271", C.resyncCues(SRT, 1.04271)[2].start, 65586);
 eq("merge appends after last cue", C.mergeCues(SRT, SRT, 0).length, 6);
@@ -287,6 +369,62 @@ eq("merge appends after last cue", C.mergeCues(SRT, SRT, 0).length, 6);
 eq("merge shifts second file", C.mergeCues(SRT, SRT, 0)[3].start, 66000);
 ok("csv header", C.toCsv(SRT).startsWith("index,start,end,duration_ms,text"));
 eq("csv row count", C.toCsv(SRT).split("\n").length, 4);
+
+console.log("\n--- TTML / DFXP ---");
+const TTML = `<tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" ttp:frameRate="25">
+  <body><div>
+    <p begin="00:00:01.000" end="00:00:04.000">Hello &amp; welcome.</p>
+    <p begin="00:00:04.200" dur="2.8s">Music playing<br/>Sign on wall: EXIT</p>
+  </div></body>
+</tt>`;
+ok("looksTtml on ttml", C.looksTtml(TTML));
+ok("looksTtml false on srt", !C.looksTtml(SRT));
+eq("ttml cue count", C.ttmlCues(TTML).length, 2);
+eq("ttml start", C.ttmlCues(TTML)[0].start, 1000);
+eq("ttml end", C.ttmlCues(TTML)[0].end, 4000);
+eq("ttml entity decoded", C.ttmlCues(TTML)[0].text, "Hello & welcome.");
+eq("ttml dur used when no end", C.ttmlCues(TTML)[1].end, 7000);
+eq("ttml br -> newline", C.ttmlCues(TTML)[1].text, "Music playing\nSign on wall: EXIT");
+const ttmlSrt = C.toSrtFromTtml(TTML);
+ok("ttml -> srt block", ttmlSrt.includes("00:00:04,200 --> 00:00:07,000"));
+ok("ttml -> srt keeps br break", ttmlSrt.includes("Music playing\nSign on wall: EXIT"));
+eq("empty ttml -> empty srt", C.toSrtFromTtml("no cues"), "");
+eq("countCues on ttml", C.countCues(TTML), 2);
+ok("looksTtml on bare p", C.looksTtml('<p begin="1s">x</p>'));
+eq("xmlAttr single quotes", C.xmlAttr("<p begin='5s'>", "begin"), "5s");
+eq("decodeXmlEntities numeric", C.decodeXmlEntities("&#65;&#x42;"), "AB");
+
+// every time expression form TTML allows
+eq("ttml offset 100ms", C.ttmlTime("100ms", 25), 100);
+eq("ttml offset 10s", C.ttmlTime("10s", 25), 10000);
+eq("ttml offset 1.5m", C.ttmlTime("1.5m", 25), 90000);
+eq("ttml offset 3h", C.ttmlTime("3h", 25), 10800000);
+eq("ttml frames 25f @25fps", C.ttmlTime("25f", 25), 1000);
+eq("ttml frames 30f @30fps", C.ttmlTime("30f", 30), 1000);
+eq("ttml clock with frames", C.ttmlTime("00:00:02:05", 25), 2200);
+eq("ttml clock ms", C.ttmlTime("01:02:03.400", 30), 3723400);
+eq("ttml clock 2-digit fraction", C.ttmlTime("00:00:01.25", 30), 1250);
+eq("ttml clock with comma", C.ttmlTime("00:00:01,500", 30), 1500);
+eq("ttml unparseable time", C.ttmlTime("nope", 30), null);
+
+console.log("\n--- plain text -> SRT ---");
+const TXT = "Welcome back to the channel.\n\nToday we are converting captions.\n   \nLet's start with the timing.";
+const tc = C.textToCues(TXT, { durMs: 2500, startMs: 0, maxChars: 0 });
+eq("text cue count (blanks skipped)", tc.length, 3);
+eq("text first start", tc[0].start, 0);
+eq("text first end", tc[0].end, 2500);
+eq("text second start", tc[1].start, 2500);
+eq("text line trimmed", tc[1].text, "Today we are converting captions.");
+const tc2 = C.textToCues(TXT, { durMs: 1000, startMs: 5000, maxChars: 0 });
+eq("text start offset", tc2[0].start, 5000);
+eq("text custom duration", tc2[1].start, 6000);
+const tc3 = C.textToCues("alpha beta gamma delta epsilon zeta eta theta", { durMs: 2000, maxChars: 20 });
+ok("text wrap splits long line", tc3.length > 1);
+ok("text wrap respects limit", tc3.every((c) => c.text.length <= 20));
+eq("text default duration when unset", C.textToCues("one line", {})[0].end, 2500);
+eq("empty text -> no cues", C.textToCues("   \n\n  ", {}).length, 0);
+eq("splitByWords respects max", C.splitByWords("aaa bbb ccc", 7).join("|"), "aaa bbb|ccc");
+ok("text -> srt serialises", C.serialize(C.textToCues("hi", {}), false).includes("00:00:00,000 --> 00:00:02,500"));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

@@ -179,7 +179,7 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
 <header class="site">
   <div class="wrap">
     <a class="logo" href="/"><span class="mark">💬</span>Subtitle<em>Toolkit</em></a>
-    <nav><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><a href="/tools/resync-subtitles">Resync Subtitles by Frame Rate or Speed</a><a href="/tools/sbv-to-srt">SBV to SRT</a><a href="/tools/merge-subtitles">Merge Subtitle Files</a><a href="/tools/srt-to-csv">Subtitles to CSV</a><a href="/tools/split-subtitles">Split Subtitle Files</a><a href="/tools/fix-subtitle-encoding">Fix Garbled Subtitles (Encoding Repair)</a><a href="/tools/subtitle-timing-check">Subtitle Checker</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+    <nav><a href="/tools/">All tools</a><a href="/tools/srt-to-vtt">SRT to VTT</a><a href="/tools/vtt-to-srt">VTT to SRT</a><a href="/tools/remove-timestamps">Remove Timestamps</a><a href="/tools/clean-subtitles">Clean</a><a href="/tools/shift-subtitles">Shift Subtitle</a><a href="/tools/resync-subtitles">Resync Subtitles by Frame Rate or Speed</a><a href="/tools/sbv-to-srt">SBV to SRT</a><a href="/tools/merge-subtitles">Merge Subtitle Files</a><a href="/tools/srt-to-csv">Subtitles to CSV</a><a href="/tools/split-subtitles">Split Subtitle Files</a><a href="/tools/fix-subtitle-encoding">Fix Garbled Subtitles (Encoding Repair)</a><a href="/tools/subtitle-timing-check">Subtitle Checker</a><a href="/tools/ass-to-srt">ASS / SSA to SRT</a><a href="/tools/srt-to-ass">SRT to ASS</a><a href="/tools/ttml-to-srt">TTML / DFXP to SRT</a><a href="/tools/text-to-srt">Plain Text to SRT</a><a href="/guides/">Guides</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
   </div>
 </header>
 <main id="main"><div class="wrap narrow"><article>
@@ -194,7 +194,7 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
       <p>These tools perform deterministic text and timestamp transformations. They do not rewrite, translate or “improve” your text, because automated rewriting of captions risks changing meaning. Where a transformation could be lossy — such as discarding WebVTT cue settings when converting to SRT — it is documented on the relevant tool page.</p>
       <h2>Related project</h2>
       <p>For finding the tools that <em>produce</em> these files — transcription, captioning and translation services — see the <a href="https://ai.toolboxes.top/">AI tool directory</a>.</p>
-      <p class="updated">Last updated 2026-09-17.</p>
+      <p class="updated">Last updated 2026-09-21.</p>
     </article></div></main>
 <footer class="site">
   <div class="wrap">
@@ -205,27 +205,34 @@ footer.site .legal{margin-top:22px;padding-top:16px;border-top:1px solid var(--b
       </div>
       <div>
         <h5>Tools</h5>
-        <ul><li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li><li><a href="/tools/resync-subtitles">Resync Subtitles by Frame Rate or Speed</a></li><li><a href="/tools/sbv-to-srt">SBV to SRT Converter</a></li><li><a href="/tools/merge-subtitles">Merge Subtitle Files</a></li><li><a href="/tools/srt-to-csv">Subtitles to CSV Converter</a></li><li><a href="/tools/split-subtitles">Split Subtitle Files</a></li><li><a href="/tools/fix-subtitle-encoding">Fix Garbled Subtitles (Encoding Repair)</a></li><li><a href="/tools/subtitle-timing-check">Subtitle Timing Checker</a></li></ul>
+        <ul>
+          <li><a href="/tools/"><strong>All tools</strong></a></li>
+          <li><a href="/tools/srt-to-vtt">SRT to VTT Converter</a></li><li><a href="/tools/vtt-to-srt">VTT to SRT Converter</a></li><li><a href="/tools/remove-timestamps">Remove Timestamps from Subtitles</a></li><li><a href="/tools/clean-subtitles">Clean Up AI-Generated Subtitles</a></li><li><a href="/tools/shift-subtitles">Shift Subtitle Timing</a></li><li><a href="/tools/resync-subtitles">Resync Subtitles by Frame Rate or Speed</a></li><li><a href="/tools/sbv-to-srt">SBV to SRT Converter</a></li><li><a href="/tools/merge-subtitles">Merge Subtitle Files</a></li><li><a href="/tools/srt-to-csv">Subtitles to CSV Converter</a></li><li><a href="/tools/split-subtitles">Split Subtitle Files</a></li><li><a href="/tools/fix-subtitle-encoding">Fix Garbled Subtitles (Encoding Repair)</a></li><li><a href="/tools/subtitle-timing-check">Subtitle Timing Checker</a></li><li><a href="/tools/ass-to-srt">ASS / SSA to SRT Converter</a></li><li><a href="/tools/srt-to-ass">SRT to ASS Converter</a></li><li><a href="/tools/ttml-to-srt">TTML / DFXP to SRT Converter</a></li><li><a href="/tools/text-to-srt">Plain Text to SRT Converter</a></li>
+        </ul>
       </div>
       <div>
         <h5>Guides</h5>
-        <ul><li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li><li><a href="/guides/fix-subtitles-out-of-sync">How to Fix Subtitles That Are Out of Sync</a></li><li><a href="/guides/subtitle-reading-speed">How Long Should Subtitles Stay on Screen</a></li><li><a href="/guides/translate-subtitles">How to Translate a Subtitle File</a></li><li><a href="/guides/subtitles-not-showing">Why Your Subtitles Aren&#39;t Showing Up</a></li></ul>
+        <ul>
+          <li><a href="/guides/"><strong>All guides</strong></a></li>
+          <li><a href="/guides/subtitle-formats">Subtitle File Formats Explained</a></li><li><a href="/guides/add-subtitles-to-html5-video">How to Add Subtitles to HTML5 Video</a></li><li><a href="/guides/fix-subtitles-out-of-sync">How to Fix Subtitles That Are Out of Sync</a></li><li><a href="/guides/subtitle-reading-speed">How Long Should Subtitles Stay on Screen</a></li><li><a href="/guides/translate-subtitles">How to Translate a Subtitle File</a></li><li><a href="/guides/subtitles-not-showing">Why Your Subtitles Aren&#39;t Showing Up</a></li>
+        </ul>
       </div>
       <div>
         <h5>Site</h5>
         <ul>
           <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
           <li><a href="/privacy">Privacy</a></li>
           <li><a href="https://ai.toolboxes.top/">AI tool directory →</a></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-17.</p>
+      <p>© 2026 Subtitle Toolkit. All processing happens locally in your browser. Last updated 2026-09-21.</p>
     </div>
   </div>
 </footer>
-<script src="/js/tools.js?v=b2730eba"></script>
+<script src="/js/tools.js?v=97e962ad"></script>
 <script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("st-theme",n)}catch(e){}});})();</script>
 </body>
 </html>
