@@ -9,6 +9,8 @@
 - [Heading Structure Analyzer](https://www.serpprism.com/tools/heading-analyzer): Paste HTML and get a clean H1–H6 outline plus a list of real problems: missing or duplicated H1, skipped levels, and headings that are too long.
 - [Keyword Density Checker](https://www.serpprism.com/tools/keyword-density): Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.
 - [Readability Score Checker](https://www.serpprism.com/tools/readability-score): Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.
+- [llms.txt Generator](https://www.serpprism.com/tools/llms-txt-generator): Build a valid llms.txt file for your site — the plain-text index that tells AI crawlers and assistants what your site actually offers. Runs entirely in your browser.
+- [JSON-LD Schema Markup Generator](https://www.serpprism.com/tools/schema-markup-generator): Generate valid JSON-LD structured data for Article, FAQ, HowTo, Product, BreadcrumbList and Organization. Fill in fields, get copy-ready markup that validates.
 
 ## Guides
 - [Meta Description Length: What Actually Gets Truncated](https://www.serpprism.com/guides/meta-description-length): The number everyone quotes is 155 characters. The real rule is pixel width, and knowing the difference saves you from rewriting descriptions that were fine.

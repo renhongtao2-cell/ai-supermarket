@@ -180,6 +180,8 @@ for (const f of toolPages) {
   const html = fs.readFileSync(path.join(OUT, "tools", f), "utf8");
   const m = html.match(/<body data-tool="([^"]+)"/);
   if (!m) continue;
+  // 每个工具的输出容器 id —— 加新工具时必须同步到这里，
+  // 否则测试会报「有输出容器 #undefined」（刚加 llmsGen/schemaGen 时踩到）。
   const containers = {
     metaGen: "m-out",
     serpPreview: "s-preview",
@@ -187,6 +189,8 @@ for (const f of toolPages) {
     headingAnalyze: "h-out",
     kwDensity: "k-out",
     readability: "rd-out",
+    llmsGen: "lt-out",
+    schemaGen: "sc-out",
   };
   const id = containers[m[1]];
   ok(`${f}: 有输出容器 #${id}`, html.includes(`id="${id}"`));

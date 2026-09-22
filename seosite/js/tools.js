@@ -426,7 +426,256 @@
 
   /* 暴露纯函数供 scripts/test-seosite.mjs 在 Node 里断言。
      浏览器端无副作用；带下划线前缀表示「不是给页面用的」。 */
-  SEOT._internal = { parseRobots, pickGroup, decide, pathToRe, syllables };
+  /* ---------- 7. llms.txt Generator ---------- */
+  SEOT.llmsGen = function () {
+    bind(["lt-name", "lt-sum", "lt-notes", "lt-rows", "lt-head", "lt-abs"], function () {
+      var name = txt("lt-name").trim();
+      var sum = txt("lt-sum").trim();
+      var notes = txt("lt-notes").trim();
+      var rows = txt("lt-rows").split(/\n+/).map(function (r) { return r.trim(); }).filter(Boolean);
+      var head = txt("lt-head") || "Tools";
+      var abs = txt("lt-abs") === "yes";
+
+      if (!name && !sum && !rows.length) {
+        out("lt-out", '<div class="muted">Fill in your site name and at least one entry.</div>');
+        return;
+      }
+
+      var items = [];
+      var skipped = [];
+      rows.forEach(function (r) {
+        var parts = r.split("|").map(function (p) { return p.trim(); });
+        if (parts.length < 2 || !parts[0] || !parts[1]) { skipped.push(r); return; }
+        items.push({ title: parts[0], path: parts[1], desc: parts[2] || "" });
+      });
+
+      var L = [];
+      L.push("# " + (name || "Untitled site"));
+      L.push("");
+      if (sum) { L.push("> " + sum); L.push(""); }
+      if (items.length) {
+        L.push("## " + head);
+        items.forEach(function (it) {
+          var loc = abs && /^https?:\/\//i.test(it.path) ? it.path : it.path;
+          L.push("- [" + it.title + "](" + loc + ")" + (it.desc ? ": " + it.desc : ""));
+        });
+        L.push("");
+      }
+      if (notes) {
+        L.push("## Notes for automated readers");
+        L.push(notes);
+        L.push("");
+      }
+
+      var body = L.join("\n");
+      var esc = body.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      var warn = skipped.length
+        ? '<div class="issue warn">Skipped ' + skipped.length + " line(s) that were not in <code>Title | /path | description</code> format.</div>"
+        : "";
+      var note = items.length > 60
+        ? '<div class="issue info">You have ' + items.length + " entries. Consider keeping the list short — files with hundreds of entries lose the signal.</div>"
+        : "";
+
+      out("lt-out",
+        '<div class="out-head"><span>llms.txt</span>' +
+        '<button class="mini" type="button" data-copy="lt-body">Copy</button></div>' +
+        warn + note +
+        '<pre class="code" id="lt-body">' + esc + "</pre>" +
+        '<p class="small muted">Save as <code>llms.txt</code> at your domain root — the same place as <code>robots.txt</code>.</p>');
+    });
+  };
+
+  /* ---------- 8. JSON-LD Schema Generator ---------- */
+  var SCHEMA_FIELDS = {
+    article: [
+      ["headline", "Headline", "text", true],
+      ["desc", "Description", "text", false],
+      ["author", "Author name", "text", true],
+      ["pub", "datePublished (YYYY-MM-DD)", "text", true],
+      ["mod", "dateModified (YYYY-MM-DD)", "text", false],
+      ["url", "Page URL", "text", false],
+      ["site", "Site name", "text", false],
+    ],
+    faq: [
+      ["q1", "Question 1", "text", true],
+      ["a1", "Answer 1", "area", true],
+      ["q2", "Question 2", "text", false],
+      ["a2", "Answer 2", "area", false],
+      ["q3", "Question 3", "text", false],
+      ["a3", "Answer 3", "area", false],
+    ],
+    howto: [
+      ["name", "HowTo name", "text", true],
+      ["desc", "Description", "text", false],
+      ["steps", "Steps (one per line)", "area", true],
+    ],
+    product: [
+      ["name", "Product name", "text", true],
+      ["desc", "Description", "text", false],
+      ["brand", "Brand", "text", false],
+      ["price", "Price (numbers only)", "text", true],
+      ["cur", "Currency (e.g. USD)", "text", true],
+    ],
+    breadcrumb: [
+      ["items", "Trail — one per line: Label | /path", "area", true],
+    ],
+    org: [
+      ["name", "Organization name", "text", true],
+      ["url", "Website URL", "text", true],
+      ["desc", "Description", "text", false],
+      ["logo", "Logo URL", "text", false],
+    ],
+  };
+
+  var isoOk = function (s) { return /^\d{4}-\d{2}-\d{2}$/.test(s); };
+
+  SEOT.schemaGen = function () {
+    var holder = $("sc-fields");
+    if (!holder) return;
+
+    function render() {
+      var type = txt("sc-type") || "article";
+      var defs = SCHEMA_FIELDS[type] || [];
+      holder.innerHTML = defs.map(function (d) {
+        var id = "sc-" + d[0];
+        var req = d[3] ? ' <span class="muted">(required)</span>' : "";
+        if (d[2] === "area") {
+          return '<label>' + d[1] + req + '<textarea id="' + id + '" rows="3"></textarea></label>';
+        }
+        return '<label>' + d[1] + req + '<input id="' + id + '" type="text"></label>';
+      }).join("");
+      defs.forEach(function (d) {
+        var el = $("sc-" + d[0]);
+        if (!el) return;
+        ["input", "change", "keyup"].forEach(function (ev) {
+          el.addEventListener(ev, function () { try { build(); } catch (e) { console.error(e); } });
+        });
+      });
+      build();
+    }
+
+    function build() {
+      var type = txt("sc-type") || "article";
+      var v = function (k) { return txt("sc-" + k).trim(); };
+      var problems = [];
+      var node = {};
+
+      if (type === "article") {
+        if (!v("headline")) problems.push("headline is required");
+        if (!v("author")) problems.push("author name is required");
+        if (v("pub") && !isoOk(v("pub"))) problems.push("datePublished must be YYYY-MM-DD");
+        if (v("mod") && !isoOk(v("mod"))) problems.push("dateModified must be YYYY-MM-DD");
+        node = {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: v("headline"),
+          author: { "@type": "Person", name: v("author") },
+        };
+        if (v("desc")) node.description = v("desc");
+        if (v("pub")) node.datePublished = v("pub");
+        if (v("mod")) node.dateModified = v("mod");
+        if (v("url")) node.mainEntityOfPage = { "@type": "WebPage", "@id": v("url") };
+        if (v("site")) node.publisher = { "@type": "Organization", name: v("site") };
+      } else if (type === "faq") {
+        var pairs = [];
+        for (var i = 1; i <= 3; i++) {
+          var q = v("q" + i), a = v("a" + i);
+          if (q && a) pairs.push({ q: q, a: a });
+        }
+        if (!pairs.length) problems.push("at least one question and answer pair is required");
+        node = {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: pairs.map(function (p) {
+            return {
+              "@type": "Question",
+              name: p.q,
+              acceptedAnswer: { "@type": "Answer", text: p.a },
+            };
+          }),
+        };
+      } else if (type === "howto") {
+        var steps = txt("sc-steps").split(/\n+/).map(function (s) { return s.trim(); }).filter(Boolean);
+        if (!v("name")) problems.push("HowTo name is required");
+        if (!steps.length) problems.push("at least one step is required");
+        node = {
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          name: v("name"),
+          step: steps.map(function (s, i) {
+            return { "@type": "HowToStep", position: i + 1, name: s, text: s };
+          }),
+        };
+        if (v("desc")) node.description = v("desc");
+      } else if (type === "product") {
+        if (!v("name")) problems.push("product name is required");
+        var price = v("price");
+        if (!price) problems.push("price is required");
+        else if (!/^\d+(\.\d+)?$/.test(price)) problems.push("price should be a number with no currency symbol");
+        if (!v("cur")) problems.push("currency is required");
+        node = {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: v("name"),
+          offers: {
+            "@type": "Offer",
+            price: price,
+            priceCurrency: v("cur").toUpperCase(),
+          },
+        };
+        if (v("desc")) node.description = v("desc");
+        if (v("brand")) node.brand = { "@type": "Brand", name: v("brand") };
+      } else if (type === "breadcrumb") {
+        var trail = txt("sc-items").split(/\n+/).map(function (s) { return s.trim(); }).filter(Boolean)
+          .map(function (line) {
+            var p = line.split("|").map(function (x) { return x.trim(); });
+            return { name: p[0] || "", item: p[1] || "" };
+          }).filter(function (x) { return x.name; });
+        if (trail.length < 2) problems.push("a breadcrumb trail needs at least two entries");
+        node = {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: trail.map(function (x, i) {
+            var e = { "@type": "ListItem", position: i + 1, name: x.name };
+            if (x.item) e.item = x.item;
+            return e;
+          }),
+        };
+      } else if (type === "org") {
+        if (!v("name")) problems.push("organization name is required");
+        if (!v("url")) problems.push("website URL is required");
+        node = {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: v("name"),
+          url: v("url"),
+        };
+        if (v("desc")) node.description = v("desc");
+        if (v("logo")) node.logo = v("logo");
+      }
+
+      var json = JSON.stringify(node, null, 2);
+      var esc = json.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      var warn = problems.length
+        ? '<div class="issue warn">' + problems.map(function (p) {
+            return "<div>" + p.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</div>";
+          }).join("") + "</div>"
+        : '<div class="issue ok">All required properties present.</div>';
+
+      out("sc-out",
+        '<div class="out-head"><span>JSON-LD</span>' +
+        '<button class="mini" type="button" data-copy="sc-body">Copy</button></div>' +
+        warn +
+        '<pre class="code" id="sc-body">' + esc + "</pre>" +
+        '<p class="small muted">Paste into your page head, then verify with Google&rsquo;s Rich Results Test.</p>');
+    }
+
+    var sel = $("sc-type");
+    if (sel) sel.addEventListener("change", render);
+    render();
+  };
+
+  SEOT._internal = { parseRobots, pickGroup, decide, pathToRe, syllables, isoOk };
 
   window.SEOT = SEOT;
 
