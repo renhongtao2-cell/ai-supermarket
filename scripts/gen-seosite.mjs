@@ -518,6 +518,71 @@ const TOOLS = [
     ],
     related: ["llms-txt-generator", "meta-tag-generator", "heading-analyzer"],
   },
+
+  {
+    slug: "utm-link-builder",
+    nav: "UTM builder",
+    h1: "UTM Link Builder",
+    fn: "utmBuild",
+    metaDesc:
+      "Build campaign URLs with correctly encoded utm_source, utm_medium, utm_campaign, utm_term and utm_content. Live validation catches the mistakes that split your analytics data.",
+    intro:
+      "Fill in your destination and campaign fields, get a properly URL-encoded link, and see warnings for the naming mistakes that silently split one campaign into several in your reports.",
+    ui: `
+      <label>Destination URL<input id="u-base" type="text" placeholder="https://example.com/pricing"></label>
+      <div class="grid2">
+        <label>utm_source (required)<input id="u-src" type="text" placeholder="newsletter"></label>
+        <label>utm_medium (required)<input id="u-med" type="text" placeholder="email"></label>
+      </div>
+      <label>utm_campaign (required)<input id="u-cmp" type="text" placeholder="spring-launch"></label>
+      <div class="grid2">
+        <label>utm_term (optional, paid keywords)<input id="u-term" type="text" placeholder="running+shoes"></label>
+        <label>utm_content (optional, A/B variant)<input id="u-con" type="text" placeholder="cta-button"></label>
+      </div>
+      <div id="u-out" aria-live="polite"></div>`,
+    steps: [
+      "Paste the destination URL — you can include existing query parameters, they are preserved.",
+      "Fill in source, medium and campaign. These three are what every analytics platform needs to attribute the visit.",
+      "Copy the result. Check the warnings first — inconsistent casing is the most common way reports get split.",
+    ],
+    why: [
+      {
+        h: "The three parameters that actually matter",
+        p: [
+          "utm_source identifies where the traffic came from — a specific newsletter, a specific site, a specific ad platform. utm_medium identifies the channel type: email, social, cpc, referral. utm_campaign identifies the specific promotion.",
+          "These three are the minimum. Term and content are refinements: term is for paid keywords, content distinguishes variants of the same link when you are testing two buttons or two placements.",
+        ],
+      },
+      {
+        h: "Case sensitivity is the most expensive mistake here",
+        p: [
+          "Analytics platforms treat utm_source values as case-sensitive strings. 'Newsletter', 'newsletter' and 'NEWSLETTER' are three separate sources in your reports, and they will stay separate forever because there is no reliable way to merge historical data after the fact.",
+          "Pick lowercase for everything and stick to it. This tool warns when it sees mixed case, because fixing it after a campaign has run is not possible.",
+        ],
+      },
+      {
+        h: "Never put UTM parameters on internal links",
+        p: [
+          "A tagged link starts a new session in most analytics configurations. If a visitor arrives from your newsletter and then clicks a tagged internal link, the original source is overwritten and the visit is attributed to your own campaign instead of the newsletter that actually brought them.",
+          "Tag only links that point at your site from somewhere else. Internal navigation should always be untagged.",
+        ],
+      },
+      {
+        h: "Why encoding matters more than it looks",
+        p: [
+          "Spaces, ampersands and non-ASCII characters have to be percent-encoded or they will truncate the parameter or break the URL entirely. A campaign name with an ampersand in it will silently cut everything after that character.",
+          "This tool encodes each value properly and preserves any query parameters already present on the destination URL, so a link to a page that already has its own parameters keeps working.",
+        ],
+      },
+    ],
+    faq: [
+      ["What is the difference between source and medium?", "Source is the specific origin — 'spring-newsletter' or 'google'. Medium is the channel type — 'email' or 'cpc'. One medium contains many sources."],
+      ["Can I use UTM links on social media?", "Yes, and you should. Social platforms often strip referrer information, so tagged links are frequently the only way to attribute that traffic correctly."],
+      ["Should campaign names use spaces?", "Avoid them. Use hyphens or underscores consistently. Spaces require encoding and make the values harder to read in reports."],
+      ["Will this overwrite existing parameters on my URL?", "No. Existing query parameters are preserved and the UTM parameters are appended to them."],
+    ],
+    related: ["llms-txt-generator", "meta-tag-generator", "keyword-density"],
+  },
 ];
 
 /* =================================================================
@@ -1304,6 +1369,66 @@ const TOOLS_JS = `
     var sel = $("sc-type");
     if (sel) sel.addEventListener("change", render);
     render();
+  };
+
+  /* ---------- 9. UTM Link Builder ---------- */
+  SEOT.utmBuild = function () {
+    bind(["u-base", "u-src", "u-med", "u-cmp", "u-term", "u-con"], function () {
+      var base = txt("u-base").trim();
+      var src = txt("u-src").trim();
+      var med = txt("u-med").trim();
+      var cmp = txt("u-cmp").trim();
+      var term = txt("u-term").trim();
+      var con = txt("u-con").trim();
+
+      if (!base) { out("u-out", '<div class="muted">Paste the destination URL to start.</div>'); return; }
+
+      var warns = [];
+      var fixed = base;
+      if (!/^https?:\\/\\//i.test(fixed)) {
+        fixed = "https://" + fixed.replace(/^\\/+/, "");
+        warns.push("Added https:// — the original did not include a scheme.");
+      }
+      if (!src) warns.push("utm_source is missing — the visit cannot be attributed to a source.");
+      if (!med) warns.push("utm_medium is missing — the visit cannot be attributed to a channel.");
+      if (!cmp) warns.push("utm_campaign is missing — you will not be able to separate this promotion from others.");
+
+      var vals = { source: src, medium: med, campaign: cmp, term: term, content: con };
+      Object.keys(vals).forEach(function (k) {
+        var v = vals[k];
+        if (!v) return;
+        if (v !== v.toLowerCase()) {
+          warns.push("utm_" + k + " has uppercase characters. Values are case-sensitive, so 'News' and 'news' become separate entries in your reports.");
+        }
+        if (/\\s/.test(v)) warns.push("utm_" + k + " contains a space. Use hyphens or underscores instead.");
+      });
+
+      var known = ["cpc", "ppc", "email", "social", "referral", "organic", "display", "banner", "affiliate"];
+      if (med && known.indexOf(med.toLowerCase()) === -1) {
+        warns.push('"' + med + '" is not a common medium value. Typical ones are: ' + known.join(", ") + ".");
+      }
+
+      var parts = [];
+      if (src) parts.push("utm_source=" + encodeURIComponent(src));
+      if (med) parts.push("utm_medium=" + encodeURIComponent(med));
+      if (cmp) parts.push("utm_campaign=" + encodeURIComponent(cmp));
+      if (term) parts.push("utm_term=" + encodeURIComponent(term));
+      if (con) parts.push("utm_content=" + encodeURIComponent(con));
+
+      var final = parts.length ? fixed + (fixed.indexOf("?") === -1 ? "?" : "&") + parts.join("&") : fixed;
+      var esc = final.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      var warnHtml = warns.length
+        ? '<div class="issue-list">' + warns.map(function (w) {
+            return '<div class="issue warn">' + w.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</div>";
+          }).join("") + "</div>"
+        : '<div class="issue ok">No problems found. All required parameters present and consistently cased.</div>';
+
+      out("u-out",
+        '<div class="out-head"><span>Tagged URL</span>' +
+        '<button class="mini" type="button" data-copy="u-body">Copy</button></div>' +
+        warnHtml +
+        '<pre class="code" id="u-body">' + esc + "</pre>");
+    });
   };
 
   SEOT._internal = { parseRobots, pickGroup, decide, pathToRe, syllables, isoOk };

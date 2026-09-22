@@ -191,6 +191,7 @@ for (const f of toolPages) {
     readability: "rd-out",
     llmsGen: "lt-out",
     schemaGen: "sc-out",
+    utmBuild: "u-out",
   };
   const id = containers[m[1]];
   ok(`${f}: 有输出容器 #${id}`, html.includes(`id="${id}"`));

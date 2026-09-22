@@ -675,6 +675,66 @@
     render();
   };
 
+  /* ---------- 9. UTM Link Builder ---------- */
+  SEOT.utmBuild = function () {
+    bind(["u-base", "u-src", "u-med", "u-cmp", "u-term", "u-con"], function () {
+      var base = txt("u-base").trim();
+      var src = txt("u-src").trim();
+      var med = txt("u-med").trim();
+      var cmp = txt("u-cmp").trim();
+      var term = txt("u-term").trim();
+      var con = txt("u-con").trim();
+
+      if (!base) { out("u-out", '<div class="muted">Paste the destination URL to start.</div>'); return; }
+
+      var warns = [];
+      var fixed = base;
+      if (!/^https?:\/\//i.test(fixed)) {
+        fixed = "https://" + fixed.replace(/^\/+/, "");
+        warns.push("Added https:// — the original did not include a scheme.");
+      }
+      if (!src) warns.push("utm_source is missing — the visit cannot be attributed to a source.");
+      if (!med) warns.push("utm_medium is missing — the visit cannot be attributed to a channel.");
+      if (!cmp) warns.push("utm_campaign is missing — you will not be able to separate this promotion from others.");
+
+      var vals = { source: src, medium: med, campaign: cmp, term: term, content: con };
+      Object.keys(vals).forEach(function (k) {
+        var v = vals[k];
+        if (!v) return;
+        if (v !== v.toLowerCase()) {
+          warns.push("utm_" + k + " has uppercase characters. Values are case-sensitive, so 'News' and 'news' become separate entries in your reports.");
+        }
+        if (/\s/.test(v)) warns.push("utm_" + k + " contains a space. Use hyphens or underscores instead.");
+      });
+
+      var known = ["cpc", "ppc", "email", "social", "referral", "organic", "display", "banner", "affiliate"];
+      if (med && known.indexOf(med.toLowerCase()) === -1) {
+        warns.push('"' + med + '" is not a common medium value. Typical ones are: ' + known.join(", ") + ".");
+      }
+
+      var parts = [];
+      if (src) parts.push("utm_source=" + encodeURIComponent(src));
+      if (med) parts.push("utm_medium=" + encodeURIComponent(med));
+      if (cmp) parts.push("utm_campaign=" + encodeURIComponent(cmp));
+      if (term) parts.push("utm_term=" + encodeURIComponent(term));
+      if (con) parts.push("utm_content=" + encodeURIComponent(con));
+
+      var final = parts.length ? fixed + (fixed.indexOf("?") === -1 ? "?" : "&") + parts.join("&") : fixed;
+      var esc = final.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      var warnHtml = warns.length
+        ? '<div class="issue-list">' + warns.map(function (w) {
+            return '<div class="issue warn">' + w.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</div>";
+          }).join("") + "</div>"
+        : '<div class="issue ok">No problems found. All required parameters present and consistently cased.</div>';
+
+      out("u-out",
+        '<div class="out-head"><span>Tagged URL</span>' +
+        '<button class="mini" type="button" data-copy="u-body">Copy</button></div>' +
+        warnHtml +
+        '<pre class="code" id="u-body">' + esc + "</pre>");
+    });
+  };
+
   SEOT._internal = { parseRobots, pickGroup, decide, pathToRe, syllables, isoOk };
 
   window.SEOT = SEOT;
