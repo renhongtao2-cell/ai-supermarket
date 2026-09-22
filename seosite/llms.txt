@@ -12,6 +12,8 @@
 - [llms.txt Generator](https://www.serpprism.com/tools/llms-txt-generator): Build a valid llms.txt file for your site — the plain-text index that tells AI crawlers and assistants what your site actually offers. Runs entirely in your browser.
 - [JSON-LD Schema Markup Generator](https://www.serpprism.com/tools/schema-markup-generator): Generate valid JSON-LD structured data for Article, FAQ, HowTo, Product, BreadcrumbList and Organization. Fill in fields, get copy-ready markup that validates.
 - [UTM Link Builder](https://www.serpprism.com/tools/utm-link-builder): Build campaign URLs with correctly encoded utm_source, utm_medium, utm_campaign, utm_term and utm_content. Live validation catches the mistakes that split your analytics data.
+- [Open Graph Preview Tool](https://www.serpprism.com/tools/open-graph-preview): Preview the card LinkedIn, Facebook, X and Slack will render for your link, and get the Open Graph and Twitter tags that produce it. Flags the image mistakes that make shares render as a grey box.
+- [hreflang Tag Generator](https://www.serpprism.com/tools/hreflang-generator): Generate hreflang annotations as HTML link tags, an HTTP Link header, or XML sitemap entries — with real validation for bad language codes, duplicate entries and the missing return tag.
 
 ## Guides
 - [Meta Description Length: What Actually Gets Truncated](https://www.serpprism.com/guides/meta-description-length): The number everyone quotes is 155 characters. The real rule is pixel width, and knowing the difference saves you from rewriting descriptions that were fine.

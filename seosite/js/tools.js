@@ -18,6 +18,46 @@
 
   function out(id, html) { var e = $(id); if (e) e.innerHTML = html; }
 
+  // 统一的 HTML 转义：生成的代码块要原样显示，不能被当标签解析。
+  // 注意别和某些工具内部的局部 esc 变量重名，所以叫 escHtml。
+  function escHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // 复制按钮：原先 llmsGen / schemaGen / utmBuild 上的 data-copy 按钮没有接处理器，
+  // 点了没反应。这里统一做事件委托，新工具只要写 data-copy="<pre> 的 id" 就自动可用。
+  function copyText(s) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(s);
+    return new Promise(function (res, rej) {
+      var ta = document.createElement("textarea");
+      ta.value = s;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); res(); } catch (e) { rej(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (!t || !t.getAttribute) return;
+    var id = t.getAttribute("data-copy");
+    if (!id) return;
+    var src = document.getElementById(id);
+    if (!src) return;
+    var label = t.textContent;
+    copyText(src.textContent || "").then(function () {
+      t.textContent = "Copied";
+      setTimeout(function () { t.textContent = label || "Copy"; }, 1400);
+    }).catch(function () {
+      t.textContent = "Select it manually";
+      setTimeout(function () { t.textContent = label || "Copy"; }, 1600);
+    });
+  });
+
   function bar(used, limit) {
     var pct = Math.min(100, Math.round((used / limit) * 100));
     var cls = pct > 100 ? "bad" : pct > 92 ? "warn" : "good";
@@ -732,6 +772,265 @@
         '<button class="mini" type="button" data-copy="u-body">Copy</button></div>' +
         warnHtml +
         '<pre class="code" id="u-body">' + esc + "</pre>");
+    });
+  };
+
+  /* ---------- 10. Open Graph / social card preview ---------- */
+  SEOT.ogPreview = function () {
+    bind(["og-u", "og-t", "og-d", "og-i", "og-s", "og-w", "og-h", "og-tw", "og-c"], function () {
+      var url = txt("og-u").trim();
+      var title = txt("og-t").trim();
+      var desc = txt("og-d").trim();
+      var img = txt("og-i").trim();
+      var site = txt("og-s").trim();
+      var w = txt("og-w").trim();
+      var h = txt("og-h").trim();
+      var tw = txt("og-tw").trim();
+      var card = txt("og-c") || "summary_large_image";
+
+      if (!url && !title && !desc && !img) {
+        out("og-out", '<div class="muted">Fill in a field to see the card.</div>');
+        return;
+      }
+
+      var E = escHtml;
+      var host = "";
+      var hm = url.match(/^https?:\/\/([^\/]+)/);
+      if (hm) host = hm[1];
+      else if (url) host = url;
+
+      var abs = /^https?:\/\//i.test(img);
+      var issues = [];
+
+      if (!title) {
+        issues.push(["warn", "No og:title — platforms fall back to the title tag, and often to the first heading on the page, which is rarely what you want shown."]);
+      } else if (title.length > 88) {
+        issues.push(["warn", "og:title is " + title.length + " characters. X cuts near 70, LinkedIn near 100. Keep the important words in the first 60."]);
+      }
+      if (!desc) {
+        issues.push(["warn", "No og:description — the card shows an empty gap, or a sentence the scraper picked for you."]);
+      } else if (desc.length > 200) {
+        issues.push(["warn", "og:description is " + desc.length + " characters. Most cards cut near 200; LinkedIn cuts nearer 160 in some layouts."]);
+      }
+      if (!img) {
+        issues.push(["bad", "No og:image — the card renders as a plain grey block. This is the single biggest reason a shared link gets scrolled past."]);
+      } else {
+        if (!abs) {
+          issues.push(["bad", "og:image is not an absolute URL. Scrapers have no base URL to resolve a relative path against, so the tag is dropped."]);
+        } else if (/^http:\/\//i.test(img)) {
+          issues.push(["warn", "og:image is http:// on what is presumably an https page. Some platforms refuse to render insecure images."]);
+        }
+        if (!w || !h) {
+          issues.push(["warn", "No og:image:width / og:image:height. The scraper has to download the image to lay the card out, and if that fetch is slow or blocked the first share goes out with no image at all."]);
+        } else {
+          var iw = parseInt(w, 10), ih = parseInt(h, 10);
+          if (iw > 0 && ih > 0) {
+            if (iw < 200 || ih < 200) {
+              issues.push(["bad", "Image is " + iw + " x " + ih + " px. Below 200x200 most platforms will not use it for a large card."]);
+            }
+            var ratio = iw / ih;
+            if (ratio < 1.5 || ratio > 2.1) {
+              issues.push(["info", "Aspect ratio is about " + ratio.toFixed(2) + ":1. Outside the 1.91:1 sweet spot the image is likely to be centre-cropped."]);
+            }
+          }
+        }
+      }
+      if (!url) issues.push(["info", "No og:url. Worth adding when several URLs serve the same content — it tells the scraper which one to credit the share to."]);
+      if (!site) issues.push(["info", "No og:site_name — the source line under the card falls back to the bare domain."]);
+      if (!issues.length) {
+        issues.push(["ok", "Nothing wrong found. Remember that every platform caches the card, so a fix is not visible until that cache is refreshed."]);
+      }
+
+      var issueHtml = '<div class="issue-list">' + issues.map(function (it) {
+        return '<div class="issue ' + it[0] + '">' + E(it[1]) + "</div>";
+      }).join("") + "</div>";
+
+      // 预览里请求图片时故意不带 referrer：很多 CDN 的热链保护会拦带外站 Referer 的请求，
+      // 那正是「浏览器打得开、平台上却是灰块」的原因。
+      var imgHtml = img && abs
+        ? '<img src="' + E(img) + '" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;display:block">'
+        : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8a9099;font-size:13px;text-align:center;padding:12px">no usable og:image</div>';
+
+      var big =
+        '<div class="serp-box" style="padding:0;overflow:hidden">' +
+          '<div style="height:262px;background:var(--panel)">' + imgHtml + "</div>" +
+          '<div style="padding:12px 16px">' +
+            '<div class="serp-url"><span class="serp-fav"></span><span class="serp-site">' + (E(host) || "your-domain.com") + "</span></div>" +
+            '<div class="serp-title">' + (title ? E(title) : '<span class="dim">Untitled — no og:title</span>') + "</div>" +
+            (desc ? '<div class="serp-desc">' + E(desc.slice(0, 220)) + "</div>" : "") +
+          "</div>" +
+        "</div>";
+
+      var small =
+        '<div class="serp-box" style="padding:0;overflow:hidden;display:flex">' +
+          '<div style="width:116px;height:116px;flex:none;background:var(--panel)">' + imgHtml + "</div>" +
+          '<div style="padding:10px 13px;min-width:0">' +
+            '<div class="serp-desc" style="margin-bottom:2px">' + (E(host) || "your-domain.com") + "</div>" +
+            '<div class="serp-title" style="font-size:15px">' + (title ? E(title) : '<span class="dim">Untitled</span>') + "</div>" +
+            (desc ? '<div class="serp-desc">' + E(desc.slice(0, 130)) + "</div>" : "") +
+          "</div>" +
+        "</div>";
+
+      // 标签里放原始值，输出前整体转义一次 —— 转义两次会变成 &amp;amp;
+      var tags = "";
+      tags += "<!-- Open Graph -->\n";
+      tags += '<meta property="og:type" content="website">\n';
+      if (title) tags += '<meta property="og:title" content="' + title + '">\n';
+      if (desc) tags += '<meta property="og:description" content="' + desc + '">\n';
+      if (url) tags += '<meta property="og:url" content="' + url + '">\n';
+      if (img) tags += '<meta property="og:image" content="' + img + '">\n';
+      if (img && w) tags += '<meta property="og:image:width" content="' + w + '">\n';
+      if (img && h) tags += '<meta property="og:image:height" content="' + h + '">\n';
+      if (site) tags += '<meta property="og:site_name" content="' + site + '">\n';
+      tags += "\n<!-- Twitter -->\n";
+      tags += '<meta name="twitter:card" content="' + card + '">\n';
+      if (tw) tags += '<meta name="twitter:site" content="' + tw + '">\n';
+      if (title) tags += '<meta name="twitter:title" content="' + title + '">\n';
+      if (desc) tags += '<meta name="twitter:description" content="' + desc + '">\n';
+      if (img) tags += '<meta name="twitter:image" content="' + img + '">\n';
+
+      out("og-out",
+        '<div class="out-head"><span>How it will render</span></div>' +
+        '<div class="grid2">' +
+          '<div><div class="small muted" style="margin-bottom:6px">Large image card — LinkedIn, Facebook, X, Slack</div>' + big + "</div>" +
+          '<div><div class="small muted" style="margin-bottom:6px">Small summary card — twitter:card = summary</div>' + small + "</div>" +
+        "</div>" +
+        '<div class="out-head"><span>What needs fixing</span></div>' + issueHtml +
+        '<div class="out-head"><span>Generated tags</span>' +
+        '<button class="mini" type="button" data-copy="og-body">Copy</button></div>' +
+        '<pre class="code" id="og-body">' + E(tags) + "</pre>");
+    });
+  };
+
+  /* ---------- 11. hreflang generator ---------- */
+  var REGION_SET = (function () {
+    var list = (
+      "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ " +
+      "CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR " +
+      "GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP " +
+      "KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT " +
+      "MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW " +
+      "SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ " +
+      "UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW"
+    ).split(/\s+/);
+    var set = {};
+    list.forEach(function (c) { set[c] = 1; });
+    return set;
+  })();
+  // 语言小写、可选脚本子标签（Hans/Hant 等）、可选地区（2 字母大写或 3 位数字，如 es-419）
+  var LANG_RE = /^[a-z]{2,3}(-[A-Z][a-z]{3})?(-([A-Z]{2}|[0-9]{3}))?$/;
+
+  SEOT.hreflangGen = function () {
+    bind(["hl-rows", "hl-def", "hl-fmt"], function () {
+      var raw = txt("hl-rows").split(/\n+/).map(function (r) { return r.trim(); }).filter(Boolean);
+      var def = txt("hl-def").trim();
+      var fmt = txt("hl-fmt") || "html";
+
+      if (!raw.length && !def) {
+        out("hl-out", '<div class="muted">Add at least one language version to begin.</div>');
+        return;
+      }
+
+      var E = escHtml;
+      var rows = [];
+      var issues = [];
+      var seenCode = {};
+      var seenUrl = {};
+
+      raw.forEach(function (line, i) {
+        var parts = line.indexOf("|") >= 0 ? line.split("|") : line.split(/\s+/);
+        var code = (parts[0] || "").trim();
+        var href = parts.slice(1).join(" ").trim();
+
+        if (!code) { issues.push(["bad", "Line " + (i + 1) + ": no language code."]); return; }
+        if (!href) { issues.push(["bad", "Line " + (i + 1) + ": no URL for " + code + "."]); return; }
+
+        if (!LANG_RE.test(code)) {
+          issues.push(["bad", "Line " + (i + 1) + ": " + code + " is not a valid hreflang value. Expected a lowercase language subtag (en), optionally a script (zh-Hans), optionally an uppercase region (en-US)."]);
+          return;
+        }
+        var bits = code.split("-");
+        var region = null;
+        for (var b = 1; b < bits.length; b++) {
+          if (/^[A-Z]{2}$/.test(bits[b]) || /^[0-9]{3}$/.test(bits[b])) region = bits[b];
+        }
+        // 只有 2 字母的才去比对 ISO 3166-1；3 位数字是 UN M.49 大区码（es-419 拉美），
+        // 同样是合法的 hreflang 地区子标签，不能误报。
+        if (region && /^[A-Z]{2}$/.test(region) && !REGION_SET[region]) {
+          if (region === "UK") {
+            issues.push(["bad", "Line " + (i + 1) + ": " + code + " uses UK. The ISO 3166-1 code for the United Kingdom is GB — use " + code.replace("UK", "GB") + "."]);
+          } else {
+            issues.push(["warn", "Line " + (i + 1) + ": " + region + " is not a recognised ISO 3166-1 alpha-2 region code. Double-check it."]);
+          }
+        }
+        if (seenCode[code]) issues.push(["bad", "Duplicate language code " + code + ". Each code may appear only once in a cluster."]);
+        seenCode[code] = 1;
+
+        if (!/^https?:\/\//i.test(href)) {
+          issues.push(["bad", "Line " + (i + 1) + ": " + href + " is not an absolute URL. hreflang targets must be complete URLs including the scheme."]);
+        } else if (/^http:\/\//i.test(href)) {
+          issues.push(["warn", "Line " + (i + 1) + ": " + href + " is http, not https."]);
+        }
+        if (seenUrl[href]) {
+          issues.push(["warn", href + " is used for more than one language. That is usually a geo-redirect setup, which hreflang cannot express — each language needs its own URL."]);
+        }
+        seenUrl[href] = 1;
+
+        rows.push({ code: code, href: href });
+      });
+
+      if (def && !/^https?:\/\//i.test(def)) {
+        issues.push(["bad", "The x-default value must be a full URL, not a language code."]);
+      } else if (rows.length && !def) {
+        issues.push(["info", "No x-default. It is optional, but worth adding for visitors whose language is not in the list."]);
+      }
+      if (rows.length === 1) {
+        issues.push(["info", "Only one language version. hreflang only does something once there are two or more."]);
+      }
+      if (!issues.length) {
+        issues.push(["ok", "Nothing wrong found. Every page in the cluster must carry this complete set, including its own line — that part you have to verify on the live pages."]);
+      }
+
+      var issueHtml = '<div class="issue-list">' + issues.map(function (it) {
+        return '<div class="issue ' + it[0] + '">' + E(it[1]) + "</div>";
+      }).join("") + "</div>";
+
+      var cluster = rows.slice();
+      if (def) cluster.push({ code: "x-default", href: def });
+
+      var code = "";
+      if (fmt === "http") {
+        code = "Link: " + cluster.map(function (r) {
+          return "<" + r.href + '>; rel="alternate"; hreflang="' + r.code + '"';
+        }).join(",\n      ") + "\n";
+      } else if (fmt === "sitemap") {
+        var block = cluster.map(function (r) {
+          return '  <xhtml:link rel="alternate" hreflang="' + r.code + '" href="' + r.href + '"/>';
+        }).join("\n");
+        // 站点地图里每个 URL 都要带完整集群（含自己），所以每个语言版本各出一个 <url> 块
+        code = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n' +
+          '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
+          rows.map(function (r) {
+            return "<url>\n  <loc>" + r.href + "</loc>\n" + block + "\n</url>";
+          }).join("\n") +
+          "\n</urlset>\n";
+      } else {
+        cluster.forEach(function (r) {
+          code += '<link rel="alternate" hreflang="' + r.code + '" href="' + r.href + '">\n';
+        });
+      }
+
+      var note = "Cluster: " + rows.length + " language" + (rows.length === 1 ? "" : "s") +
+        (def ? " + x-default" : "") + " = " + cluster.length + " entries. " +
+        "Each of the " + rows.length + " pages must carry this complete set, including its own line.";
+
+      out("hl-out",
+        '<div class="out-head"><span>What needs fixing</span></div>' + issueHtml +
+        '<div class="out-head"><span>Generated annotations</span>' +
+        '<button class="mini" type="button" data-copy="hl-body">Copy</button></div>' +
+        '<pre class="code" id="hl-body">' + E(code) + "</pre>" +
+        '<div class="muted small">' + E(note) + "</div>");
     });
   };
 

@@ -155,6 +155,22 @@ ok("pathToRe: /*.pdf$ 命中", I.pathToRe("/*.pdf$").test("/f/a.pdf"));
 ok("pathToRe: /*.pdf$ 不命中末尾多余字符", I.pathToRe("/*.pdf$").test("/f/a.pdf.html") === false);
 ok("pathToRe: 正则元字符被转义", I.pathToRe("/a+b/").test("/aab/") === false);
 
+// 每个工具的输出容器 id —— 加新工具时必须同步到这里，
+// 否则测试会报「有输出容器 #undefined」（刚加 llmsGen/schemaGen 时踩到）。
+const CONTAINERS = {
+  metaGen: "m-out",
+  serpPreview: "s-preview",
+  robotsTest: "r-out",
+  headingAnalyze: "h-out",
+  kwDensity: "k-out",
+  readability: "rd-out",
+  llmsGen: "lt-out",
+  schemaGen: "sc-out",
+  utmBuild: "u-out",
+  ogPreview: "og-out",
+  hreflangGen: "hl-out",
+};
+
 /* =================================================================
    接线检查：每个工具页的 data-tool 必须对应一个真实存在的 SEOT 函数
    —— 这是「页面能不能跑」的核心风险：函数名拼错 / 忘了导出，
@@ -180,22 +196,79 @@ for (const f of toolPages) {
   const html = fs.readFileSync(path.join(OUT, "tools", f), "utf8");
   const m = html.match(/<body data-tool="([^"]+)"/);
   if (!m) continue;
-  // 每个工具的输出容器 id —— 加新工具时必须同步到这里，
-  // 否则测试会报「有输出容器 #undefined」（刚加 llmsGen/schemaGen 时踩到）。
-  const containers = {
-    metaGen: "m-out",
-    serpPreview: "s-preview",
-    robotsTest: "r-out",
-    headingAnalyze: "h-out",
-    kwDensity: "k-out",
-    readability: "rd-out",
-    llmsGen: "lt-out",
-    schemaGen: "sc-out",
-    utmBuild: "u-out",
-  };
-  const id = containers[m[1]];
+  const id = CONTAINERS[m[1]];
   ok(`${f}: 有输出容器 #${id}`, html.includes(`id="${id}"`));
 }
+
+/* =================================================================
+   工具级冒烟：真的把每个 SEOT[fn]() 执行一次。
+   为什么需要：上面只测了纯函数，bind() 的回调从来没跑过。而 bind 内部
+   try/catch 会把异常吞进 console.error —— 页面照常渲染、输出容器是空的，
+   这种 bug 只会在浏览器里才被发现（正则写错、模板字面量吃掉反斜杠都是这样）。
+   这里先把 console.error 接管下来，跑完再断言有没有被调用过。
+   ================================================================= */
+const SMOKE = {
+  metaGen: { "m-title": "Hello world page", "m-url": "https://x.com/p", "m-desc": "A description." },
+  serpPreview: { "s-title": "Hello", "s-url": "x.com/p", "s-desc": "World" },
+  robotsTest: { "r-txt": "User-agent: *\nDisallow: /a/", "r-url": "/a/b" },
+  headingAnalyze: { "h-html": "<h1>Title</h1><h2>Sub</h2><h4>Jump</h4>" },
+  kwDensity: { "k-text": "seo seo seo tools tools page rank", "k-n": "2", "k-top": "10" },
+  readability: { "rd-text": "This is a short sentence. Here is another one to read." },
+  llmsGen: { "lt-name": "Demo", "lt-sum": "A demo site.", "lt-rows": "Docs | https://x.com/docs | Docs" },
+  schemaGen: { "sc-name": "Demo" },
+  utmBuild: { "u-base": "https://x.com/p", "u-src": "newsletter", "u-med": "email", "u-cmp": "spring" },
+  ogPreview: { "og-u": "https://x.com/p", "og-t": "Title & more", "og-d": "Desc", "og-i": "https://x.com/i.png", "og-w": "1200", "og-h": "630" },
+  hreflangGen: { "hl-rows": "en-US | https://x.com/us/\nes-419 | https://x.com/latam/", "hl-def": "https://x.com/" },
+};
+
+const realError = console.error;
+let smokeErrs = [];
+sandbox.console = Object.assign({}, console, {
+  error: (...a) => { smokeErrs.push(a.map(String).join(" ")); },
+});
+
+for (const fn of Object.keys(SMOKE)) {
+  for (const [k, v] of Object.entries(SMOKE[fn])) document.getElementById(k).value = v;
+  smokeErrs = [];
+  sandbox.SEOT[fn]();
+  ok(`${fn}: 执行无运行时错误`, smokeErrs.length === 0, smokeErrs.join(" | "));
+  const el = document.getElementById(CONTAINERS[fn]);
+  ok(`${fn}: 写出了输出内容`, !!el.innerHTML && el.innerHTML.length > 40);
+}
+
+/* 新工具的行为断言：光「不报错」不够，判错方向才是真 bug */
+document.getElementById("og-i").value = "images/og.png";
+sandbox.SEOT.ogPreview();
+ok(
+  "og: 相对路径的 og:image 被判为不可用",
+  document.getElementById("og-out").innerHTML.includes("not an absolute URL")
+);
+
+document.getElementById("og-i").value = "https://x.com/i.png";
+document.getElementById("og-t").value = "x".repeat(120);
+sandbox.SEOT.ogPreview();
+ok(
+  "og: 过长的 og:title 给出截断警告",
+  document.getElementById("og-out").innerHTML.includes("og:title is 120 characters")
+);
+
+document.getElementById("hl-rows").value = "en-UK | https://x.com/uk/\nde-DE | https://x.com/de/";
+document.getElementById("hl-def").value = "https://x.com/";
+sandbox.SEOT.hreflangGen();
+{
+  const h = document.getElementById("hl-out").innerHTML;
+  ok("hreflang: en-UK 被指出应为 en-GB", h.includes("use en-GB"));
+  ok("hreflang: 非法值不会混进生成结果之外的判断", h.includes("x-default"));
+}
+
+document.getElementById("hl-rows").value = "es-419 | https://x.com/latam/\nzh-Hans | https://x.com/cn/";
+sandbox.SEOT.hreflangGen();
+ok(
+  "hreflang: UN M.49 大区码 es-419 不误报",
+  !document.getElementById("hl-out").innerHTML.includes("not a recognised")
+);
+
+sandbox.console = Object.assign({}, console, { error: realError });
 
 /* ---------- 报告 ---------- */
 console.log(`✅ 通过 ${pass} · 失败 ${fails.length}`);

@@ -2,109 +2,121 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.serpprism.com/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/meta-tag-generator</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/serp-preview</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/robots-txt-tester</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/heading-analyzer</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/keyword-density</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/readability-score</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/llms-txt-generator</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/schema-markup-generator</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/tools/utm-link-builder</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.serpprism.com/tools/open-graph-preview</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.serpprism.com/tools/hreflang-generator</loc>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/guides/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/guides/meta-description-length</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/guides/robots-txt-mistakes</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/guides/heading-structure-seo</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/about</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/contact</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://www.serpprism.com/privacy</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

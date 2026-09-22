@@ -19,7 +19,7 @@ const OUT = path.join(ROOT, "seosite");
 const SITE = "https://www.serpprism.com";
 const BRAND = "SerpPrism";
 const DOMAIN_LABEL = "www.serpprism.com";
-const UPDATED = "2026-09-21";
+const UPDATED = "2026-09-22";
 const LAUNCH = "2026-09-21";
 const ADSENSE_CLIENT = "ca-pub-9901133369141996";
 const CONTACT_EMAIL = "renhongtao2@gmail.com";
@@ -583,6 +583,157 @@ const TOOLS = [
     ],
     related: ["llms-txt-generator", "meta-tag-generator", "keyword-density"],
   },
+
+  {
+    slug: "open-graph-preview",
+    nav: "OG preview",
+    h1: "Open Graph Preview Tool",
+    fn: "ogPreview",
+    metaDesc:
+      "Preview the card LinkedIn, Facebook, X and Slack will render for your link, and get the Open Graph and Twitter tags that produce it. Flags the image mistakes that make shares render as a grey box.",
+    intro:
+      "Fill in the fields and both card layouts render live — the large image card and the small summary card. Below them you get the exact tags, plus a list of the specific problems that stop a card from rendering at all.",
+    ui: `
+      <div class="grid2">
+        <label>Page URL<input id="og-u" type="text" placeholder="https://example.com/guide"></label>
+        <label>Site name<input id="og-s" type="text" placeholder="SerpPrism"></label>
+      </div>
+      <label>og:title<input id="og-t" type="text" placeholder="How to Fix Subtitle Sync"></label>
+      <label>og:description<textarea id="og-d" rows="3" placeholder="One sentence. Cards cut this far shorter than a meta description."></textarea></label>
+      <label>og:image URL (must be absolute)<input id="og-i" type="text" placeholder="https://example.com/og.png"></label>
+      <div class="grid3">
+        <label>Width (px)<input id="og-w" type="number" placeholder="1200"></label>
+        <label>Height (px)<input id="og-h" type="number" placeholder="630"></label>
+        <label>Twitter handle<input id="og-tw" type="text" placeholder="@yourhandle"></label>
+      </div>
+      <label>Twitter card
+        <select id="og-c"><option value="summary_large_image">summary_large_image</option><option value="summary">summary (small, image left)</option></select>
+      </label>
+      <div id="og-out" aria-live="polite"></div>`,
+    steps: [
+      "Enter the URL, title and description you plan to publish.",
+      "Add an absolute <code>og:image</code> URL and its pixel size — this is the field that breaks most often.",
+      "Copy the generated block into your page's <code>&lt;head&gt;</code>, then re-check after deploying, because every platform caches the card.",
+    ],
+    why: [
+      {
+        h: "The four tags that decide whether you get a card at all",
+        p: [
+          "<code>og:title</code>, <code>og:description</code>, <code>og:image</code> and <code>twitter:card</code>. Miss the first three and the platform falls back to whatever it can scrape from the page, which is usually the wrong heading and the first logo it finds. Miss <code>twitter:card</code> and X renders a bare link with no image, regardless of how good your Open Graph tags are.",
+          "Twitter's tags are the ones people skip, on the assumption that X reads Open Graph. It does, but only once you have told it which card type to build. That one line is the difference between a full-width image and a plain URL.",
+        ],
+      },
+      {
+        h: "Why your card shows an image you replaced three weeks ago",
+        p: [
+          "Every platform caches what its scraper found the first time the URL was shared. LinkedIn holds it for roughly a week, Facebook indefinitely until something forces a re-scrape, X long enough that people assume the tag is broken. Editing the tag does not update the card.",
+          "The reliable fix is to make the URL new. Adding a meaningless parameter such as <code>?v=2</code> forces a fresh fetch, because the cache is keyed on the full address. The official debuggers (LinkedIn Post Inspector, Facebook Sharing Debugger, X Card Validator) do the same thing without changing your URL, and they also tell you exactly which tags the scraper read — which is worth checking before you start editing.",
+        ],
+      },
+      {
+        h: "og:image mistakes that cost the click",
+        p: [
+          "A relative path is the most common one. It works in your HTML for a browser, because the browser resolves it against the page, but a scraper has no base URL to resolve against, so it just gives up. Always absolute, and always <code>https</code> — an http image on an https page is silently dropped by some platforms.",
+          "Size matters next. Below roughly 200×200 most platforms refuse to use it as a large card. Above 8 MB Facebook will not process it. And 1.91:1 (1200×630 is the usual choice) is the ratio that survives the most layouts without being centre-cropped — a square image in a feed is a square image with its edges cut off.",
+          "The subtle one is the missing <code>og:image:width</code> and <code>og:image:height</code>. Without them the scraper has to download the image to work out the layout, and if that download is slow or blocked the first share goes out with no image at all. Declaring the dimensions is a two-line fix for a problem that otherwise looks intermittent.",
+          "Finally, hotlink protection. If your CDN blocks requests with a foreign <code>Referer</code>, the platform's scraper gets a 403 and you get a grey box — while the same URL opens perfectly in your browser. The preview above requests images with no referrer for exactly this reason.",
+        ],
+      },
+      {
+        h: "What this tool deliberately does not do",
+        p: [
+          "It does not fetch your live page. Reading another domain's HTML from the browser is blocked by the same-origin policy, and any tool that appears to do it is routing your URL through a server that can then see every page you check — the opposite of what a privacy-respecting tool should do.",
+          "It also cannot force a platform to re-scrape, and it cannot tell you whether your image URL actually resolves. Both need a request from somewhere other than your browser.",
+          "What you get instead is the part that matters while you are writing: the correct block of tags, an honest list of what will break the card, and a preview that shows you the crop before your readers see it.",
+        ],
+      },
+    ],
+    faq: [
+      ["Do I need both Open Graph and Twitter tags?", "Twitter/X falls back to Open Graph for title, description and image, but it still needs twitter:card to know which layout to build. Without it you get a plain link."],
+      ["What size should og:image be?", "1200×630 is the safe default — it is 1.91:1, well under the 8 MB limit, and large enough that no platform rejects it. Keep any text away from the edges."],
+      ["Why does LinkedIn show an old image after I fixed it?", "Its scraper caches the card, typically for about seven days. Use the Post Inspector to force a refresh, or share the URL with a new query parameter."],
+      ["Can I preview how Slack or WhatsApp render it?", "Both read Open Graph and render something close to the large card above. Exact typography differs per client and version, so treat the preview as a layout guide rather than a pixel-accurate mock."],
+      ["Is anything I type sent to a server?", "No. Everything runs as JavaScript in your browser. The only outbound request is your browser loading the image you typed, if you provide one."],
+    ],
+    related: ["meta-tag-generator", "serp-preview", "schema-markup-generator"],
+  },
+
+  {
+    slug: "hreflang-generator",
+    nav: "hreflang",
+    h1: "hreflang Tag Generator",
+    fn: "hreflangGen",
+    metaDesc:
+      "Generate hreflang annotations as HTML link tags, an HTTP Link header, or XML sitemap entries — with real validation for bad language codes, duplicate entries and the missing return tag.",
+    intro:
+      "List one line per language version and pick an output format. The generator writes the full cluster for every URL, because that is what the specification actually requires, and it flags the mistakes that make Google silently ignore the whole set.",
+    ui: `
+      <label>Language versions — one per line as <code>code | URL</code><textarea id="hl-rows" rows="7" placeholder="en-US | https://example.com/us/&#10;en-GB | https://example.com/uk/&#10;de-DE | https://example.com/de/"></textarea></label>
+      <div class="grid2">
+        <label>Fallback (x-default) URL — optional<input id="hl-def" type="text" placeholder="https://example.com/"></label>
+        <label>Output format
+          <select id="hl-fmt">
+            <option value="html">HTML link tags</option>
+            <option value="http">HTTP Link header</option>
+            <option value="sitemap">XML sitemap xhtml:link</option>
+          </select>
+        </label>
+      </div>
+      <div id="hl-out" aria-live="polite"></div>`,
+    steps: [
+      "Enter one line per language version: the code, a pipe, then the full URL of that version.",
+      "Optionally give an <code>x-default</code> URL for visitors whose language is not in the list.",
+      "Pick the format you actually ship — head tags, HTTP header, or sitemap — and copy the block.",
+    ],
+    why: [
+      {
+        h: "The return tag is the part almost everyone misses",
+        p: [
+          "hreflang is a two-way statement. If your US page points at the German page, the German page has to point back, or Google treats the annotation as unconfirmed and ignores it. This is why a partial rollout — tags added to the English pages but not the translated ones — produces no change in search results whatsoever, and no error message either.",
+          "Each page also has to annotate itself. A page that lists only its siblings, and not its own language, is an incomplete cluster. The generator writes the full set including the self-reference precisely so this cannot happen by omission.",
+        ],
+      },
+      {
+        h: "x-default is not your main language",
+        p: [
+          "It is the fallback for a visitor whose language matches nothing in your list — someone browsing in Portuguese when you publish English, German and Japanese. Pointing it at your English page is common and works, but the more useful target is a page that lets the visitor choose.",
+          "It is optional, and Google will not penalise you for leaving it out. It earns its place when you have significant traffic from languages you do not publish in, which is most sites.",
+        ],
+      },
+      {
+        h: "Three places to put it — and why you should pick one",
+        p: [
+          "HTML <code>&lt;link&gt;</code> tags in the head, the <code>Link</code> HTTP response header, or <code>xhtml:link</code> entries in your XML sitemap. The header exists for non-HTML files — a PDF has no head — and the sitemap exists for sites with too many alternates to fit comfortably in a template.",
+          "Mixing them is where it breaks. If one URL carries a different set of alternates in two places, the crawler has to guess which is authoritative, and a guess is worse than a single correct source. Pick one method per URL and keep it consistent across the whole cluster.",
+          "Sitemap annotations carry an extra rule: every URL in that sitemap must have its complete cluster, including itself. A sitemap where half the entries are annotated and half are not is worse than none.",
+        ],
+      },
+      {
+        h: "Codes that look right and are not",
+        p: [
+          "<code>en-UK</code> is the classic one. The ISO 3166-1 code for the United Kingdom is GB, not UK, and while Google is forgiving in practice, other tooling and several CMS plugins are not. <code>en-GB</code> is the value to ship.",
+          "Region subtags go uppercase and language subtags lowercase: <code>de-DE</code>, not <code>DE-de</code> or <code>de-de</code>. Google reads the values case-insensitively, so a slip here will not break the annotation, but it will break any downstream tooling that compares strings exactly.",
+          "Only annotate canonical, indexable URLs. A hreflang link pointed at a redirected, noindexed or non-canonical URL is dropped, and — depending on how your cluster is built — can take the whole set down with it.",
+        ],
+      },
+      {
+        h: "What this tool deliberately does not do",
+        p: [
+          "It does not fetch your URLs. Verifying that each target returns 200, and that each page really does carry the reciprocal tags, means requesting pages on your domain from somewhere other than your browser — which browsers block, and which a privacy-respecting tool should not route through a third party anyway.",
+          "It also cannot read the hreflang report in Google Search Console, which is the only place that tells you what Google actually accepted.",
+          "Use this to get the cluster correct and complete. Then confirm it with Search Console's international targeting report, or by fetching two of the URLs and checking that each contains the other.",
+        ],
+      },
+    ],
+    faq: [
+      ["Should hreflang point to the canonical URL?", "Yes. Only annotate self-canonical, indexable URLs. A target that redirects or carries noindex is ignored, which can invalidate the cluster."],
+      ["Do I need hreflang for a single-language site?", "No. It only matters when you serve substantially the same content in more than one language. Adding it to a monolingual site does nothing."],
+      ["Can I put hreflang in the sitemap and in the HTML at the same time?", "You can, but do not. Two sources that disagree leave the crawler guessing. Choose one method per URL set."],
+      ["Is x-default required?", "Not required, but recommended when you have visitors in languages you do not publish. Point it at a language chooser rather than at one language version."],
+      ["Is my data sent anywhere?", "No. Parsing and generation happen in your browser. Nothing you type leaves the page."],
+    ],
+    related: ["meta-tag-generator", "robots-txt-tester", "llms-txt-generator"],
+  },
 ];
 
 /* =================================================================
@@ -713,6 +864,46 @@ const TOOLS_JS = `
   }
 
   function out(id, html) { var e = $(id); if (e) e.innerHTML = html; }
+
+  // 统一的 HTML 转义：生成的代码块要原样显示，不能被当标签解析。
+  // 注意别和某些工具内部的局部 esc 变量重名，所以叫 escHtml。
+  function escHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // 复制按钮：原先 llmsGen / schemaGen / utmBuild 上的 data-copy 按钮没有接处理器，
+  // 点了没反应。这里统一做事件委托，新工具只要写 data-copy="<pre> 的 id" 就自动可用。
+  function copyText(s) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(s);
+    return new Promise(function (res, rej) {
+      var ta = document.createElement("textarea");
+      ta.value = s;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); res(); } catch (e) { rej(e); }
+      document.body.removeChild(ta);
+    });
+  }
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (!t || !t.getAttribute) return;
+    var id = t.getAttribute("data-copy");
+    if (!id) return;
+    var src = document.getElementById(id);
+    if (!src) return;
+    var label = t.textContent;
+    copyText(src.textContent || "").then(function () {
+      t.textContent = "Copied";
+      setTimeout(function () { t.textContent = label || "Copy"; }, 1400);
+    }).catch(function () {
+      t.textContent = "Select it manually";
+      setTimeout(function () { t.textContent = label || "Copy"; }, 1600);
+    });
+  });
 
   function bar(used, limit) {
     var pct = Math.min(100, Math.round((used / limit) * 100));
@@ -1428,6 +1619,265 @@ const TOOLS_JS = `
         '<button class="mini" type="button" data-copy="u-body">Copy</button></div>' +
         warnHtml +
         '<pre class="code" id="u-body">' + esc + "</pre>");
+    });
+  };
+
+  /* ---------- 10. Open Graph / social card preview ---------- */
+  SEOT.ogPreview = function () {
+    bind(["og-u", "og-t", "og-d", "og-i", "og-s", "og-w", "og-h", "og-tw", "og-c"], function () {
+      var url = txt("og-u").trim();
+      var title = txt("og-t").trim();
+      var desc = txt("og-d").trim();
+      var img = txt("og-i").trim();
+      var site = txt("og-s").trim();
+      var w = txt("og-w").trim();
+      var h = txt("og-h").trim();
+      var tw = txt("og-tw").trim();
+      var card = txt("og-c") || "summary_large_image";
+
+      if (!url && !title && !desc && !img) {
+        out("og-out", '<div class="muted">Fill in a field to see the card.</div>');
+        return;
+      }
+
+      var E = escHtml;
+      var host = "";
+      var hm = url.match(/^https?:\\/\\/([^\\/]+)/);
+      if (hm) host = hm[1];
+      else if (url) host = url;
+
+      var abs = /^https?:\\/\\//i.test(img);
+      var issues = [];
+
+      if (!title) {
+        issues.push(["warn", "No og:title — platforms fall back to the title tag, and often to the first heading on the page, which is rarely what you want shown."]);
+      } else if (title.length > 88) {
+        issues.push(["warn", "og:title is " + title.length + " characters. X cuts near 70, LinkedIn near 100. Keep the important words in the first 60."]);
+      }
+      if (!desc) {
+        issues.push(["warn", "No og:description — the card shows an empty gap, or a sentence the scraper picked for you."]);
+      } else if (desc.length > 200) {
+        issues.push(["warn", "og:description is " + desc.length + " characters. Most cards cut near 200; LinkedIn cuts nearer 160 in some layouts."]);
+      }
+      if (!img) {
+        issues.push(["bad", "No og:image — the card renders as a plain grey block. This is the single biggest reason a shared link gets scrolled past."]);
+      } else {
+        if (!abs) {
+          issues.push(["bad", "og:image is not an absolute URL. Scrapers have no base URL to resolve a relative path against, so the tag is dropped."]);
+        } else if (/^http:\\/\\//i.test(img)) {
+          issues.push(["warn", "og:image is http:// on what is presumably an https page. Some platforms refuse to render insecure images."]);
+        }
+        if (!w || !h) {
+          issues.push(["warn", "No og:image:width / og:image:height. The scraper has to download the image to lay the card out, and if that fetch is slow or blocked the first share goes out with no image at all."]);
+        } else {
+          var iw = parseInt(w, 10), ih = parseInt(h, 10);
+          if (iw > 0 && ih > 0) {
+            if (iw < 200 || ih < 200) {
+              issues.push(["bad", "Image is " + iw + " x " + ih + " px. Below 200x200 most platforms will not use it for a large card."]);
+            }
+            var ratio = iw / ih;
+            if (ratio < 1.5 || ratio > 2.1) {
+              issues.push(["info", "Aspect ratio is about " + ratio.toFixed(2) + ":1. Outside the 1.91:1 sweet spot the image is likely to be centre-cropped."]);
+            }
+          }
+        }
+      }
+      if (!url) issues.push(["info", "No og:url. Worth adding when several URLs serve the same content — it tells the scraper which one to credit the share to."]);
+      if (!site) issues.push(["info", "No og:site_name — the source line under the card falls back to the bare domain."]);
+      if (!issues.length) {
+        issues.push(["ok", "Nothing wrong found. Remember that every platform caches the card, so a fix is not visible until that cache is refreshed."]);
+      }
+
+      var issueHtml = '<div class="issue-list">' + issues.map(function (it) {
+        return '<div class="issue ' + it[0] + '">' + E(it[1]) + "</div>";
+      }).join("") + "</div>";
+
+      // 预览里请求图片时故意不带 referrer：很多 CDN 的热链保护会拦带外站 Referer 的请求，
+      // 那正是「浏览器打得开、平台上却是灰块」的原因。
+      var imgHtml = img && abs
+        ? '<img src="' + E(img) + '" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;display:block">'
+        : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8a9099;font-size:13px;text-align:center;padding:12px">no usable og:image</div>';
+
+      var big =
+        '<div class="serp-box" style="padding:0;overflow:hidden">' +
+          '<div style="height:262px;background:var(--panel)">' + imgHtml + "</div>" +
+          '<div style="padding:12px 16px">' +
+            '<div class="serp-url"><span class="serp-fav"></span><span class="serp-site">' + (E(host) || "your-domain.com") + "</span></div>" +
+            '<div class="serp-title">' + (title ? E(title) : '<span class="dim">Untitled — no og:title</span>') + "</div>" +
+            (desc ? '<div class="serp-desc">' + E(desc.slice(0, 220)) + "</div>" : "") +
+          "</div>" +
+        "</div>";
+
+      var small =
+        '<div class="serp-box" style="padding:0;overflow:hidden;display:flex">' +
+          '<div style="width:116px;height:116px;flex:none;background:var(--panel)">' + imgHtml + "</div>" +
+          '<div style="padding:10px 13px;min-width:0">' +
+            '<div class="serp-desc" style="margin-bottom:2px">' + (E(host) || "your-domain.com") + "</div>" +
+            '<div class="serp-title" style="font-size:15px">' + (title ? E(title) : '<span class="dim">Untitled</span>') + "</div>" +
+            (desc ? '<div class="serp-desc">' + E(desc.slice(0, 130)) + "</div>" : "") +
+          "</div>" +
+        "</div>";
+
+      // 标签里放原始值，输出前整体转义一次 —— 转义两次会变成 &amp;amp;
+      var tags = "";
+      tags += "<!-- Open Graph -->\\n";
+      tags += '<meta property="og:type" content="website">\\n';
+      if (title) tags += '<meta property="og:title" content="' + title + '">\\n';
+      if (desc) tags += '<meta property="og:description" content="' + desc + '">\\n';
+      if (url) tags += '<meta property="og:url" content="' + url + '">\\n';
+      if (img) tags += '<meta property="og:image" content="' + img + '">\\n';
+      if (img && w) tags += '<meta property="og:image:width" content="' + w + '">\\n';
+      if (img && h) tags += '<meta property="og:image:height" content="' + h + '">\\n';
+      if (site) tags += '<meta property="og:site_name" content="' + site + '">\\n';
+      tags += "\\n<!-- Twitter -->\\n";
+      tags += '<meta name="twitter:card" content="' + card + '">\\n';
+      if (tw) tags += '<meta name="twitter:site" content="' + tw + '">\\n';
+      if (title) tags += '<meta name="twitter:title" content="' + title + '">\\n';
+      if (desc) tags += '<meta name="twitter:description" content="' + desc + '">\\n';
+      if (img) tags += '<meta name="twitter:image" content="' + img + '">\\n';
+
+      out("og-out",
+        '<div class="out-head"><span>How it will render</span></div>' +
+        '<div class="grid2">' +
+          '<div><div class="small muted" style="margin-bottom:6px">Large image card — LinkedIn, Facebook, X, Slack</div>' + big + "</div>" +
+          '<div><div class="small muted" style="margin-bottom:6px">Small summary card — twitter:card = summary</div>' + small + "</div>" +
+        "</div>" +
+        '<div class="out-head"><span>What needs fixing</span></div>' + issueHtml +
+        '<div class="out-head"><span>Generated tags</span>' +
+        '<button class="mini" type="button" data-copy="og-body">Copy</button></div>' +
+        '<pre class="code" id="og-body">' + E(tags) + "</pre>");
+    });
+  };
+
+  /* ---------- 11. hreflang generator ---------- */
+  var REGION_SET = (function () {
+    var list = (
+      "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ " +
+      "CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR " +
+      "GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP " +
+      "KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT " +
+      "MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW " +
+      "SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ " +
+      "UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW"
+    ).split(/\\s+/);
+    var set = {};
+    list.forEach(function (c) { set[c] = 1; });
+    return set;
+  })();
+  // 语言小写、可选脚本子标签（Hans/Hant 等）、可选地区（2 字母大写或 3 位数字，如 es-419）
+  var LANG_RE = /^[a-z]{2,3}(-[A-Z][a-z]{3})?(-([A-Z]{2}|[0-9]{3}))?$/;
+
+  SEOT.hreflangGen = function () {
+    bind(["hl-rows", "hl-def", "hl-fmt"], function () {
+      var raw = txt("hl-rows").split(/\\n+/).map(function (r) { return r.trim(); }).filter(Boolean);
+      var def = txt("hl-def").trim();
+      var fmt = txt("hl-fmt") || "html";
+
+      if (!raw.length && !def) {
+        out("hl-out", '<div class="muted">Add at least one language version to begin.</div>');
+        return;
+      }
+
+      var E = escHtml;
+      var rows = [];
+      var issues = [];
+      var seenCode = {};
+      var seenUrl = {};
+
+      raw.forEach(function (line, i) {
+        var parts = line.indexOf("|") >= 0 ? line.split("|") : line.split(/\\s+/);
+        var code = (parts[0] || "").trim();
+        var href = parts.slice(1).join(" ").trim();
+
+        if (!code) { issues.push(["bad", "Line " + (i + 1) + ": no language code."]); return; }
+        if (!href) { issues.push(["bad", "Line " + (i + 1) + ": no URL for " + code + "."]); return; }
+
+        if (!LANG_RE.test(code)) {
+          issues.push(["bad", "Line " + (i + 1) + ": " + code + " is not a valid hreflang value. Expected a lowercase language subtag (en), optionally a script (zh-Hans), optionally an uppercase region (en-US)."]);
+          return;
+        }
+        var bits = code.split("-");
+        var region = null;
+        for (var b = 1; b < bits.length; b++) {
+          if (/^[A-Z]{2}$/.test(bits[b]) || /^[0-9]{3}$/.test(bits[b])) region = bits[b];
+        }
+        // 只有 2 字母的才去比对 ISO 3166-1；3 位数字是 UN M.49 大区码（es-419 拉美），
+        // 同样是合法的 hreflang 地区子标签，不能误报。
+        if (region && /^[A-Z]{2}$/.test(region) && !REGION_SET[region]) {
+          if (region === "UK") {
+            issues.push(["bad", "Line " + (i + 1) + ": " + code + " uses UK. The ISO 3166-1 code for the United Kingdom is GB — use " + code.replace("UK", "GB") + "."]);
+          } else {
+            issues.push(["warn", "Line " + (i + 1) + ": " + region + " is not a recognised ISO 3166-1 alpha-2 region code. Double-check it."]);
+          }
+        }
+        if (seenCode[code]) issues.push(["bad", "Duplicate language code " + code + ". Each code may appear only once in a cluster."]);
+        seenCode[code] = 1;
+
+        if (!/^https?:\\/\\//i.test(href)) {
+          issues.push(["bad", "Line " + (i + 1) + ": " + href + " is not an absolute URL. hreflang targets must be complete URLs including the scheme."]);
+        } else if (/^http:\\/\\//i.test(href)) {
+          issues.push(["warn", "Line " + (i + 1) + ": " + href + " is http, not https."]);
+        }
+        if (seenUrl[href]) {
+          issues.push(["warn", href + " is used for more than one language. That is usually a geo-redirect setup, which hreflang cannot express — each language needs its own URL."]);
+        }
+        seenUrl[href] = 1;
+
+        rows.push({ code: code, href: href });
+      });
+
+      if (def && !/^https?:\\/\\//i.test(def)) {
+        issues.push(["bad", "The x-default value must be a full URL, not a language code."]);
+      } else if (rows.length && !def) {
+        issues.push(["info", "No x-default. It is optional, but worth adding for visitors whose language is not in the list."]);
+      }
+      if (rows.length === 1) {
+        issues.push(["info", "Only one language version. hreflang only does something once there are two or more."]);
+      }
+      if (!issues.length) {
+        issues.push(["ok", "Nothing wrong found. Every page in the cluster must carry this complete set, including its own line — that part you have to verify on the live pages."]);
+      }
+
+      var issueHtml = '<div class="issue-list">' + issues.map(function (it) {
+        return '<div class="issue ' + it[0] + '">' + E(it[1]) + "</div>";
+      }).join("") + "</div>";
+
+      var cluster = rows.slice();
+      if (def) cluster.push({ code: "x-default", href: def });
+
+      var code = "";
+      if (fmt === "http") {
+        code = "Link: " + cluster.map(function (r) {
+          return "<" + r.href + '>; rel="alternate"; hreflang="' + r.code + '"';
+        }).join(",\\n      ") + "\\n";
+      } else if (fmt === "sitemap") {
+        var block = cluster.map(function (r) {
+          return '  <xhtml:link rel="alternate" hreflang="' + r.code + '" href="' + r.href + '"/>';
+        }).join("\\n");
+        // 站点地图里每个 URL 都要带完整集群（含自己），所以每个语言版本各出一个 <url> 块
+        code = '<?xml version="1.0" encoding="UTF-8"?>\\n' +
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\\n' +
+          '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\\n' +
+          rows.map(function (r) {
+            return "<url>\\n  <loc>" + r.href + "</loc>\\n" + block + "\\n</url>";
+          }).join("\\n") +
+          "\\n</urlset>\\n";
+      } else {
+        cluster.forEach(function (r) {
+          code += '<link rel="alternate" hreflang="' + r.code + '" href="' + r.href + '">\\n';
+        });
+      }
+
+      var note = "Cluster: " + rows.length + " language" + (rows.length === 1 ? "" : "s") +
+        (def ? " + x-default" : "") + " = " + cluster.length + " entries. " +
+        "Each of the " + rows.length + " pages must carry this complete set, including its own line.";
+
+      out("hl-out",
+        '<div class="out-head"><span>What needs fixing</span></div>' + issueHtml +
+        '<div class="out-head"><span>Generated annotations</span>' +
+        '<button class="mini" type="button" data-copy="hl-body">Copy</button></div>' +
+        '<pre class="code" id="hl-body">' + E(code) + "</pre>" +
+        '<div class="muted small">' + E(note) + "</div>");
     });
   };
 
