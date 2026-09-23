@@ -2413,6 +2413,7 @@ function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="${esc(AUTHOR_NAME)}">
 <link rel="alternate" type="text/plain" href="${SITE}/llms.txt" title="LLM-friendly index">
+<link rel="alternate" type="application/rss+xml" href="${SITE}/feed.xml" title="${BRAND} — Guides">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
 <style>${CSS}</style>
 <script>try{var t=localStorage.getItem("sp-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
@@ -2978,6 +2979,57 @@ ${GUIDES.map((g) => `- [${g.h1}](${SITE}/guides/${g.slug}): ${g.lead}`).join("\n
 
 ## Notes for automated readers
 All processing is client-side JavaScript. There is no API; tool behaviour is deterministic given the same input.
+`
+);
+
+/* ---------- RSS feed ----------
+   用途：内容分发的机器可读入口。
+   Dev.to / Hashnode 都支持「按 RSS 自动导入，并把来源标为 canonical」——
+   配一次就不必每次手动复制正文 + 手动填 canonical。
+   （手动填 canonical 那个入口在编辑器最底部的六边形图标里，很不好找，
+     这是当初做这个 feed 的直接原因。）
+
+   两个必须处理的细节：
+   ① 正文里的站内相对链接（href="/tools/x"）要转成绝对 URL，
+      否则导入到别的平台后链接全断。
+   ② 用 CDATA 包全文（导入器读 content:encoded），description 放摘要兜底。
+      CDATA 里不能出现 `]]>`，要先替换掉。
+*/
+const rfc822 = (d) => {
+  const dt = new Date(d + "T00:00:00Z");
+  const wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dt.getUTCDay()];
+  const mo = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][dt.getUTCMonth()];
+  return `${wd}, ${String(dt.getUTCDate()).padStart(2, "0")} ${mo} ${dt.getUTCFullYear()} 00:00:00 +0000`;
+};
+const xesc = (s) =>
+  String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const absolutise = (html) => String(html).replace(/(href|src)="\//g, `$1="${SITE}/`);
+
+write(
+  "feed.xml",
+  `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<channel>
+  <title>${xesc(BRAND)} — Guides</title>
+  <link>${SITE}/guides/</link>
+  <description>Short, specific write-ups on technical SEO, including original data from surveys of real sites.</description>
+  <language>en</language>
+  <lastBuildDate>${rfc822(UPDATED)}</lastBuildDate>
+  <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml"/>
+${GUIDES.map((g) => {
+  const url = `${SITE}/guides/${g.slug}`;
+  const body = absolutise(g.body).replace(/\]\]>/g, "]]&gt;");
+  return `  <item>
+    <title>${xesc(g.h1)}</title>
+    <link>${url}</link>
+    <guid isPermaLink="true">${url}</guid>
+    <pubDate>${rfc822(g.date || UPDATED)}</pubDate>
+    <description>${xesc(g.lead)}</description>
+    <content:encoded><![CDATA[${body}]]></content:encoded>
+  </item>`;
+}).join("\n")}
+</channel>
+</rss>
 `
 );
 

@@ -34,6 +34,9 @@ const SITES = {
     files: [
       "index.html", "about.html", "contact.html", "privacy.html", "404.html",
       "sitemap.xml", "robots.txt", "ads.txt", "_headers", "_redirects", "llms.txt",
+      // RSS 订阅源。Dev.to / Hashnode 靠它做「自动导入 + 来源标 canonical」，
+      // 是内容分发的机器入口，漏掉不会报错，只会线上 404。
+      "feed.xml",
       // GSC 站点所有权验证文件（文件名是 Google 给的 token，全平台通用）。
       // 新加验证文件时同步往这里补一行，否则会被静默丢弃，验证永远不过。
       // 文件名带 .html 是 GSC 给的标准名；无扩展名版本是 CF Pages 308 跳的备份。
@@ -122,15 +125,16 @@ if (bad.length) {
 }
 console.log("security self-check: OK (no .workbuddy / cf.env / scripts / worker.js)");
 
-// 白名单漏检：根目录下的 .html 若不在 FILES 里，会被**静默丢掉**，
+// 白名单漏检：根目录下的 .html / .xml / .txt 若不在 FILES 里，会被**静默丢掉**，
 // 线上表现为 404 —— 而且部署日志一切正常，极难发现。
-// （2026-09-21 踩过：新增 contact.html 忘了加白名单，/contact 上线即 404。）
+// （2026-09-21 踩过：新增 contact.html 忘了加白名单，/contact 上线即 404。
+//   2026-09-23 差点再踩一次：feed.xml 属于同类，原来只查 .html 就漏了。）
 const dropped = fs
   .readdirSync(SRC)
-  .filter((f) => f.endsWith(".html") && !FILES.includes(f));
+  .filter((f) => /\.(html|xml|txt)$/i.test(f) && !FILES.includes(f));
 if (dropped.length) {
   console.error(
-    "\n⚠️  以下根目录 HTML 不在白名单里，不会被部署（线上会 404）：\n" +
+    "\n⚠️  以下根目录文件不在白名单里，不会被部署（线上会 404）：\n" +
       dropped.map((d) => "     " + d).join("\n") +
       `\n   请把它们加入 scripts/prepare-deploy-dir.mjs 的 SITES.${key}.files\n`
   );

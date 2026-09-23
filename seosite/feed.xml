@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<channel>
+  <title>SerpPrism — Guides</title>
+  <link>https://www.serpprism.com/guides/</link>
+  <description>Short, specific write-ups on technical SEO, including original data from surveys of real sites.</description>
+  <language>en</language>
+  <lastBuildDate>Tue, 22 Sep 2026 00:00:00 +0000</lastBuildDate>
+  <atom:link href="https://www.serpprism.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>Meta Description Length: What Gets Truncated</title>
+    <link>https://www.serpprism.com/guides/meta-description-length</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/meta-description-length</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>The number everyone quotes is 155 characters. The real rule is pixel width, and knowing the difference saves you from rewriting descriptions that were fine.</description>
+    <content:encoded><![CDATA[
+<h2>Where the 155-character rule comes from</h2>
+<p>It is a working average, not a limit. Someone measured a batch of results, found the cut usually landed near 155 characters, and the number spread because it is easy to remember. What Google actually does is render the description in a specific font at a specific size inside a container of a specific width, then drop whatever does not fit.</p>
+<p>The practical consequence: character count and rendered width disagree constantly. A description of 150 narrow characters fits. A description of 138 characters with several capital M and W does not. If you have ever shipped a snippet that looked correct in your CMS and appeared chopped in search, this is why.</p>
+
+<h2>The two widths that matter</h2>
+<p>Desktop results render the description at roughly 14px in a container around 600px wide. Mobile is narrower — meaningfully narrower, not marginally. A description tuned exactly to the desktop limit will be cut on a phone, and most of your traffic is on a phone.</p>
+<p>The safe approach is to aim at the mobile limit, not the desktop one. Put the part that must survive in the first 120 characters and treat everything after that as optional elaboration.</p>
+
+<h2>When Google ignores your description entirely</h2>
+<p>Often. If Google decides a sentence from your page body matches the query better than the description you wrote, it substitutes that sentence. This is normal behaviour and not a signal that anything is wrong.</p>
+<p>You cannot force it to use your text. What you can do is remove the reason to substitute: write the opening sentence of the page so that it would work as a snippet on its own, and keep the meta description aligned with what the page actually says. When the two agree, there is nothing to gain by swapping.</p>
+
+<h2>What is not worth doing</h2>
+<p>Do not stuff the description with keyword variants. Descriptions are not a ranking factor; their entire job is to earn the click. A description written for a machine reads like it was written for a machine, and gets skipped.</p>
+<p>Do not write one description and reuse it across a template. Duplicate descriptions are not penalised, but they make every page in a set look identical in the results, which costs you the clicks that a specific sentence would have earned.</p>
+
+<h2>A working method</h2>
+<p>Draft the description last, after the page is written. At that point you know what the page actually delivers, and you can say it in one sentence without guessing. Descriptions written before the page exists tend to describe the page you intended rather than the one you shipped.</p>
+<p>Then put the sentence into a preview and check where it lands. If the important part is past the mobile cut, move it forward rather than trimming the tail — the end of a description is the cheapest thing to lose.</p>
+<p>One more thing worth doing: read the first sentence of the page body next to the description. If they are far apart, Google has a reason to substitute one for the other. Aligning them is the closest thing to control you have over what gets shown.</p>]]></content:encoded>
+  </item>
+  <item>
+    <title>robots.txt Mistakes That Silently Deindex Pages</title>
+    <link>https://www.serpprism.com/guides/robots-txt-mistakes</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/robots-txt-mistakes</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>Five configuration errors that remove pages from Google without producing any error message anywhere.</description>
+    <content:encoded><![CDATA[
+<h2>1. Disallowing a page you also marked noindex</h2>
+<p>This is the most damaging one and it looks reasonable. You want a page out of the index, so you add <code>noindex</code> — and you also disallow it so crawlers stop wasting time. But a crawler that cannot fetch the page can never read the noindex. The URL stays in the index indefinitely, usually with a note saying it was not crawled.</p>
+<p>The fix is counterintuitive: to remove a page using noindex, you must <em>allow</em> crawling. Let Google fetch it, see the directive, and drop it. Only then disallow, if you still want to.</p>
+
+<h2>2. Blocking CSS and JavaScript</h2>
+<p>An older habit, and still common in older configs. Google renders pages, and rendering requires your stylesheets and scripts. Block <code>/assets/</code> or <code>/static/</code> and Google sees a page with no layout, which it may judge as broken or as a poor mobile experience.</p>
+<p>Check your file for broad disallows on asset directories. If they exist, remove them — there is no upside to blocking Google from seeing your own stylesheet.</p>
+
+<h2>3. Assuming order decides priority</h2>
+<p>It does not. Within a user-agent group, the longest matching path wins regardless of line order. So <code>Disallow: /admin/</code> followed by <code>Allow: /admin/public/</code> leaves /admin/public/ crawlable. Reordering those lines changes nothing, which is why people conclude the file is being ignored when it is behaving exactly as specified.</p>
+
+<h2>4. Wildcard patterns that over-match</h2>
+<p><code>Disallow: /*.pdf$</code> blocks PDFs — and if written slightly wrong, blocks far more. A misplaced <code>*</code> or a missing <code>$</code> turns a narrow rule into a site-wide block. Because robots.txt produces no warnings, this can run for months before anyone notices the traffic drop.</p>
+<p>Test every rule containing a wildcard against a few real URLs before deploying it. That is what the tester on this site is for.</p>
+
+<h2>5. Forgetting that staging is one typo away from public</h2>
+<p>A staging host protected by robots.txt alone is not protected. Any crawler that ignores the file — and there are many — will index it. Duplicate staging content competing with production is a slow, confusing problem to untangle later.</p>
+<p>Put real authentication in front of staging. Keep the robots.txt disallow as well, but understand it is politeness, not a lock.</p>
+
+<h2>A five-minute check that catches all of these</h2>
+<p>Fetch your robots.txt and paste it into a tester. Then run five URLs through it: your homepage, a category page, a deep article, one asset from your stylesheet directory, and a URL you believe is blocked. If any of the five gives a verdict you did not expect, you have found the bug — and you have found it before Google did.</p>
+<p>Do this again after any deploy that touches routing, and any time someone new edits the file. The failure mode here is silence: nothing breaks visibly, nothing appears in an error log, and traffic from one section of the site quietly stops arriving. A monthly five-minute check is the entire maintenance cost.</p>]]></content:encoded>
+  </item>
+  <item>
+    <title>Heading Structure: What H1–H6 Order Actually Does</title>
+    <link>https://www.serpprism.com/guides/heading-structure-seo</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/heading-structure-seo</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>Headings are document structure, not a ranking lever. Here is what they genuinely affect, and what is folklore.</description>
+    <content:encoded><![CDATA[
+<h2>What headings are for</h2>
+<p>Headings create a navigable outline. A screen reader user can jump between headings to understand a page without reading it linearly; a sighted reader skims them to decide whether to read at all. That is their primary job, and it is a real job.</p>
+<p>For search engines, headings help identify what each section covers. Google has stated that heading order is not a significant ranking factor — using them correctly will not move you up, and a messy outline will not by itself push you down.</p>
+
+<h2>The H1 question</h2>
+<p>Having more than one H1 is valid HTML5 and Google handles it without complaint. The argument for a single H1 is about clarity: a page with three H1s usually has three competing ideas about what it is about, and that ambiguity tends to show up in the snippet it earns.</p>
+<p>The most common real problem is templating — a theme that renders the site name as an H1 on every page, pushing the actual page title down to H2. If your page titles are H2s site-wide, that is worth fixing.</p>
+
+<h2>Skipped levels</h2>
+<p>Going from H1 to H3 breaks the outline. For a screen reader, encountering a level 3 with no level 2 above it makes the hierarchy ambiguous. The fix is trivial: either promote the heading or introduce the missing level.</p>
+<p>Never choose a heading level for its font size. Style headings with CSS and pick levels purely for structure. If your H3 looks better than your H2, restyle the H2.</p>
+
+<h2>Writing headings that work</h2>
+<p>Describe the section concretely. 'How the payout is calculated' beats 'Calculation'; 'What breaks on mobile' beats 'Mobile'. A heading should be understandable when read out of context, because that is exactly how most people encounter it.</p>
+<p>Length matters less than specificity, but a heading over about 70 characters stops being scannable. If you need that many words, the section is probably two sections.</p>
+
+<h2>Separating structure from styling</h2>
+<p>The reason heading structure goes wrong so often is that HTML gives you six levels and design gives you three or four type sizes. When a designer needs a small bold line that is not a heading, the tempting move is to use an H5 and style it down. That works visually and breaks the outline.</p>
+<p>Do it the other way around. Choose the level for meaning, then style each level in CSS to whatever the design needs. An H2 can be 15px if that is what the layout calls for — nothing in HTML says an H2 must be large. Once levels stop carrying visual meaning, you can use them purely for structure, which is the only thing they were ever for.</p>
+
+<h2>Checking a page in under a minute</h2>
+<p>Paste the page HTML into the analyzer and read the outline, not the issue count. If the H2 list reads like a table of contents, the structure is fine and the remaining warnings are cosmetic. If it does not, you have found the real problem — and it is usually that the page covers two topics and should be split, or that sections were never given headings at all.</p>
+<p>Repeat for your five most important pages. Structure problems are almost always systemic: a template writes the same bad outline on every page, so fixing one usually means fixing hundreds.</p>]]></content:encoded>
+  </item>
+  <item>
+    <title>JSON-LD @graph: Why One Block Beats Five</title>
+    <link>https://www.serpprism.com/guides/json-ld-graph-structure</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/json-ld-graph-structure</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>Most sites emit one JSON-LD block per schema type and never connect them. A single @graph with @id references fixes the duplication.</description>
+    <content:encoded><![CDATA[
+<h2>The pattern almost everyone starts with</h2>
+<p>A site adds an Organization block to the footer, an Article block to the article template, and a BreadcrumbList to the breadcrumb component. Three separate <code>&lt;script type="application/ld+json"&gt;</code> blocks, each describing one thing. It works — Google reads all of them — and it is where most sites stop.</p>
+<p>The cost is not visible immediately. It shows up the first time you rename your company, change your logo URL, or move to a new domain. Now you have three places that each contain the same facts, and nothing enforces that they agree. One gets updated, the others do not, and the structured data on your site now contradicts itself in a way no error message will tell you about.</p>
+
+<h2>What @id actually does</h2>
+<p>Every node in JSON-LD can carry an <code>@id</code>, which is a stable identifier — a URL is conventional. Once a node has an <code>@id</code>, any other node can refer to it by that identifier instead of repeating its properties.</p>
+<p>So instead of the Article block containing its own copy of the publisher's name and logo, it contains <code>"publisher": { "@id": "https://example.com/#organization" }</code>. The full description of that organization lives once, in a node that other nodes point at. Change the logo in that one place and every reference is correct.</p>
+<p>The practical payoff is that your structured data becomes a description of relationships rather than a set of isolated assertions. This article was published by that organization, on this website, and sits at this position in this breadcrumb trail. All of it expressed explicitly rather than inferred.</p>
+
+<h2>The shape that works</h2>
+<p>A layout that has held up well across several sites: one <code>@graph</code> array in the page head containing, in order, the Organization, the WebSite, the WebPage for the current URL, and then whatever page-specific nodes apply — an Article, a FAQPage, a HowTo, a Product.</p>
+<p>The Organization and WebSite nodes are identical on every page, which is the point: they are declared once per page but defined consistently, and every page-specific node references them by <code>@id</code> rather than restating them. The WebPage node carries <code>datePublished</code> and <code>dateModified</code>, and the page-specific nodes carry their own.</p>
+<p>Breadcrumbs attach to the WebPage rather than floating free, because a breadcrumb trail describes a position within a site hierarchy, and the hierarchy belongs to the page.</p>
+
+<h2>Where this goes wrong</h2>
+<p><strong>Referencing an @id that does not exist on the page.</strong> If the Article says its publisher is <code>#organization</code> but no node with that <code>@id</code> is present, the reference resolves to nothing. Google handles this by ignoring the property, so the symptom is not an error — it is silently missing data. Always include the node you reference.</p>
+<p><strong>Using the same @id for different things.</strong> Identifiers must be unique. Two nodes sharing an <code>@id</code> means you have declared two contradictory definitions of one entity, and the outcome depends on which one a consumer reads first.</p>
+<p><strong>Absolute versus relative @id values.</strong> Use absolute URLs. A relative reference like <code>#organization</code> is interpreted against the page URL, which means the same markup on two domains produces two different identifiers, and any relationship you were trying to express across pages breaks.</p>
+
+<h2>Dates deserve their own paragraph</h2>
+<p><code>datePublished</code> should never change after the page goes live. <code>dateModified</code> should change when the content genuinely changes, and not otherwise.</p>
+<p>Incrementing <code>dateModified</code> on every deploy is a common habit, usually adopted because someone believed freshness helps rankings. It does not, and the pattern is easy to detect: a modified date that advances daily while the words stay identical tells any consumer that the field is noise, which means it will be discounted on the pages where it was actually true.</p>
+<p>If you use a build system, wire <code>dateModified</code> to a per-page content hash rather than to the build timestamp. That way the field moves only when the content does.</p>
+
+<h2>Checking your markup</h2>
+<p>Validate with Google's Rich Results Test for eligibility and the Schema Markup Validator for syntax. Neither will tell you that your <code>@id</code> references are dangling, because a dangling reference is not a syntax error.</p>
+<p>The check that catches it is manual and takes a minute: extract the list of <code>@id</code> values defined in the page, then extract every value used in a reference, and confirm every reference appears in the defined list. On a page with six nodes this is faster to do by eye than to automate.</p>]]></content:encoded>
+  </item>
+  <item>
+    <title>A Pre-Publish SEO Checklist for Any New Page</title>
+    <link>https://www.serpprism.com/guides/pre-publish-seo-checklist</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/pre-publish-seo-checklist</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>Nine checks that take under ten minutes and catch the mistakes that are invisible after publishing. Ordered so that the cheap ones come first.</description>
+    <content:encoded><![CDATA[
+<h2>Why a checklist rather than a tool</h2>
+<p>Every item here has a dedicated tool on this site, and you can run them in any order. The reason to work from a list is that the failure mode is not a broken page — it is a page that looks finished. A missing canonical, a duplicate H1, a description that gets truncated: none of these produce a visible symptom. The page renders, the content is good, and the problem is only discoverable weeks later in a report nobody reads closely.</p>
+<p>The order below is deliberate. Structural checks first, because fixing them often changes the text, and re-running content checks after a rewrite wastes the first pass.</p>
+
+<h2>1. Does the page have exactly one H1?</h2>
+<p>Not zero, not two. Zero usually means the title was styled with a class rather than a heading element. Two usually means a template printed the site name as an H1 and the page title as another. Both are invisible in a browser and both make the page's main subject ambiguous.</p>
+<p>Run the HTML through the <a href="https://www.serpprism.com/tools/heading-analyzer">heading analyzer</a> and read the outline rather than the warnings. If the H2 list reads like a table of contents for the page, the structure is sound.</p>
+
+<h2>2. Do the heading levels descend without skipping?</h2>
+<p>An H2 followed by an H4 tells a reader that a level is missing. Sometimes a level genuinely is missing and the outline is still correct — but more often the H4 was chosen for its smaller font size. Choose levels for meaning and style them in CSS; nothing in HTML requires an H2 to be visually larger than an H3.</p>
+
+<h2>3. Is the title tag specific to this page?</h2>
+<p>Open ten tabs of your site and read the titles. If several are identical, those pages compete with each other for the same query and none of them wins clearly. A title should describe what this page specifically covers, not the category it belongs to.</p>
+
+<h2>4. Will the description survive truncation?</h2>
+<p>The widely quoted 155-character limit is an average, not a rule — the real constraint is rendered pixel width, and mobile is narrower than desktop. Put the sentence that must survive in the first 120 characters and treat the rest as elaboration. See <a href="https://www.serpprism.com/guides/meta-description-length">the full explanation</a> if you want the details.</p>
+<p>Preview it rather than counting: the <a href="https://www.serpprism.com/tools/serp-preview">SERP preview tool</a> measures in pixels and shows exactly where the cut lands.</p>
+
+<h2>5. Does the canonical point at itself?</h2>
+<p>A page's canonical should be its own URL, in the same form the page is served at. Trailing-slash mismatches are the common case: if <code>/tools</code> redirects to <code>/tools/</code>, the canonical must say <code>/tools/</code>, or you are telling Google that the real page is a URL that redirects.</p>
+<p>Check this on index pages specifically. They are the ones most often generated with a canonical that omits the trailing slash.</p>
+
+<h2>6. Is the page in the sitemap, with the right URL form?</h2>
+<p>Same trailing-slash question. A sitemap entry that redirects is a wasted crawl. If your sitemap is generated, generate the canonical at the same time from the same value — two independent string constructions will eventually disagree.</p>
+
+<h2>7. Are the internal links real and useful?</h2>
+<p>Every new page should link to at least two existing pages, and at least one existing page should link to it. A page that nothing links to is a page that is hard to find, and internal links are the only navigation signal you fully control.</p>
+<p>Link with descriptive anchor text. "Read the guide" tells a reader nothing about where it goes; the text should describe the destination.</p>
+
+<h2>8. Do images have dimensions and alt text?</h2>
+<p>Set explicit width and height attributes on every image. Without them the browser cannot reserve space, and the page shifts as images load — which is the single most common cause of a poor layout-shift score.</p>
+<p>Alt text describes the image for someone who cannot see it. If the image is purely decorative, an empty <code>alt=""</code> is correct and better than a description nobody needs.</p>
+
+<h2>9. Does the structured data describe this page accurately?</h2>
+<p>If you mark up an Article, the headline should match the visible title and the dates should be real. If you mark up an FAQ, those questions must be visible on the page — markup describing content that is not there is a violation, not an optimisation.</p>
+<p>See <a href="https://www.serpprism.com/guides/json-ld-graph-structure">the @graph guide</a> for how to keep the nodes consistent, or generate the markup with the <a href="https://www.serpprism.com/tools/schema-markup-generator">schema generator</a>.</p>
+
+<h2>What is deliberately not on this list</h2>
+<p>Keyword density. There is no target to hit, and writing to one produces worse text. Run the <a href="https://www.serpprism.com/tools/keyword-density">density checker</a> only to see whether the page is actually about the topic you intended — if the top phrases surprise you, that is a content problem, not a density problem.</p>
+<p>Word count. Length is a consequence of covering the subject, not a goal. A page that answers the question in 400 words is finished; padding it to 1200 makes it worse.</p>
+<p>Meta keywords. They have been ignored for over a decade.</p>]]></content:encoded>
+  </item>
+  <item>
+    <title>What 71 Sites Actually Put in robots.txt</title>
+    <link>https://www.serpprism.com/guides/robots-txt-in-the-wild</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/robots-txt-in-the-wild</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>We fetched the robots.txt of 78 high-traffic sites. A quarter declare no sitemap at all, and five still ship a directive Google ignores.</description>
+    <content:encoded><![CDATA[
+<h2>How this was measured</h2>
+<p>On 2026-09-23 we fetched <code>https://&lt;domain&gt;/robots.txt</code> for 78 high-traffic domains spanning news, ecommerce, SaaS, developer, social, finance, education and government categories. Of those, 71 returned a usable plain-text file. Two returned HTML instead of robots.txt, and five could not be read at all — four behind bot protection returning HTTP 403 or 418, and one returning 404 because no file exists.</p>
+<p>Fetching used curl from a single machine with a two-tier transport: direct connection first, then a local proxy for domains the direct route could not reach. 46 of the 71 files came back over the direct connection and 25 over the proxy. That split is a property of our network rather than of the sites, and it is not distributed evenly across categories — which is the main caveat on everything below.</p>
+<p>Parsing was done line by line, with user-agent groups respected. A <code>Disallow: /</code> that applies only to a scraper group is not treated as applying to Googlebot. The script and the domain list ship with this site, so every number here can be re-derived rather than taken on trust.</p>
+
+<h2>Finding 1: 24% declare no sitemap</h2>
+<p>54 of the 71 sites (76%) declare at least one sitemap, and 26 declare more than one. The other 17 declare none at all:</p>
+<p><code>forbes.com, amazon.com, etsy.com, shopify.com, github.com, gitlab.com, reddit.com, linkedin.com, quora.com, npmjs.com, python.org, go.dev, mozilla.org, w3.org, ahrefs.com, screamingfrog.co.uk, mit.edu</code></p>
+<p>Two things make that list worth reading. First, it contains sites with enormous page counts — Amazon, LinkedIn, Reddit — where a sitemap would seem most useful. Second, it contains two companies that sell SEO tools. That is not hypocrisy; it is evidence that the robots.txt sitemap line is genuinely optional in practice.</p>
+<p>Be precise about what "no sitemap line" means. It does not mean the site has no sitemap. A sitemap can be submitted directly in Search Console and never mentioned in robots.txt, which is a valid setup and arguably the cleaner one — the file stays about access control, and discovery is handled where discovery is managed. What the omission does mean is that any crawler relying on robots.txt to find sitemaps will not find these ones.</p>
+<p>If you are unsure whether your own file is read the way you think it is, paste it into the <a href="https://www.serpprism.com/tools/robots-txt-tester">robots.txt tester</a> and run a few real URLs through it.</p>
+
+<h2>Finding 2: Crawl-delay is still shipping, and Google ignores it</h2>
+<p>Five sites put <code>Crawl-delay</code> in the <code>User-agent: *</code> group: <code>x.com</code>, <code>tumblr.com</code>, <code>vimeo.com</code>, <code>semrush.com</code> and <code>searchengineland.com</code>.</p>
+<p><code>Crawl-delay</code> is not a Google directive. Googlebot has never supported it, and crawl rate is controlled in Search Console instead. So for the crawler it was most likely written for, the line does nothing.</p>
+<p>It is not harmless, though. It is a signal that whoever maintains the file believes it controls crawl rate — and when that belief is wrong, the decisions made from it are wrong too. On a site genuinely being crawled too hard, the fix is the crawl rate setting, not a line in robots.txt.</p>
+<p>One site in the sample uses <code>Crawl-delay</code> in a way worth copying rather than fixing. See the aside further down.</p>
+
+<h2>Finding 3: sitemaps that point somewhere else</h2>
+<p>Two sites declare a sitemap on a host other than the one being crawled.</p>
+<p><code>notion.so</code> declares eleven sitemaps, all on <code>www.notion.com</code>. That is a brand migration caught mid-flight — the .so domain being retired in favour of .com, with the old host's robots.txt pointing at the new one. It works, but the .so file can no longer be removed without breaking discovery for anyone still crawling it.</p>
+<p><code>trello.com</code> declares exactly one sitemap, on <code>a594014.sitemaphosting7.com</code> — a third-party sitemap host, not a Trello domain. Cross-host sitemap declarations are valid and Google accepts them, but they hand part of your discovery infrastructure to a domain you do not control. If that host changes its URL scheme or disappears, the declaration stops working silently.</p>
+
+<h2>Finding 4: http:// in a 2026 sitemap line</h2>
+<p>Two sites declare sitemap URLs over plain HTTP: <code>theguardian.com</code> and <code>who.int</code>.</p>
+<p>The URL is followed with a redirect, so it usually still resolves. But it is a needless hop, and on sites that moved to HTTPS everywhere else it is the kind of leftover that suggests the file has not been reviewed in years. The check takes seconds: search your robots.txt for <code>http://</code> and replace it with <code>https://</code>.</p>
+
+<h2>Finding 5: two sites serve HTML at /robots.txt</h2>
+<p><code>khanacademy.org</code> and <code>cdc.gov</code> both return HTTP 200 with an HTML document at <code>/robots.txt</code>.</p>
+<p>This is a soft 404: the request succeeds, so nothing alerts, but the content is not a robots.txt file. A crawler parsing it finds no directives and falls back to "everything allowed" — the same outcome as an empty file. The failure is invisible in a browser and invisible to a status-code monitor. It is exactly the class of problem a plain-text check catches and a dashboard does not.</p>
+
+<h2>What we did not find: nobody blocks their own sitemap</h2>
+<p>Before running this, we expected a handful of sites to declare a sitemap and then block it with their own <code>Disallow</code> rule — a classic own-goal that appears in most lists of robots.txt mistakes, including <a href="https://www.serpprism.com/guides/robots-txt-mistakes">our own</a>.</p>
+<p>Zero out of 71 did.</p>
+<p>That is worth stating plainly. The mistake is real and worth checking for, but across a sample this size it did not occur once. Advice can be technically correct and still miscalibrated about how often the problem actually happens — and the way to find out is to look, not to repeat the list.</p>
+
+<h2>An aside worth stealing: github rate-limits AI crawlers</h2>
+<p>github.com's robots.txt contains 13 user-agent groups, and one of them is a block listing <code>GPTBot</code>, <code>OAI-SearchBot</code>, <code>ClaudeBot</code>, <code>anthropic-ai</code> and <code>PerplexityBot</code>, carrying <code>Crawl-delay: 1</code>.</p>
+<p>So that <code>Crawl-delay</code> is not a mistake. It is aimed at AI crawlers rather than Googlebot, and it is a deliberate attempt to slow bulk training and answer-engine fetching without touching search crawling. Whether the receiving crawlers honour it is a separate question — most have not committed to it — but the structure is a reasonable pattern: one group for search, another for AI, different policies in each.</p>
+<p>If you are trying to control AI crawlers, that separation is the part worth copying. The <a href="https://www.serpprism.com/tools/llms-txt-generator">llms.txt generator</a> covers the other half of the same problem.</p>
+
+<h2>What to check on your own site</h2>
+<p><strong>Does /robots.txt return plain text?</strong> Curl it and read the first line. If you see <code>&lt;!DOCTYPE</code>, you have a soft 404 and none of your directives are being applied at all.</p>
+<p><strong>Is every declared sitemap on your own host?</strong> Cross-host declarations work until they don't.</p>
+<p><strong>Is there an <code>http://</code> anywhere in it?</strong> Replace it with <code>https://</code>.</p>
+<p><strong>Is <code>Crawl-delay</code> in there?</strong> If it targets Googlebot, delete it and use the crawl rate setting. If it targets AI crawlers, keep it but give it its own user-agent group.</p>
+<p><strong>Does your sitemap URL form match your canonical URL form?</strong> An entry that redirects is a wasted crawl. This is the same trailing-slash question covered in the <a href="https://www.serpprism.com/guides/pre-publish-seo-checklist">pre-publish checklist</a>.</p>
+
+<h2>Limitations</h2>
+<p>Seventy-one sites is a sample, not a census, and it is not random. The domains were chosen by hand to span categories, which makes them representative of "well-known sites" rather than of "the web". Sites behind bot protection are systematically missing, and those are disproportionately large and heavily defended — so the true rate of unreadable robots.txt files is likely higher than the 5 in 78 measured here.</p>
+<p>robots.txt is also a moving target. Files change without notice and this is a single-day snapshot, so the counts are a point-in-time measurement rather than a standing fact. Where a specific site is named, the raw body we retrieved is the arbiter.</p>
+
+<h2>Reproduce it</h2>
+<p>The survey script and the domain list are part of this site's source. It runs in about a minute and writes a per-domain table plus the raw files, so any claim on this page can be checked against the source text instead of taken on our word.</p>
+<p>If you spot an error in a specific row, the raw body settles it — and corrections are welcome via the <a href="https://www.serpprism.com/contact">contact page</a>.</p>]]></content:encoded>
+  </item>
+  <item>
+    <title>What 61 Homepages Actually Ship in JSON-LD</title>
+    <link>https://www.serpprism.com/guides/json-ld-in-the-wild</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/json-ld-in-the-wild</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>We parsed the JSON-LD on 61 homepages. Half ship none in their HTML, and 14 still carry markup for a feature Google retired in 2024.</description>
+    <content:encoded><![CDATA[
+<h2>How this was measured</h2>
+<p>On 2026-09-23 we fetched the homepage of 78 well-known domains and extracted every <code>&lt;script type="application/ld+json"&gt;</code> block from the response. 61 returned a usable page — 42 over a direct connection and 19 over a local proxy. Of those 61, 32 contained at least one JSON-LD block.</p>
+<p>One caveat governs everything below, so it belongs at the top rather than the bottom: <strong>this measures what is present in the server-rendered HTML.</strong> A page that injects its structured data with JavaScript will look empty here even though a browser — and Google, which renders — would see it. Single-page applications are the obvious case. So when this article says a site "ships none", read it as "none in the initial HTML response", which is a different and weaker claim.</p>
+<p>For the sites where we did find markup, that caveat disappears: everything about blocks, <code>@graph</code>, <code>@id</code> and node types is measured on markup that was actually present.</p>
+
+<h2>Finding 1: about half ship nothing in the HTML</h2>
+<p>29 of the 61 homepages contained no JSON-LD block at all. The list includes <code>github.com</code>, <code>youtube.com</code>, <code>wikipedia.org</code>, <code>w3.org</code>, <code>mozilla.org</code>, <code>linkedin.com</code>, <code>x.com</code>, <code>spotify.com</code>, <code>npmjs.com</code>, <code>nodejs.org</code>, <code>kubernetes.io</code>, <code>mit.edu</code>, <code>stanford.edu</code>, <code>khanacademy.org</code>, <code>theguardian.com</code>, <code>slack.com</code>, <code>notion.so</code>, <code>trello.com</code>, <code>tumblr.com</code>, <code>vimeo.com</code>, <code>archive.org</code>, <code>wikimedia.org</code>, <code>digitalocean.com</code>, <code>squareup.com</code>, <code>uber.com</code>, <code>cdc.gov</code>, <code>go.dev</code>, <code>rust-lang.org</code> and <code>developer.mozilla.org</code>.</p>
+<p>Some of those are certainly JavaScript-rendered and will have markup in a browser. But <code>wikipedia.org</code> is not a JavaScript application, and neither is <code>w3.org</code> or <code>github.com</code> — those responses were 119KB, 51KB and 576KB of ordinary server-rendered HTML with no structured data anywhere in them.</p>
+<p>The honest conclusion is narrower than "half the web has no structured data" and more useful than nothing: shipping JSON-LD is a choice that a large share of serious sites have not made, and it is not a precondition for ranking.</p>
+
+<h2>Finding 2: 14 sites still ship markup for a retired feature</h2>
+<p>This was the most surprising result. Google retired the sitelinks search box on <strong>21 November 2024</strong> — the search field that used to appear under a brand's result. The markup that powered it, a <code>SearchAction</code> on the <code>WebSite</code> node, now produces nothing.</p>
+<p>Fourteen of the 32 sites with JSON-LD still carry it: <code>cnn.com</code>, <code>forbes.com</code>, <code>walmart.com</code>, <code>atlassian.com</code>, <code>zoom.us</code>, <code>pinterest.com</code>, <code>docker.com</code>, <code>python.org</code>, <code>screamingfrog.co.uk</code>, <code>yoast.com</code>, <code>cloudflare.com</code>, <code>heroku.com</code>, <code>airbnb.com</code> and <code>who.int</code>.</p>
+<p>Two of those are SEO tool vendors. That is the interesting part: this is not a case of amateurs leaving stale markup around. It is a case of markup that was correct when it was written, that nothing broke when it stopped mattering, and that no tool flags because it is still valid schema.org. There is no error, no warning, and no rich result — just a few lines of JSON that no longer do anything.</p>
+<p>It is worth being fair about this: leaving it in place costs nothing measurable. We are not suggesting the markup is harmful. The point is that it is invisible dead weight, and the only way to notice is to know the feature was retired — which is exactly the kind of thing that a site audit will never tell you.</p>
+<p>If you are auditing your own markup, this is the check that pays: <strong>is any of it aimed at a feature that no longer exists?</strong> The <a href="https://www.serpprism.com/tools/schema-markup-generator">schema generator</a> on this site does not emit <code>SearchAction</code> for that reason.</p>
+
+<h2>Finding 3: a single block is the norm, and @graph is the minority</h2>
+<p>Of the 32 sites with markup, 24 used exactly one block, four used two, three used three, and one used four. So the "many small blocks" pattern that <a href="https://www.serpprism.com/guides/json-ld-graph-structure">our @graph guide</a> warns about is not actually the common shape — one block is.</p>
+<p>Within that single block, however, the split matters. Only <strong>13 of the 32 (41%)</strong> use a <code>@graph</code> array. The rest put a single node at the top level.</p>
+<p>The 13: <code>gitlab.com</code>, <code>atlassian.com</code>, <code>zoom.us</code>, <code>asana.com</code>, <code>docker.com</code>, <code>twitch.tv</code>, <code>moz.com</code>, <code>screamingfrog.co.uk</code>, <code>yoast.com</code>, <code>searchenginejournal.com</code>, <code>stripe.com</code>, <code>netlify.com</code> and <code>heroku.com</code>.</p>
+<p>Look at that list again. Four of the thirteen are SEO tool vendors or SEO publications — Moz, Screaming Frog, Yoast and Search Engine Journal. When the people who build the tooling converge on a pattern, that is usually worth more than a spec reading, and it is consistent with the argument in the @graph guide: one connected graph beats several disconnected blocks.</p>
+
+<h2>Finding 4: most markup is boilerplate</h2>
+<p>Twenty of the 32 sites ship only generic node types — <code>Organization</code>, <code>WebSite</code>, <code>WebPage</code>, <code>ContactPoint</code>, <code>PostalAddress</code> — with nothing specific to the page being viewed.</p>
+<p>The type frequency across all 32 tells the same story. The most common types were <code>PostalAddress</code> (33 occurrences), <code>Organization</code> (25), <code>Place</code> (24), <code>WebSite</code> (20) and <code>ImageObject</code> (20). <code>BreadcrumbList</code> appeared 6 times. <code>SoftwareApplication</code> 6 times. <code>VideoObject</code> 6 times.</p>
+<p>More addresses than web pages. For a homepage that is defensible — the homepage is where the organization describes itself. But it means that on most of these sites, the structured data says "here is a company" and never says "here is what this particular page is about".</p>
+
+<h2>Finding 5: the pattern at full size</h2>
+<p><code>stripe.com</code> packs <strong>54 nodes into a single <code>@graph</code></strong> — by a wide margin the largest we found, and more than the next three sites combined.</p>
+<p>That is the @graph pattern doing what it is for. Fifty-four connected nodes with <code>@id</code> references resolve to one coherent description of the site rather than fifty-four independent assertions that must agree with each other by hand.</p>
+
+<h2>What we did not find: almost no dangling references</h2>
+<p>Our <a href="https://www.serpprism.com/guides/json-ld-graph-structure">@graph guide</a> warns that referencing an <code>@id</code> which is never defined causes the property to be silently ignored. We expected to find this in the wild.</p>
+<p>One site out of 32 — <code>paypal.com</code>, with a single reference to <code>https://www.paypal.com/c2/home#website</code> that no node defines.</p>
+<p>Two other things we expected and did not find: <strong>zero</strong> JSON parse failures across every block we extracted, and no site shipping markup in more than four blocks. Invalid JSON-LD and block sprawl both turn out to be much rarer than the advice would suggest.</p>
+<p>This is the second time in two surveys that a widely repeated warning did not appear at all in a sample of this size. That is not an argument for ignoring the warnings — a dangling reference is still a bug — but it is an argument for checking how often the thing you are worried about actually happens before you spend a week refactoring.</p>
+
+<h2>What to check on your own markup</h2>
+<p><strong>Is any of it aimed at a retired feature?</strong> <code>SearchAction</code> is the one to search for today. Check the markup against the current list of supported rich results rather than against a tutorial you followed in 2023.</p>
+<p><strong>Does it say anything about this page?</strong> If every page on your site emits the same <code>Organization</code> and <code>WebSite</code> nodes and nothing else, the markup is describing your company and not your content.</p>
+<p><strong>Is it one connected graph or several disconnected blocks?</strong> Neither is an error. One is easier to keep consistent.</p>
+<p><strong>Does every <code>@id</code> you reference exist on the page?</strong> Extract the defined <code>@id</code> values and the referenced ones and compare the lists. It takes a minute by eye on a page with under ten nodes.</p>
+
+<h2>Limitations</h2>
+<p>The sample is 61 reachable homepages chosen by hand to span categories — representative of well-known sites, not of the web. Homepages only: article, product and FAQ markup lives on inner pages and is not measured here.</p>
+<p>The server-rendered caveat is the big one. Any JavaScript-injected markup is invisible to this method, so the true rate of sites using structured data is certainly higher than 52%. The findings about <code>@graph</code>, node types and <code>SearchAction</code> are drawn only from markup we actually retrieved, so they are unaffected — but the headline number is a floor, not a rate.</p>
+<p>Finally, this is a single-day snapshot of pages that change constantly.</p>
+
+<h2>Reproduce it</h2>
+<p>The extraction script and the domain list ship with this site and run in about two minutes. It writes the extracted JSON-LD for every domain, so each claim above can be checked against the markup itself rather than our summary of it.</p>
+<p>If a row is wrong, the markup settles it. Corrections via the <a href="https://www.serpprism.com/contact">contact page</a> — and if you know why the sitelinks search box markup is still so widespread two years after retirement, we would like to hear that too.</p>]]></content:encoded>
+  </item>
+</channel>
+</rss>
