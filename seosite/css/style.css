@@ -33,7 +33,7 @@ header.site nav a:hover{background:var(--panel);color:var(--ink)}
 main{padding:34px 0 60px}
 footer.site{border-top:1px solid var(--line);padding:34px 0 40px;background:var(--panel);font-size:14px}
 footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
-footer.site h5{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+footer.site .fcol{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
 footer.site ul{list-style:none;margin:0;padding:0}
 footer.site li{margin-bottom:5px}
 footer.site a{color:var(--ink-2);text-decoration:none}
@@ -129,7 +129,7 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
 .faq p{margin:9px 0 0;font-size:14.5px;color:var(--ink-2)}
 .privacy{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
   padding:14px 16px;background:var(--panel);margin:22px 0}
-.privacy h4{margin:0 0 7px;font-size:15px}
+.privacy h2{margin:0 0 7px;font-size:15px}
 .privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
 .note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
 .byline{font-size:13.5px;color:var(--ink-2);margin:-10px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}

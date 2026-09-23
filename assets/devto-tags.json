@@ -1,0 +1,56 @@
+{
+  "https://www.serpprism.com/guides/meta-description-length": [
+    "seo",
+    "webdev",
+    "html",
+    "marketing"
+  ],
+  "https://www.serpprism.com/guides/robots-txt-mistakes": [
+    "seo",
+    "webdev",
+    "beginners",
+    "programming"
+  ],
+  "https://www.serpprism.com/guides/heading-structure-seo": [
+    "seo",
+    "html",
+    "a11y",
+    "webdev"
+  ],
+  "https://www.serpprism.com/guides/json-ld-graph-structure": [
+    "seo",
+    "webdev",
+    "javascript",
+    "html"
+  ],
+  "https://www.serpprism.com/guides/pre-publish-seo-checklist": [
+    "seo",
+    "webdev",
+    "html",
+    "a11y"
+  ],
+  "https://www.serpprism.com/guides/robots-txt-in-the-wild": [
+    "seo",
+    "webdev",
+    "javascript",
+    "programming"
+  ],
+  "https://www.serpprism.com/guides/json-ld-in-the-wild": [
+    "seo",
+    "webdev",
+    "javascript",
+    "html"
+  ],
+  "https://www.serpprism.com/guides/open-graph-in-the-wild": [
+    "seo",
+    "webdev",
+    "html",
+    "javascript"
+  ],
+  "https://www.serpprism.com/guides/ai-crawlers-in-the-wild": [
+    "seo",
+    "webdev",
+    "ai",
+    "privacy"
+  ]
+}

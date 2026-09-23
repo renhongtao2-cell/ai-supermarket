@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What 62 Homepages Actually Ship in Open Graph | SerpPrism</title>
+<meta name="description" content="We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.">
+<link rel="canonical" href="https://www.serpprism.com/guides/open-graph-in-the-wild">
+<meta property="og:title" content="What 62 Homepages Actually Ship in Open Graph | SerpPrism">
+<meta property="og:description" content="We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.serpprism.com/guides/open-graph-in-the-wild">
+<meta property="og:site_name" content="SerpPrism">
+<meta property="og:image" content="https://www.serpprism.com/og/guides-open-graph-in-the-wild.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="What 62 Homepages Actually Ship in Open Graph | SerpPrism">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.serpprism.com/og/guides-open-graph-in-the-wild.png">
+<meta name="twitter:image:alt" content="What 62 Homepages Actually Ship in Open Graph | SerpPrism">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Hongtao Ren">
+<link rel="alternate" type="text/plain" href="https://www.serpprism.com/llms.txt" title="LLM-friendly index">
+<link rel="alternate" type="application/rss+xml" href="https://www.serpprism.com/feed.xml" title="SerpPrism — Guides">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
+<style>
+:root{
+  --bg:#ffffff; --panel:#f7f9fc; --line:#e4e8ef; --ink:#151821; --ink-2:#5a6373;
+  --accent:#2f6df6; --good:#0f7b4f; --warn:#a8630a; --bad:#b3261e;
+  --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+[data-theme="dark"]{
+  --bg:#0f1218; --panel:#171b24; --line:#262c38; --ink:#e8ecf3; --ink-2:#9aa4b5;
+  --accent:#6b9bff; --good:#4cc38a; --warn:#e0a458; --bad:#ff7b6e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+.wrap.narrow{max-width:760px}
+a{color:var(--accent)}
+h1,h2,h3,h4{line-height:1.28;letter-spacing:-.2px}
+h2{font-size:21px;margin:30px 0 10px}
+h3{font-size:17px;margin:22px 0 8px}
+p{margin:0 0 14px}
+code{font-family:var(--mono);font-size:.9em;background:var(--panel);padding:1px 5px;border-radius:4px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;background:var(--bg);padding:8px 12px;z-index:9;border:1px solid var(--line)}
+header.site{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+header.site .wrap{display:flex;align-items:center;gap:16px;min-height:58px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:17px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:7px}
+.logo .mark{font-size:19px}
+.logo em{font-style:normal;color:var(--accent)}
+header.site nav{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;align-items:center}
+header.site nav a{font-size:13.5px;color:var(--ink-2);text-decoration:none;padding:5px 8px;border-radius:7px}
+header.site nav a:hover{background:var(--panel);color:var(--ink)}
+#theme{background:none;border:1px solid var(--line);border-radius:8px;cursor:pointer;padding:4px 8px;margin-left:4px}
+main{padding:34px 0 60px}
+footer.site{border-top:1px solid var(--line);padding:34px 0 40px;background:var(--panel);font-size:14px}
+footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
+footer.site .fcol{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+footer.site ul{list-style:none;margin:0;padding:0}
+footer.site li{margin-bottom:5px}
+footer.site a{color:var(--ink-2);text-decoration:none}
+footer.site a:hover{color:var(--accent)}
+.legal{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:13px}
+.crumb{font-size:13px;color:var(--ink-2);margin:0 0 6px}
+.crumb a{color:var(--ink-2)}
+.lead{font-size:17.5px;color:var(--ink-2);margin:0 0 22px}
+.hero{background:var(--panel);border-bottom:1px solid var(--line);padding:40px 0 38px;margin:-34px 0 34px}
+.hero h1{font-size:clamp(26px,4.2vw,38px);margin:0 0 12px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.badge{font-size:12.5px;padding:4px 11px;border:1px solid var(--line);border-radius:20px;background:var(--bg);color:var(--ink-2)}
+.badge.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.grid-tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:22px 0}
+.tcard{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:var(--bg);text-decoration:none;color:inherit;display:block}
+.tcard:hover{border-color:var(--accent)}
+.tcard h3{margin:0 0 6px;font-size:16px}
+.tcard p{margin:0;font-size:14px;color:var(--ink-2)}
+.tool{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--panel);margin:22px 0}
+label{display:block;margin-bottom:13px;font-size:13.5px;color:var(--ink-2);font-weight:600}
+label input,label textarea,label select{
+  display:block;width:100%;margin-top:6px;padding:9px 11px;font:inherit;font-size:15px;
+  border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+label textarea{font-family:var(--mono);font-size:13.5px;line-height:1.6;resize:vertical}
+label input:focus,label textarea:focus,label select:focus{outline:2px solid var(--accent);outline-offset:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+@media(max-width:620px){.grid2,.grid3{grid-template-columns:1fr}}
+.meter{height:7px;background:var(--line);border-radius:20px;overflow:hidden;margin:10px 0 4px}
+.meter-fill{height:100%;border-radius:20px}
+.meter-fill.good{background:var(--good)}.meter-fill.warn{background:var(--warn)}.meter-fill.bad{background:var(--bad)}
+.meter-note{font-size:12.5px;font-weight:600}
+.meter-note.good{color:var(--good)}.meter-note.warn{color:var(--warn)}.meter-note.bad{color:var(--bad)}
+.out-head{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;font-weight:700;font-size:14px}
+.mini{font:inherit;font-size:12.5px;padding:4px 11px;border:1px solid var(--line);background:var(--bg);
+  color:var(--ink);border-radius:7px;cursor:pointer}
+.mini:hover{border-color:var(--accent)}
+pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:13px;overflow:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;margin:0;max-height:340px}
+.muted{color:var(--ink-2)}
+.small{font-size:12.5px}
+.serp-box{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;max-width:620px}
+[data-theme="dark"] .serp-box{background:#11151c}
+.serp-url{display:flex;align-items:center;gap:7px;font-size:13px;color:#202124;margin-bottom:3px}
+[data-theme="dark"] .serp-url{color:#c9d1dc}
+.serp-fav{width:22px;height:22px;border-radius:50%;background:#e8eaed;flex:none}
+.serp-site{font-weight:600}
+.serp-path{color:#5f6368}
+.serp-title{color:#1a0dab;font-size:19px;line-height:1.35;margin-bottom:3px}
+[data-theme="dark"] .serp-title{color:#8ab4f8}
+.serp-desc{color:#4d5156;font-size:13.5px;line-height:1.58}
+[data-theme="dark"] .serp-desc{color:#bdc1c6}
+.serp-cut{color:#9aa0a6;text-decoration:line-through}
+.verdict{margin-top:6px}
+.verdict-box{border:1px solid var(--line);border-left-width:4px;border-radius:9px;padding:13px 15px;background:var(--bg);margin-bottom:10px}
+.verdict-box.ok{border-left-color:var(--good)}
+.verdict-box.no{border-left-color:var(--bad)}
+.verdict-word{font-weight:800;font-size:17px;letter-spacing:.02em}
+.verdict-box.ok .verdict-word{color:var(--good)}
+.verdict-box.no .verdict-word{color:var(--bad)}
+.verdict-why{font-size:14px;color:var(--ink-2)}
+.mini-table{border-collapse:collapse;font-size:13px;margin-top:10px}
+.mini-table th,.mini-table td{border:1px solid var(--line);padding:5px 10px;text-align:left}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-size:12.5px;padding:3px 10px;border:1px solid var(--line);border-radius:20px}
+.chip.dim{opacity:.45}
+.outline{border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--bg);max-height:380px;overflow:auto}
+.h-row{padding:3px 0;font-size:14px;display:flex;gap:9px;align-items:baseline}
+.h-tag{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);flex:none;min-width:26px}
+.h-1 .h-text{font-weight:700;font-size:16px}
+.h-2{padding-left:14px}.h-3{padding-left:28px}.h-4{padding-left:42px}
+.h-5{padding-left:56px}.h-6{padding-left:70px}
+.issue-list{display:flex;flex-direction:column;gap:7px}
+.issue{border:1px solid var(--line);border-left-width:3px;border-radius:8px;padding:9px 12px;font-size:14px;background:var(--bg)}
+.issue.warn{border-left-color:var(--warn)}
+.issue.ok{border-left-color:var(--good)}
+.issue.info{border-left-color:var(--line)}
+.kw-table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:10px}
+.kw-table th,.kw-table td{border-bottom:1px solid var(--line);padding:6px 9px;text-align:left}
+.kw-table .num{text-align:right;font-variant-numeric:tabular-nums;width:64px}
+.bar{height:6px;background:var(--line);border-radius:20px;overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);border-radius:20px}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+@media(max-width:680px){.score-grid{grid-template-columns:repeat(2,1fr)}}
+.score{border:1px solid var(--line);border-radius:var(--radius);padding:14px;text-align:center;background:var(--bg)}
+.score-n{font-size:27px;font-weight:800;line-height:1.1}
+.score.good .score-n{color:var(--good)}.score.warn .score-n{color:var(--warn)}.score.bad .score-n{color:var(--bad)}
+.score-l{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+.score-b{font-size:11.5px;color:var(--ink-2);opacity:.8;margin-top:2px}
+.faq{margin:26px 0 0}
+.faq details{border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:9px;background:var(--panel)}
+.faq summary{cursor:pointer;font-weight:600;font-size:15px}
+.faq p{margin:9px 0 0;font-size:14.5px;color:var(--ink-2)}
+.privacy{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
+  padding:14px 16px;background:var(--panel);margin:22px 0}
+.privacy h2{margin:0 0 7px;font-size:15px}
+.privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+.byline{font-size:13.5px;color:var(--ink-2);margin:-10px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.byline a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line)}
+.byline a:hover{color:var(--accent)}
+.author-box{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:var(--panel);margin:28px 0}
+.author-box h3{margin:0 0 6px;font-size:15px}
+.author-box p{margin:0 0 8px;font-size:14.5px}
+.author-box p:last-child{margin-bottom:0}
+.author-avatar{width:44px;height:44px;flex:none;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+@media(max-width:620px){.author-box{flex-direction:column;gap:10px}}
+</style>
+<script>try{var t=localStorage.getItem("sp-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.serpprism.com/#organization","name":"SerpPrism","url":"https://www.serpprism.com/","description":"Free browser-based SEO and website auditing tools.","email":"renhongtao2@gmail.com","founder":{"@id":"https://www.serpprism.com/#person"}},{"@type":"WebSite","@id":"https://www.serpprism.com/#website","name":"SerpPrism","url":"https://www.serpprism.com/","inLanguage":"en","publisher":{"@id":"https://www.serpprism.com/#organization"}},{"@type":"Person","@id":"https://www.serpprism.com/#person","name":"Hongtao Ren","alternateName":"任宏涛","url":"https://www.serpprism.com/about","description":"Hongtao Ren is a developer based in Xi'an, China. He builds browser-based tools and JetBrains IDE plugins, and built and maintains SerpPrism.","email":"renhongtao2@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Xi'an","addressCountry":"CN"},"knowsAbout":["Technical SEO","Search engine result page rendering","robots.txt","Open Graph and Twitter card metadata","hreflang and international SEO","Structured data (JSON-LD)"]},{"@type":"WebPage","@id":"https://www.serpprism.com/guides/open-graph-in-the-wild#webpage","url":"https://www.serpprism.com/guides/open-graph-in-the-wild","name":"What 62 Homepages Actually Ship in Open Graph","description":"We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.","isPartOf":{"@id":"https://www.serpprism.com/#website"},"inLanguage":"en","datePublished":"2026-09-21","dateModified":"2026-09-22","author":{"@id":"https://www.serpprism.com/#person"}},{"@type":"BreadcrumbList","@id":"https://www.serpprism.com/guides/open-graph-in-the-wild#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.serpprism.com/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.serpprism.com/guides/"},{"@type":"ListItem","position":3,"name":"What 62 Homepages Actually Ship in Open Graph","item":"https://www.serpprism.com/guides/open-graph-in-the-wild"}]},{"@type":"TechArticle","@id":"https://www.serpprism.com/guides/open-graph-in-the-wild#article","headline":"What 62 Homepages Actually Ship in Open Graph","description":"We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.","datePublished":"2026-09-21","dateModified":"2026-09-22","author":{"@id":"https://www.serpprism.com/#person"},"publisher":{"@id":"https://www.serpprism.com/#organization"}},{"@type":"FAQPage","@id":"https://www.serpprism.com/guides/open-graph-in-the-wild#faq","mainEntity":[{"@type":"Question","name":"Do Open Graph tags affect rankings?","acceptedAnswer":{"@type":"Answer","text":"No. They have no effect on search. They decide whether a shared link renders as a card or a bare link, which is a click-through problem rather than a ranking one."}},{"@type":"Question","name":"Is og:image required?","acceptedAnswer":{"@type":"Answer","text":"Not required by anything. But 23% of homepages we checked have no usable image, and 55% declare a card type that expects one — so if you declare summary_large_image, supply the image."}},{"@type":"Question","name":"Do I need both Open Graph and Twitter tags?","acceptedAnswer":{"@type":"Answer","text":"X falls back to Open Graph for title, description and image, but still needs twitter:card to pick a layout. One site in five we checked omits it and gets a plain link."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">🔍</span>Serp<em>Prism</em></a>
+    <nav><a href="/tools/">All tools</a><a href="/tools/meta-tag-generator">Meta tags</a><a href="/tools/serp-preview">SERP preview</a><a href="/tools/robots-txt-tester">robots.txt</a><a href="/tools/heading-analyzer">Headings</a><a href="/tools/keyword-density">Keyword density</a><a href="/tools/readability-score">Readability</a><a href="/tools/llms-txt-generator">llms.txt</a><a href="/tools/schema-markup-generator">Schema markup</a><a href="/tools/utm-link-builder">UTM builder</a><a href="/tools/open-graph-preview">OG preview</a><a href="/tools/hreflang-generator">hreflang</a><a href="/guides/">Guides</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/guides/">Guides</a> › What 62 Homepages Actually Ship in Open Graph</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">What 62 Homepages Actually Ship in Open Graph</h1>
+  <p class="lead">We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.</p>
+  <p class="byline">By <a href="/about">Hongtao Ren</a> · Updated <time datetime="2026-09-22">2026-09-22</time></p>
+  <article>
+<h2>How this was measured</h2>
+<p>On 2026-09-23 we fetched the homepage of 78 well-known domains and parsed every <code>&lt;meta&gt;</code> tag whose <code>property</code> or <code>name</code> began with <code>og:</code> or <code>twitter:</code>. 62 returned a usable page — 41 over a direct connection and 21 over a local proxy.</p>
+<p>Two counting rules governed everything below, and both changed the numbers. First, a tag whose <code>content</code> attribute is empty or missing counts as absent: <code>og:title=""</code> is a tag that exists and says nothing. Second, nothing was rendered — this is what the server returned, so any tag injected by JavaScript is invisible here. That caveat bites less for social tags than it did for our JSON-LD survey, because social metadata is usually server-rendered precisely because crawlers do not run JavaScript, but it still makes these figures a floor rather than a rate.</p>
+
+<h2>Finding 1: Open Graph is near-universal; Twitter cards are not</h2>
+<p>56 of the 62 homepages (90%) carried at least one Open Graph tag. But "90% have Open Graph" hides how patchy the individual fields are:</p>
+<p><code>og:title</code> 54/62 (87%) · <code>og:description</code> 53/62 (85%) · <code>og:url</code> 49/62 (79%) · <code>og:image</code> 48/62 (77%) · <code>og:type</code> 48/62 (77%) · <code>og:site_name</code> 40/62 (65%) · <code>og:locale</code> 22/62 (35%).</p>
+<p>So roughly one homepage in four has no shareable image at all. That is not a ranking problem — Open Graph has no effect on search — but it is a click problem, and it is invisible from inside the site because everything looks fine.</p>
+<p>The Twitter side is where the real gap opens. 34 sites (55%) declared <code>twitter:card</code> as <code>summary_large_image</code>, 14 as <code>summary</code>, 2 as <code>app</code>, and <strong>12 declared no <code>twitter:card</code> at all</strong> — about one in five. X falls back to Open Graph for title, description and image, but it still needs <code>twitter:card</code> to know which layout to build. Without it you get a plain link, no matter how good the Open Graph tags are.</p>
+
+<h2>Finding 2: two sites ship an og:image tag with nothing in it</h2>
+<p>We expected this to be common, because it is the mistake that produces a grey box: a site declares a large-image card and supplies no image. It turned out to be rare — 2 of the 34 sites declaring <code>summary_large_image</code> had no usable <code>og:image</code>.</p>
+<p>Both are worth looking at, because they fail in different ways.</p>
+<p><code>netflix.com</code> declares <code>twitter:card = summary_large_image</code> and <code>twitter:site</code>, and nothing else — no <code>og:image</code>, no <code>og:title</code>, no <code>og:url</code>. The card type promises a large image that was never supplied.</p>
+<p><code>forbes.com</code> is the more instructive one, because it does emit the tag:</p>
+<p><code>&lt;meta property="og:image" name="image" data-next-head=""/&gt;</code></p>
+<p>There is no <code>content</code> attribute at all. The tag is present, a checker that asks "does <code>og:image</code> exist?" answers yes, and there is no image. Its <code>twitter:image</code> has the same shape, and its <code>og:image:type</code> is <code>image/jpeg,image/gif,image/png</code> — a comma-separated list, which is not a single MIME type and is not a valid value for that field.</p>
+<p>This is the failure mode worth remembering, because it is the one automated checks miss. A missing tag fails loudly. A present-but-empty tag passes every "is it there" check and renders nothing.</p>
+<p>We should be candid that we had this backwards. Until the day this data was collected, every one of the 25 pages on this site declared <code>twitter:card = summary_large_image</code> with no <code>og:image</code> — the pattern that turns out to be rare in the wild. It is fixed now, and that fix is what led to the next finding.</p>
+
+<h2>Finding 3: only 23% declare image dimensions</h2>
+<p>Of the 48 homepages with a usable <code>og:image</code>, just 11 (23%) also declared <code>og:image:width</code> and <code>og:image:height</code>. The rest leave the scraper to download the image and work out the layout for itself.</p>
+<p>That sounds harmless until you think about what happens on the first share. The platform has to fetch the image before it can build the card. If that fetch is slow, rate-limited or blocked — a CDN that dislikes the crawler's user agent, a region where the image host is slow — the first share goes out with no image and the second one works. An intermittent bug like that is far harder to diagnose than a missing tag.</p>
+<p>The 11 that declare dimensions: <code>figma.com</code>, <code>x.com</code>, <code>docker.com</code>, <code>developer.mozilla.org</code>, <code>w3.org</code>, <code>moz.com</code>, <code>screamingfrog.co.uk</code>, <code>yoast.com</code>, <code>searchenginejournal.com</code>, <code>harvard.edu</code> and <code>heroku.com</code>.</p>
+<p>Four of those — Moz, Screaming Frog, Yoast and Search Engine Journal — are SEO vendors or SEO publications. All four SEO sites in the sample declare dimensions, against 23% overall. They are the same four that showed up as <code>@graph</code> users in our <a href="/guides/json-ld-in-the-wild">JSON-LD survey</a>, which is a consistent signal: the sites whose business is this metadata treat it more carefully than average by a wide margin.</p>
+<p>Only 5 of the 48 (10%) declared <code>og:image:alt</code>. Alternative text on a social card is not decorative — it is what a screen reader announces.</p>
+
+<h2>Finding 4: one in four og:title disagrees with the title</h2>
+<p>14 of the 54 homepages with both a <code>&lt;title&gt;</code> and an <code>og:title</code> showed different text in each — 26%.</p>
+<p>Most are trivial: <code>github.com</code> drops a trailing "· GitHub" from the Open Graph version. Some are not. <code>kubernetes.io</code> has <code>&lt;title&gt;Kubernetes&lt;/title&gt;</code> alongside <code>og:title = Production-Grade Container Orchestration</code>, so the search result says one thing and the shared link says another. <code>asana.com</code> ships "Work &amp; Project Management for Human-Agent Teams • Asana" as its title and "Asana: The OS for human-agent teams" in the card.</p>
+<p>Neither is wrong. But it means the title you optimise for search is not the title people see when the page is shared, and those are usually written for different purposes. If you only ever check one, check the one that appears in search.</p>
+
+<h2>Finding 5: what we expected and did not find</h2>
+<p>Across the 48 usable images: <strong>one</strong> relative path — <code>kubernetes.io</code>, at <code>/images/kubernetes-open-graph.png</code> — <strong>zero</strong> <code>http://</code> images, and <strong>zero</strong> sites declaring more than one <code>og:image</code>.</p>
+<p>Relative <code>og:image</code> URLs are the classic warning: scrapers have no base URL to resolve against, so the tag gets dropped. It happens once in 48. Insecure images, not at all. This is the third survey in a row where a widely repeated warning turned out to be rare at this sample size — which is not an argument for ignoring the warnings, but is an argument for checking the base rate before spending a day on the thing you are worried about.</p>
+
+<h2>What to check on your own tags</h2>
+<p><strong>Is the image tag carrying anything?</strong> View source and look for <code>content=</code>. A tag with no content attribute is the one check a validator will not do for you.</p>
+<p><strong>Do you declare width and height?</strong> Two lines, and it removes the "first share has no image" failure mode entirely.</p>
+<p><strong>Do you declare twitter:card?</strong> One in five sites we checked skip it, and it is the difference between a card and a bare link.</p>
+<p><strong>Does og:title match your title?</strong> If not, decide which one you meant and make them agree — or accept that you have written two titles and maintain both.</p>
+<p>The <a href="/tools/open-graph-preview">Open Graph Preview</a> renders what your tags will actually produce, and the <a href="/tools/meta-tag-generator">meta tag generator</a> emits the full set including dimensions and alt text.</p>
+
+<h2>Limitations</h2>
+<p>62 homepages chosen by hand to span categories — representative of well-known sites, not of the web. Homepages only; article and product pages carry different tags and are not measured here.</p>
+<p>Server-rendered HTML only, so JavaScript-injected tags are invisible and the 90% figure is a floor. Empty and missing <code>content</code> attributes count as absent, which is the stricter reading — the 77% with a usable <code>og:image</code> would be slightly higher if a present-but-empty tag counted.</p>
+<p>A single-day snapshot of pages that change constantly.</p>
+
+<h2>Reproduce it</h2>
+<p>The extraction script and the domain list ship with this site and run in about two minutes. It stores the raw HTML for every domain, so each claim above can be checked against the markup itself rather than our summary of it.</p>
+<p>If a row is wrong, the markup settles it. Corrections via the <a href="/contact">contact page</a>.</p></article>
+  
+  <div class="author-box">
+    <div class="author-avatar" aria-hidden="true">HR</div>
+    <div>
+      <h3>About the author</h3>
+      <p><strong>Hongtao Ren</strong> (任宏涛) — Developer based in Xi&#39;an, China. Builds browser-based tools and JetBrains IDE plugins. He built and maintains SerpPrism.</p>
+      <p class="muted small">Corrections are the most useful thing you can send. If a tool or guide here gives you a wrong answer, that is a bug, not a judgement call — use the <a href="/contact">contact page</a>.</p>
+    </div>
+  </div>
+  <div class="faq">
+    <h2>Questions</h2>
+    <details><summary>Do Open Graph tags affect rankings?</summary><p>No. They have no effect on search. They decide whether a shared link renders as a card or a bare link, which is a click-through problem rather than a ranking one.</p></details><details><summary>Is og:image required?</summary><p>Not required by anything. But 23% of homepages we checked have no usable image, and 55% declare a card type that expects one — so if you declare summary_large_image, supply the image.</p></details><details><summary>Do I need both Open Graph and Twitter tags?</summary><p>X falls back to Open Graph for title, description and image, but still needs twitter:card to pick a layout. One site in five we checked omits it and gets a plain link.</p></details>
+  </div>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <p class="fcol">SerpPrism</p>
+        <p style="margin:0">Free SEO and website auditing tools that run entirely in your browser. Nothing you paste is uploaded or stored.</p>
+        <p style="margin:10px 0 0">Built and maintained by <a href="/about">Hongtao Ren</a>.</p>
+      </div>
+      <div>
+        <p class="fcol">Tools</p>
+        <ul>
+          <li><a href="/tools/"><strong>All tools</strong></a></li>
+          <li><a href="/tools/meta-tag-generator">Meta Tag Generator</a></li><li><a href="/tools/serp-preview">SERP Preview Tool</a></li><li><a href="/tools/robots-txt-tester">robots.txt Tester</a></li><li><a href="/tools/heading-analyzer">Heading Structure Analyzer</a></li><li><a href="/tools/keyword-density">Keyword Density Checker</a></li><li><a href="/tools/readability-score">Readability Score Checker</a></li><li><a href="/tools/llms-txt-generator">llms.txt Generator</a></li><li><a href="/tools/schema-markup-generator">JSON-LD Schema Markup Generator</a></li><li><a href="/tools/utm-link-builder">UTM Link Builder</a></li><li><a href="/tools/open-graph-preview">Open Graph Preview Tool</a></li><li><a href="/tools/hreflang-generator">hreflang Tag Generator</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol">Guides</p>
+        <ul>
+          <li><a href="/guides/"><strong>All guides</strong></a></li>
+          <li><a href="/guides/meta-description-length">Meta Description Length: What Gets Truncated</a></li><li><a href="/guides/robots-txt-mistakes">robots.txt Mistakes That Silently Deindex Pages</a></li><li><a href="/guides/heading-structure-seo">Heading Structure: What H1–H6 Order Actually Does</a></li><li><a href="/guides/json-ld-graph-structure">JSON-LD @graph: Why One Block Beats Five</a></li><li><a href="/guides/pre-publish-seo-checklist">A Pre-Publish SEO Checklist for Any New Page</a></li><li><a href="/guides/robots-txt-in-the-wild">What 71 Sites Actually Put in robots.txt</a></li><li><a href="/guides/json-ld-in-the-wild">What 61 Homepages Actually Ship in JSON-LD</a></li><li><a href="/guides/open-graph-in-the-wild">What 62 Homepages Actually Ship in Open Graph</a></li><li><a href="/guides/ai-crawlers-in-the-wild">What 70 robots.txt Files Say About AI Crawlers</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol">Site</p>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 SerpPrism — www.serpprism.com. All analysis happens locally in your browser. Last updated 2026-09-22.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js?v=894d452e"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("sp-theme",n)}catch(e){}});})();</script>
+</body>
+</html>

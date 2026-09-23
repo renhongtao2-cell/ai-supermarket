@@ -6,6 +6,9 @@
 //   [3] 每个页面必须有 canonical
 //   [4] 站内不能有死链
 //   [5] sitemap 里的每条 URL 都必须真实存在且带 canonical
+//   [6] 每个页面的 og:image 必须存在、绝对 URL，且指向的图片文件真实存在
+//   [7] 标题层级不能跳级（h2 → h5 这种）
+//   [8] canonical 不能指向会被 CF Pages 308 跳掉的 .html 地址
 //
 // 运行：node scripts/check-seosite.mjs
 import fs from "fs";
@@ -104,6 +107,72 @@ for (const f of files.slice().sort()) {
   console.log(f.padEnd(36) + String(n).padStart(4) + "  " + ldNote.padEnd(9) + can.replace(SITE, "") + flag);
 }
 
+/* ---- [6] og:image 与 twitter:card ----
+   2026-09-23 之前 25/25 个页面都写着 twitter:card=summary_large_image，却一个
+   og:image 都没有 —— 分享到 X / Slack / LinkedIn 全是灰框，而本站的
+   open-graph-preview 工具正好会把这种组合判成 bad。
+   标签由 gen-seosite.mjs 的 ogName() 出，图片由 scripts/gen-og-images.py 的
+   og_name() 出：同一套命名规则写了两遍，这条断言是防它们漂移的唯一手段。 */
+const OG_DIR = path.join(ROOT, "assets", "og");
+let ogCount = 0;
+for (const f of files) {
+  const h = fs.readFileSync(path.join(OUT, f), "utf8");
+  const og = (h.match(/<meta property="og:image" content="([^"]+)"/) || [])[1] || "";
+  const card = (h.match(/<meta name="twitter:card" content="([^"]+)"/) || [])[1] || "";
+  const twImg = (h.match(/<meta name="twitter:image" content="([^"]+)"/) || [])[1] || "";
+
+  if (!og) {
+    problems.push(`${f}: 缺少 og:image`);
+  } else {
+    ogCount++;
+    if (!og.startsWith(SITE + "/")) problems.push(`${f}: og:image 不是绝对 URL — ${og}`);
+    if (!fs.existsSync(path.join(OG_DIR, path.basename(og)))) {
+      problems.push(
+        `${f}: og:image 指向的图片不存在 — assets/og/${path.basename(og)}（跑 python scripts/gen-og-images.py）`
+      );
+    }
+  }
+  if (card === "summary_large_image" && !og) {
+    problems.push(`${f}: twitter:card=summary_large_image 但没有 og:image（渲染成灰框）`);
+  }
+  if (og && twImg !== og) problems.push(`${f}: twitter:image 与 og:image 不一致`);
+  if (!/<meta property="og:image:width" content="1200">/.test(h)) problems.push(`${f}: 缺少 og:image:width`);
+  if (!/<meta property="og:image:height" content="630">/.test(h)) problems.push(`${f}: 缺少 og:image:height`);
+}
+
+/* ---- [7] 标题层级不能跳级 ----
+   正文里 h2 直接跳到 h5（或 h1 直接跳到 h3），屏幕阅读器和 outline 工具都会
+   当成结构断裂。站上就有一篇讲 heading structure 的指南，自己跳级说不过去。
+   先剥掉 <script>/<style>，否则工具页里作为示例出现的标签会被误判。 */
+for (const f of files) {
+  const h = fs
+    .readFileSync(path.join(OUT, f), "utf8")
+    .replace(/<script[\s\S]*?<\/script>/g, " ")
+    .replace(/<style[\s\S]*?<\/style>/g, " ");
+  const levels = [...h.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
+  let prev = 0;
+  for (const lv of levels) {
+    if (prev && lv > prev + 1) {
+      problems.push(`${f}: 标题跳级 h${prev} → h${lv}`);
+      break;
+    }
+    prev = lv;
+  }
+}
+
+/* ---- [8] canonical 不能指向会 308 跳转的地址 ----
+   CF Pages 的 pretty URL 会把 /x.html 308 跳到 /x。canonical 指向一个 3xx，
+   等于让 Google 去收录会跳转的 URL —— 而这类问题线上完全看不出来（页面能打开）。
+   2026-09-23 实测：/404.html → 308 → /404，当时 404 页的 canonical 正好写着
+   /404.html，全站唯一一个。 */
+for (const f of files) {
+  const h = fs.readFileSync(path.join(OUT, f), "utf8");
+  const can = (h.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || "";
+  if (/\.html$/.test(can)) {
+    problems.push(`${f}: canonical 指向 .html（CF Pages 会 308 跳掉）— ${can}`);
+  }
+}
+
 /* ---- [4] 死链 ---- */
 const urlOf = (f) => {
   let u = "/" + f;
@@ -145,7 +214,7 @@ for (const loc of locs) {
 }
 
 console.log("-".repeat(84));
-console.log(`页面 ${files.length} · sitemap ${locs.length} 条 · 死链 ${dead} · 问题 ${problems.length}`);
+console.log(`页面 ${files.length} · sitemap ${locs.length} 条 · 死链 ${dead} · og:image ${ogCount} · 问题 ${problems.length}`);
 
 if (problems.length) {
   console.error("\n❌ 闸门未通过：");

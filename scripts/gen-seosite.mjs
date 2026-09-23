@@ -752,6 +752,9 @@ const TOOLS = [
 const GUIDES = [
   {
     slug: "meta-description-length",
+    // tags 是**单一数据源**：feed.xml 的 <category> 和 Dev.to 发布器都从这里取。
+    // 不写的话 RSS 导入到 Dev.to 的文章会一个标签都没有（没标签 = 没分发）。
+    tags: ["seo", "webdev", "html", "marketing"],
     h1: "Meta Description Length: What Gets Truncated",
     lead: "The number everyone quotes is 155 characters. The real rule is pixel width, and knowing the difference saves you from rewriting descriptions that were fine.",
     body: `
@@ -783,6 +786,7 @@ const GUIDES = [
   },
   {
     slug: "robots-txt-mistakes",
+    tags: ["seo", "webdev", "beginners", "programming"],
     h1: "robots.txt Mistakes That Silently Deindex Pages",
     lead: "Five configuration errors that remove pages from Google without producing any error message anywhere.",
     body: `
@@ -816,6 +820,7 @@ const GUIDES = [
   },
   {
     slug: "heading-structure-seo",
+    tags: ["seo", "html", "a11y", "webdev"],
     h1: "Heading Structure: What H1–H6 Order Actually Does",
     lead: "Headings are document structure, not a ranking lever. Here is what they genuinely affect, and what is folklore.",
     body: `
@@ -851,6 +856,7 @@ const GUIDES = [
 
   {
     slug: "json-ld-graph-structure",
+    tags: ["seo", "webdev", "javascript", "html"],
     h1: "JSON-LD @graph: Why One Block Beats Five",
     lead: "Most sites emit one JSON-LD block per schema type and never connect them. A single @graph with @id references fixes the duplication.",
     body: `
@@ -891,6 +897,7 @@ const GUIDES = [
 
   {
     slug: "pre-publish-seo-checklist",
+    tags: ["seo", "webdev", "html", "a11y"],
     h1: "A Pre-Publish SEO Checklist for Any New Page",
     lead: "Nine checks that take under ten minutes and catch the mistakes that are invisible after publishing. Ordered so that the cheap ones come first.",
     body: `
@@ -943,6 +950,7 @@ const GUIDES = [
   },
   {
     slug: "robots-txt-in-the-wild",
+    tags: ["seo", "webdev", "javascript", "programming"],
     h1: "What 71 Sites Actually Put in robots.txt",
     lead: "We fetched the robots.txt of 78 high-traffic sites. A quarter declare no sitemap at all, and five still ship a directive Google ignores.",
     body: `
@@ -1009,6 +1017,7 @@ const GUIDES = [
   },
   {
     slug: "json-ld-in-the-wild",
+    tags: ["seo", "webdev", "javascript", "html"],
     h1: "What 61 Homepages Actually Ship in JSON-LD",
     lead: "We parsed the JSON-LD on 61 homepages. Half ship none in their HTML, and 14 still carry markup for a feature Google retired in 2024.",
     body: `
@@ -1068,6 +1077,140 @@ const GUIDES = [
       ["Do I need structured data to rank?", "No. Half the homepages we fetched ship none and rank fine. It affects eligibility for rich results, not ranking itself."],
       ["Should I remove SearchAction markup?", "It is harmless, but it does nothing since November 2024. Removing it is tidier than keeping dead code you will later assume is working."],
       ["Is @graph required?", "No. Only 41% of the sites we checked use it. It is a consistency tool, not a requirement."],
+    ],
+  },
+  {
+    slug: "open-graph-in-the-wild",
+    tags: ["seo", "webdev", "html", "javascript"],
+    h1: "What 62 Homepages Actually Ship in Open Graph",
+    lead: "We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.",
+    body: `
+<h2>How this was measured</h2>
+<p>On 2026-09-23 we fetched the homepage of 78 well-known domains and parsed every <code>&lt;meta&gt;</code> tag whose <code>property</code> or <code>name</code> began with <code>og:</code> or <code>twitter:</code>. 62 returned a usable page — 41 over a direct connection and 21 over a local proxy.</p>
+<p>Two counting rules governed everything below, and both changed the numbers. First, a tag whose <code>content</code> attribute is empty or missing counts as absent: <code>og:title=""</code> is a tag that exists and says nothing. Second, nothing was rendered — this is what the server returned, so any tag injected by JavaScript is invisible here. That caveat bites less for social tags than it did for our JSON-LD survey, because social metadata is usually server-rendered precisely because crawlers do not run JavaScript, but it still makes these figures a floor rather than a rate.</p>
+
+<h2>Finding 1: Open Graph is near-universal; Twitter cards are not</h2>
+<p>56 of the 62 homepages (90%) carried at least one Open Graph tag. But "90% have Open Graph" hides how patchy the individual fields are:</p>
+<p><code>og:title</code> 54/62 (87%) · <code>og:description</code> 53/62 (85%) · <code>og:url</code> 49/62 (79%) · <code>og:image</code> 48/62 (77%) · <code>og:type</code> 48/62 (77%) · <code>og:site_name</code> 40/62 (65%) · <code>og:locale</code> 22/62 (35%).</p>
+<p>So roughly one homepage in four has no shareable image at all. That is not a ranking problem — Open Graph has no effect on search — but it is a click problem, and it is invisible from inside the site because everything looks fine.</p>
+<p>The Twitter side is where the real gap opens. 34 sites (55%) declared <code>twitter:card</code> as <code>summary_large_image</code>, 14 as <code>summary</code>, 2 as <code>app</code>, and <strong>12 declared no <code>twitter:card</code> at all</strong> — about one in five. X falls back to Open Graph for title, description and image, but it still needs <code>twitter:card</code> to know which layout to build. Without it you get a plain link, no matter how good the Open Graph tags are.</p>
+
+<h2>Finding 2: two sites ship an og:image tag with nothing in it</h2>
+<p>We expected this to be common, because it is the mistake that produces a grey box: a site declares a large-image card and supplies no image. It turned out to be rare — 2 of the 34 sites declaring <code>summary_large_image</code> had no usable <code>og:image</code>.</p>
+<p>Both are worth looking at, because they fail in different ways.</p>
+<p><code>netflix.com</code> declares <code>twitter:card = summary_large_image</code> and <code>twitter:site</code>, and nothing else — no <code>og:image</code>, no <code>og:title</code>, no <code>og:url</code>. The card type promises a large image that was never supplied.</p>
+<p><code>forbes.com</code> is the more instructive one, because it does emit the tag:</p>
+<p><code>&lt;meta property="og:image" name="image" data-next-head=""/&gt;</code></p>
+<p>There is no <code>content</code> attribute at all. The tag is present, a checker that asks "does <code>og:image</code> exist?" answers yes, and there is no image. Its <code>twitter:image</code> has the same shape, and its <code>og:image:type</code> is <code>image/jpeg,image/gif,image/png</code> — a comma-separated list, which is not a single MIME type and is not a valid value for that field.</p>
+<p>This is the failure mode worth remembering, because it is the one automated checks miss. A missing tag fails loudly. A present-but-empty tag passes every "is it there" check and renders nothing.</p>
+<p>We should be candid that we had this backwards. Until the day this data was collected, every one of the 25 pages on this site declared <code>twitter:card = summary_large_image</code> with no <code>og:image</code> — the pattern that turns out to be rare in the wild. It is fixed now, and that fix is what led to the next finding.</p>
+
+<h2>Finding 3: only 23% declare image dimensions</h2>
+<p>Of the 48 homepages with a usable <code>og:image</code>, just 11 (23%) also declared <code>og:image:width</code> and <code>og:image:height</code>. The rest leave the scraper to download the image and work out the layout for itself.</p>
+<p>That sounds harmless until you think about what happens on the first share. The platform has to fetch the image before it can build the card. If that fetch is slow, rate-limited or blocked — a CDN that dislikes the crawler's user agent, a region where the image host is slow — the first share goes out with no image and the second one works. An intermittent bug like that is far harder to diagnose than a missing tag.</p>
+<p>The 11 that declare dimensions: <code>figma.com</code>, <code>x.com</code>, <code>docker.com</code>, <code>developer.mozilla.org</code>, <code>w3.org</code>, <code>moz.com</code>, <code>screamingfrog.co.uk</code>, <code>yoast.com</code>, <code>searchenginejournal.com</code>, <code>harvard.edu</code> and <code>heroku.com</code>.</p>
+<p>Four of those — Moz, Screaming Frog, Yoast and Search Engine Journal — are SEO vendors or SEO publications. All four SEO sites in the sample declare dimensions, against 23% overall. They are the same four that showed up as <code>@graph</code> users in our <a href="/guides/json-ld-in-the-wild">JSON-LD survey</a>, which is a consistent signal: the sites whose business is this metadata treat it more carefully than average by a wide margin.</p>
+<p>Only 5 of the 48 (10%) declared <code>og:image:alt</code>. Alternative text on a social card is not decorative — it is what a screen reader announces.</p>
+
+<h2>Finding 4: one in four og:title disagrees with the title</h2>
+<p>14 of the 54 homepages with both a <code>&lt;title&gt;</code> and an <code>og:title</code> showed different text in each — 26%.</p>
+<p>Most are trivial: <code>github.com</code> drops a trailing "· GitHub" from the Open Graph version. Some are not. <code>kubernetes.io</code> has <code>&lt;title&gt;Kubernetes&lt;/title&gt;</code> alongside <code>og:title = Production-Grade Container Orchestration</code>, so the search result says one thing and the shared link says another. <code>asana.com</code> ships "Work &amp; Project Management for Human-Agent Teams • Asana" as its title and "Asana: The OS for human-agent teams" in the card.</p>
+<p>Neither is wrong. But it means the title you optimise for search is not the title people see when the page is shared, and those are usually written for different purposes. If you only ever check one, check the one that appears in search.</p>
+
+<h2>Finding 5: what we expected and did not find</h2>
+<p>Across the 48 usable images: <strong>one</strong> relative path — <code>kubernetes.io</code>, at <code>/images/kubernetes-open-graph.png</code> — <strong>zero</strong> <code>http://</code> images, and <strong>zero</strong> sites declaring more than one <code>og:image</code>.</p>
+<p>Relative <code>og:image</code> URLs are the classic warning: scrapers have no base URL to resolve against, so the tag gets dropped. It happens once in 48. Insecure images, not at all. This is the third survey in a row where a widely repeated warning turned out to be rare at this sample size — which is not an argument for ignoring the warnings, but is an argument for checking the base rate before spending a day on the thing you are worried about.</p>
+
+<h2>What to check on your own tags</h2>
+<p><strong>Is the image tag carrying anything?</strong> View source and look for <code>content=</code>. A tag with no content attribute is the one check a validator will not do for you.</p>
+<p><strong>Do you declare width and height?</strong> Two lines, and it removes the "first share has no image" failure mode entirely.</p>
+<p><strong>Do you declare twitter:card?</strong> One in five sites we checked skip it, and it is the difference between a card and a bare link.</p>
+<p><strong>Does og:title match your title?</strong> If not, decide which one you meant and make them agree — or accept that you have written two titles and maintain both.</p>
+<p>The <a href="/tools/open-graph-preview">Open Graph Preview</a> renders what your tags will actually produce, and the <a href="/tools/meta-tag-generator">meta tag generator</a> emits the full set including dimensions and alt text.</p>
+
+<h2>Limitations</h2>
+<p>62 homepages chosen by hand to span categories — representative of well-known sites, not of the web. Homepages only; article and product pages carry different tags and are not measured here.</p>
+<p>Server-rendered HTML only, so JavaScript-injected tags are invisible and the 90% figure is a floor. Empty and missing <code>content</code> attributes count as absent, which is the stricter reading — the 77% with a usable <code>og:image</code> would be slightly higher if a present-but-empty tag counted.</p>
+<p>A single-day snapshot of pages that change constantly.</p>
+
+<h2>Reproduce it</h2>
+<p>The extraction script and the domain list ship with this site and run in about two minutes. It stores the raw HTML for every domain, so each claim above can be checked against the markup itself rather than our summary of it.</p>
+<p>If a row is wrong, the markup settles it. Corrections via the <a href="/contact">contact page</a>.</p>`,
+    faq: [
+      ["Do Open Graph tags affect rankings?", "No. They have no effect on search. They decide whether a shared link renders as a card or a bare link, which is a click-through problem rather than a ranking one."],
+      ["Is og:image required?", "Not required by anything. But 23% of homepages we checked have no usable image, and 55% declare a card type that expects one — so if you declare summary_large_image, supply the image."],
+      ["Do I need both Open Graph and Twitter tags?", "X falls back to Open Graph for title, description and image, but still needs twitter:card to pick a layout. One site in five we checked omits it and gets a plain link."],
+    ],
+  },
+  {
+    slug: "ai-crawlers-in-the-wild",
+    tags: ["seo", "webdev", "ai", "privacy"],
+    h1: "What 70 robots.txt Files Say About AI Crawlers",
+    lead: "We read 70 robots.txt files and checked 22 AI crawler tokens in each. 63% never mention one, and the most famous crawler is blocked least often.",
+    body: `
+<h2>How this was measured</h2>
+<p>On 2026-09-23 we fetched <code>https://&lt;domain&gt;/robots.txt</code> for 78 well-known domains and parsed 70 usable files — 45 over a direct connection and 25 over a local proxy. Eight produced nothing we could read: <code>stackoverflow.com</code> answered 418, <code>npmjs.com</code> and <code>nih.gov</code> returned 403, <code>vimeo.com</code> timed out, <code>rust-lang.org</code> and <code>wikimedia.org</code> returned 404, and <code>khanacademy.org</code> and <code>cdc.gov</code> answered 200 with an HTML error page instead of a robots file. All eight are counted as missing rather than silently dropped.</p>
+<p>In each file we built the user-agent groups, then asked one question for each of 22 known AI crawler tokens: <em>is this crawler allowed to fetch <code>/</code>?</em> A crawler with no group of its own inherits the <code>*</code> group, which is how robots.txt has always worked. Three verdicts are possible: <strong>blocked</strong> (root disallowed), <strong>partial</strong> (some paths disallowed, root open), <strong>allowed</strong>. Path matching follows Google's rule — the longest matching pattern wins, and an equal-length <code>Allow</code> beats a <code>Disallow</code>.</p>
+<p>Every number below was checked against the raw lines before it was written down. Where a claim involves a specific site, the exact lines were printed and read. That step mattered: two earlier surveys in this series each produced a batch of findings that looked entirely reasonable in summary form and were wrong in the source.</p>
+
+<h2>The one caveat that bounds everything</h2>
+<p>robots.txt is a request, not a lock, and it is increasingly not where the real decision lives. A site hosted behind Cloudflare can block AI crawlers at the firewall with a single switch and never mention them in robots.txt. Sites can also pursue non-compliant crawlers through terms of service and rate limiting. So every figure here describes <strong>what the file says</strong>, not what the crawler experiences. A crawler that ignores robots.txt is invisible to this method in both directions.</p>
+
+<h2>Finding 1: nearly two-thirds never mention an AI crawler</h2>
+<p>44 of the 70 files contain no AI crawler token at all. Not a block, not an allow — silence. The list includes <code>wikipedia.org</code>, <code>mozilla.org</code>, <code>w3.org</code>, <code>archive.org</code>, <code>python.org</code>, <code>nodejs.org</code>, <code>go.dev</code>, <code>kubernetes.io</code>, <code>youtube.com</code>, <code>spotify.com</code>, <code>stripe.com</code>, <code>paypal.com</code>, <code>coinbase.com</code>, <code>vercel.com</code>, <code>digitalocean.com</code>, <code>heroku.com</code>, <code>mit.edu</code>, <code>harvard.edu</code>, <code>stanford.edu</code>, <code>etsy.com</code>, <code>shopify.com</code>, <code>walmart.com</code> and <code>target.com</code>.</p>
+<p>Silence is not neutral, and it is not the same thing as permission-by-indifference: it means the crawler falls under whatever the <code>*</code> group says. For 42 of those 44, that works out to allowed. For two it does not — <code>reddit.com</code> and <code>pinterest.com</code> both ship <code>User-agent: *</code> / <code>Disallow: /</code>, so they block every AI crawler without naming a single one. Reddit's file is two lines long and its comment points at a public content policy rather than at crawler rules.</p>
+<p>The SEO industry is mostly silent too. <code>ahrefs.com</code>, <code>semrush.com</code>, <code>screamingfrog.co.uk</code>, <code>yoast.com</code> and <code>searchengineland.com</code> name no AI crawler. Only two companies in that category say anything: <code>searchenginejournal.com</code> (blocks <code>omgili</code> and <code>Omgilibot</code>) and <code>moz.com</code>, discussed below. The vendors whose tools audit robots.txt files have largely not used them to make a statement about AI.</p>
+
+<h2>Finding 2: the sites that do speak overwhelmingly block</h2>
+<p>26 files name at least one AI crawler. Of those, 22 block at least one, and 13 block every AI crawler they name: <code>theguardian.com</code>, <code>bbc.com</code>, <code>cnn.com</code>, <code>washingtonpost.com</code>, <code>bloomberg.com</code>, <code>amazon.com</code>, <code>notion.so</code>, <code>figma.com</code>, <code>x.com</code>, <code>tumblr.com</code>, <code>searchenginejournal.com</code>, <code>yelp.com</code> and <code>who.int</code>.</p>
+<p>Only four name AI crawlers and block none: <code>cloudflare.com</code>, <code>netlify.com</code>, <code>moz.com</code> and <code>twitch.tv</code> — and one of those four blocks nothing because of a mistake rather than a policy, which we come back to below.</p>
+<p>The shape of the result is that AI crawler policy is concentrated in publishing. News organisations and marketplaces have made a decision; developer tooling, reference sites and universities mostly have not.</p>
+
+<h2>Finding 3: the most famous crawler is blocked the least</h2>
+<p>This was the counterintuitive result. Among the files that name a crawler, the block rate runs opposite to name recognition:</p>
+<p><code>GPTBot</code> is named by 17 sites and blocked by 10 (59%), with 5 more applying partial rules. <code>ClaudeBot</code> is named by 18 and blocked by 13 (72%). <code>CCBot</code> is named by 15 and blocked by 13 (87%). And the long tail is unanimous: <code>Bytespider</code> is named by 11 and blocked by all 11, <code>Applebot-Extended</code> by 10 of 10, <code>omgili</code> by 9 of 9, <code>Diffbot</code> by 8 of 8.</p>
+<p>Read that as a decision rule rather than a ranking. Sites that think about this at all block the crawlers that exist to harvest training data — Common Crawl feeds a large share of public training sets, and ByteDance's crawler has no search product attached to it — while giving the crawler attached to the most visible AI product the most nuanced treatment. GPTBot is also the one most likely to get a partial rule instead of a blanket block, which is what a site writes when it wants the crawler to see some sections and not others.</p>
+
+<h2>Finding 4: two large sites went the other way, loudly</h2>
+<p><code>cloudflare.com</code> is the clearest statement in the sample. Its file opens with <code>User-agent: *</code> / <code>Allow: /</code>, then carries a comment — <em>"Allow AI crawlers to access markdown versions of pages"</em> — followed by explicit <code>Allow: /</code> lines for <code>GPTBot</code>, <code>ChatGPT-User</code>, <code>Google-Extended</code>, <code>Anthropic-AI</code>, <code>Claude-Web</code>, <code>CCBot</code>, <code>PerplexityBot</code> and <code>cohere-ai</code>. It is not an absence of blocking; it is an affirmative allow, written per crawler, by the company that sells most of the blocking.</p>
+<p><code>netflix.com</code> is the inverted case. Its <code>*</code> group is <code>Disallow: /</code> — everyone is out — but the allowlist group that follows begins <code>User-agent: googlebot</code> and runs through <code>Applebot</code>, <code>bingbot</code>, <code>Baiduspider</code>, <code>Yandex</code>, <code>facebookexternalhit</code>, <code>GPTBot</code>, <code>ChatGPT-User</code>, <code>OAI-SearchBot</code> and <code>Google-Extended</code>, opening with <code>Allow: /</code>. Netflix shuts the door on generic crawlers and holds it open for the AI ones. Whatever the reasoning, it is the opposite of the pattern the headlines describe.</p>
+
+<h2>Finding 5: when blocking is selective, it is oddly specific</h2>
+<p>Blanket blocks are the norm, so the selective ones stand out — and they are selective in ways that reveal intent.</p>
+<p><code>moz.com</code> writes <code>User-agent: GPTBot</code> / <code>Disallow: /blog/</code> / <code>Disallow: /learn/seo/</code>. An SEO company has blocked AI crawlers from exactly its blog and its SEO education library, and from nothing else.</p>
+<p><code>ebay.com</code> splits OpenAI's own crawlers against each other: <code>GPTBot</code> and <code>Applebot-Extended</code> share a <code>Disallow: /</code> group with a short list of exceptions, while <code>OAI-SearchBot</code>, <code>ChatGPT-User</code>, <code>Claude-SearchBot</code> and <code>Claude-User</code> get only parameter-level rules such as <code>Disallow: /*_kw</code>. That is the distinction between a crawler that trains on your pages and one that fetches a page because a person asked a question — and it is the distinction most files in this sample never make.</p>
+<p><code>linkedin.com</code> does something similar and less consistent: <code>GPTBot</code> and <code>ChatGPT-User</code> blocked, <code>OAI-SearchBot</code> limited to specific paths like <code>/public-profile/</code>.</p>
+<p><code>github.com</code> puts <code>GPTBot</code>, <code>OAI-SearchBot</code>, <code>ClaudeBot</code>, <code>anthropic-ai</code> and <code>PerplexityBot</code> in one shared group with <code>Crawl-delay: 1</code> and an allowlist of marketing pages, then gives <code>Bytespider</code> its own <code>Disallow: /</code>. It is also the only site in the sample that sets a crawl delay specifically for AI crawlers — worth knowing that Google ignores <code>Crawl-delay</code> entirely, as do most AI crawlers.</p>
+
+<h2>Finding 6: the lines that read like a block and are not</h2>
+<p><code>twitch.tv</code> ships <code>User-agent: Amazonbot</code> followed by <code>Disallow:</code> with nothing after the colon. An empty <code>Disallow</code> means nothing is disallowed; it is the same as allowing everything. The file names a crawler, appears to have a rule for it, and has no rule at all. One site out of 70, and exactly the kind of line a human reviewer would read as deliberate.</p>
+<p>Two other mechanical details worth knowing. <code>who.int</code> writes <code>Disallow:/</code> with no space, which is legal and works. And <code>theguardian.com</code> follows its block with <code>License: https://theguardian.com/license.xml</code> — not part of the robots.txt specification, read by no crawler, and clearly aimed at people rather than machines.</p>
+<p>Grouping style varies and it matters for maintenance. <code>theguardian.com</code>, <code>github.com</code>, <code>yelp.com</code> and <code>washingtonpost.com</code> put many crawler names into one shared block; <code>nytimes.com</code>, <code>bbc.com</code>, <code>bloomberg.com</code> and <code>amazon.com</code> use one block per crawler. Both are valid, but in the shared-block style a single edit changes the fate of twenty crawlers at once — which is how a rule for one bot silently becomes a rule for all of them.</p>
+
+<h2>What we did not find</h2>
+<p>Across 70 files we found <strong>zero</strong> misspelled AI crawler tokens. We looked for the plausible mistakes — <code>openai</code>, <code>chatgpt</code>, <code>claude</code>, <code>anthropic</code>, <code>gpt</code>, <code>gemini</code>, <code>ai</code>, <code>bot</code> — on the theory that a token no crawler matches is the most common way to write a rule that does nothing. None appeared. We also found no site blocking <code>Googlebot</code> apart from <code>reddit.com</code>, which blocks everyone.</p>
+<p>Two non-findings in a row across this series now. That is not an argument for ignoring the warnings — an unmatched token is still a bug when you write one — but it is an argument for checking how often the thing you are about to spend a week defending against actually happens.</p>
+
+<h2>What to do with this</h2>
+<p><strong>Decide per crawler, not for "AI".</strong> The files that do this well split training crawlers from search and user-triggered ones. Blocking <code>GPTBot</code> and accidentally blocking <code>OAI-SearchBot</code> with it removes you from a different surface than the one you were aiming at.</p>
+<p><strong>Check what an unnamed crawler inherits.</strong> If your <code>*</code> group is <code>Disallow: /</code>, you have already made the AI decision without writing it down — which is where Reddit and Pinterest ended up.</p>
+<p><strong>Read your file's empty directives.</strong> <code>Disallow:</code> with no value allows everything. If you meant to block, it is not blocking.</p>
+<p><strong>Then test it.</strong> Paste the file into a <a href="/tools/robots-txt-tester">robots.txt tester</a> and run one AI crawler token against your homepage, an article and a URL you believe is blocked. The failure mode here is the same one described in <a href="/guides/robots-txt-mistakes">our piece on robots.txt mistakes</a>: nothing errors, nothing logs, and the effect only shows up months later as missing traffic or missing citations.</p>
+<p>If you want the earlier baseline for the same file, our <a href="/guides/robots-txt-in-the-wild">first robots.txt survey</a> covers sitemap declaration across 78 domains.</p>
+
+<h2>Limitations</h2>
+<p>70 files from 78 hand-picked domains spanning news, commerce, SaaS, developer tooling, education and government — representative of well-known sites, not of the web. A random sample would be dominated by small sites with different incentives and would almost certainly show a lower rate of explicit AI policy.</p>
+<p>The tokens are 22 specific crawlers chosen because they are documented and widely discussed. New ones appear constantly and none of them are measured here. A site may have a policy for a crawler we did not look for.</p>
+<p>The larger limitation is the one from the top: robots.txt is advisory, and for AI crawlers it is increasingly not where enforcement happens. Firewalls, rate limits and terms of service decide most of this, and none are visible in the file. Treat these numbers as a survey of stated intent.</p>
+<p>Finally, a single-day snapshot of files that change without notice.</p>
+
+<h2>Reproduce it</h2>
+<p>The script and the shared domain list ship with this site, run in about two minutes, and store the raw file for every domain — so every claim above can be checked against the source rather than against our summary of it. If a row is wrong, the file settles it; corrections via the <a href="/contact">contact page</a>.</p>`,
+    faq: [
+      ["Does blocking GPTBot remove me from ChatGPT search results?", "Not necessarily. Search retrieval uses OAI-SearchBot, a separate crawler. The files in our sample that block GPTBot while leaving OAI-SearchBot alone are making exactly that distinction."],
+      ["Is silence in robots.txt the same as permission?", "Functionally yes for most crawlers: with no matching group, the * group applies. But 2 of the 44 silent sites in our sample block everything at the * level, so silence inherits whatever your default is."],
+      ["Does an empty Disallow block anything?", "No. 'Disallow:' with no value is the same as allowing everything. One site in our sample, twitch.tv, ships this for Amazonbot."],
+      ["Do AI crawlers actually obey robots.txt?", "The major ones do. But enforcement increasingly happens at the firewall rather than in the file, so robots.txt measures stated intent, not what the crawler experiences."],
     ],
   },
 ];
@@ -2162,7 +2305,7 @@ header.site nav a:hover{background:var(--panel);color:var(--ink)}
 main{padding:34px 0 60px}
 footer.site{border-top:1px solid var(--line);padding:34px 0 40px;background:var(--panel);font-size:14px}
 footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
-footer.site h5{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+footer.site .fcol{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
 footer.site ul{list-style:none;margin:0;padding:0}
 footer.site li{margin-bottom:5px}
 footer.site a{color:var(--ink-2);text-decoration:none}
@@ -2258,7 +2401,7 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
 .faq p{margin:9px 0 0;font-size:14.5px;color:var(--ink-2)}
 .privacy{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
   padding:14px 16px;background:var(--panel);margin:22px 0}
-.privacy h4{margin:0 0 7px;font-size:15px}
+.privacy h2{margin:0 0 7px;font-size:15px}
 .privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
 .note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
 .byline{font-size:13.5px;color:var(--ink-2);margin:-10px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
@@ -2394,8 +2537,26 @@ const nav = () =>
 
 const ASSET_V = crypto.createHash("sha1").update(CSS).update(TOOLS_JS).digest("hex").slice(0, 8);
 
+/* og:image 文件名。
+   两边都从页面的 canonical 推名字（不是从文件名），规则只有这一条：
+   去掉 .html、去掉尾部斜杠、按 / 拆成 a-b-c；根路径叫 home。
+   例：/ → home · /404 → 404 · /tools/ → tools · /guides/x → guides-x
+   （去掉 .html 这一步是防御性的：目前没有页面带 .html 后缀，但万一某个
+     canonical 写成了 /x.html，CF Pages 会 308 跳掉，名字对不上就直接掉图。）
+   ⚠️ scripts/gen-og-images.py 的 og_name() 是同一规则的 Python 版
+   （Node 出 <meta> 标签，Python 出实际图片文件），check-seosite.mjs 有
+   「标签指向的图片必须真实存在」的断言兜底 —— 这条断言上线当天就抓到了
+   404 页两边不一致，不要删。 */
+const ogName = (canonicalPath) => {
+  const p = canonicalPath.replace(/\.html$/, "").replace(/\/+$/, "");
+  return p === "" || p === "/" ? "home" : p.split("/").filter(Boolean).join("-");
+};
+
 function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
   const url = SITE + canonicalPath;
+  // 社交卡片。2026-09-23 之前 25/25 个页面都是 twitter:card=summary_large_image
+  // 却没有 og:image，分享出去是灰框 —— 本站的 open-graph-preview 工具正好判它 bad。
+  const ogUrl = `${SITE}/og/${ogName(canonicalPath)}.png`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2409,7 +2570,13 @@ function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
 <meta property="og:type" content="website">
 <meta property="og:url" content="${url}">
 <meta property="og:site_name" content="${BRAND}">
+<meta property="og:image" content="${ogUrl}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(title)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${ogUrl}">
+<meta name="twitter:image:alt" content="${esc(title)}">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="${esc(AUTHOR_NAME)}">
 <link rel="alternate" type="text/plain" href="${SITE}/llms.txt" title="LLM-friendly index">
@@ -2433,26 +2600,26 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
   <div class="wrap">
     <div class="cols">
       <div>
-        <h5>${esc(BRAND)}</h5>
+        <p class="fcol">${esc(BRAND)}</p>
         <p style="margin:0">Free SEO and website auditing tools that run entirely in your browser. Nothing you paste is uploaded or stored.</p>
         <p style="margin:10px 0 0">Built and maintained by <a href="/about">${esc(AUTHOR_NAME)}</a>.</p>
       </div>
       <div>
-        <h5>Tools</h5>
+        <p class="fcol">Tools</p>
         <ul>
           <li><a href="/tools/"><strong>All tools</strong></a></li>
           ${TOOLS.map((t) => `<li><a href="/tools/${t.slug}">${esc(t.h1)}</a></li>`).join("")}
         </ul>
       </div>
       <div>
-        <h5>Guides</h5>
+        <p class="fcol">Guides</p>
         <ul>
           <li><a href="/guides/"><strong>All guides</strong></a></li>
           ${GUIDES.map((g) => `<li><a href="/guides/${g.slug}">${esc(g.h1)}</a></li>`).join("")}
         </ul>
       </div>
       <div>
-        <h5>Site</h5>
+        <p class="fcol">Site</p>
         <ul>
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
@@ -2488,7 +2655,7 @@ const homeBody = `
 </section>
 <div class="wrap">
   <div class="privacy">
-    <h4>Why “client-side” matters here</h4>
+    <h2>Why “client-side” matters here</h2>
     <p>You are about to paste unpublished page copy, a staging robots.txt, or HTML from a site you are not ready to talk about. Every tool on this site processes that input as plain JavaScript on your own machine. Nothing is uploaded, nothing is logged, and there is no request attached to the text you type.</p>
   </div>
   <h2>All tools</h2>
@@ -2629,6 +2796,7 @@ const guideHubBody = `
   <p class="crumb"><a href="/">Home</a> › Guides</p>
   <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">Guides</h1>
   <p class="lead">Short, specific write-ups on the parts of technical SEO where the common advice is wrong or out of date.</p>
+  <h2>All guides</h2>
   <div class="grid-tools">
     ${GUIDES.map(
       (g) => `<a class="tcard" href="/guides/${g.slug}"><h3>${esc(g.h1)}</h3><p>${esc(g.lead)}</p></a>`
@@ -2899,7 +3067,10 @@ write(
   layout({
     title: `Page not found | ${BRAND}`,
     desc: "That page does not exist. Here are the tools instead.",
-    canonicalPath: "/404.html",
+    // ⚠️ 必须是 /404，不能是 /404.html：CF Pages 的 pretty URL 会把
+    // /404.html 308 跳到 /404，canonical 指到会跳转的地址等于让 Google
+    // 去收录一个 3xx。（2026-09-23 实测 /404.html → 308 → /404）
+    canonicalPath: "/404",
     body: `<div class="wrap narrow">
   <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">Page not found</h1>
   <p class="lead">That address does not exist on this site. Nothing is broken — the link is just wrong or the page moved.</p>
@@ -3019,18 +3190,37 @@ write(
 ${GUIDES.map((g) => {
   const url = `${SITE}/guides/${g.slug}`;
   const body = absolutise(g.body).replace(/\]\]>/g, "]]&gt;");
+  // <category> 是给 RSS 导入器读的标签（Forem 的 get_tags 取 item.categories 前 4 个）。
+  // 少了它，Dev.to 导入的文章会一个标签都没有 —— 没标签等于没有分发。
+  const cats = (g.tags || []).map((t) => `    <category>${xesc(t)}</category>`).join("\n");
   return `  <item>
     <title>${xesc(g.h1)}</title>
     <link>${url}</link>
     <guid isPermaLink="true">${url}</guid>
     <pubDate>${rfc822(g.date || UPDATED)}</pubDate>
     <description>${xesc(g.lead)}</description>
+${cats}
     <content:encoded><![CDATA[${body}]]></content:encoded>
   </item>`;
 }).join("\n")}
 </channel>
 </rss>
 `
+);
+
+/* Dev.to 发布器的标签来源。
+   ⚠️ 为什么单独写一份 JSON 而不是让发布器去解析 feed.xml：
+   RSS 导入进来的草稿是**先于**这次生成就建好的（Dev.to 侧），回读时它没标签；
+   发布器需要按 canonical 反查标签补上去。写进 assets/ 而不是 seosite/ —— 后者每次
+   生成都被 rmSync 清掉。单一数据源仍然是 GUIDES 里的 tags。 */
+fs.mkdirSync(path.join(ROOT, "assets"), { recursive: true });
+fs.writeFileSync(
+  path.join(ROOT, "assets", "devto-tags.json"),
+  JSON.stringify(
+    Object.fromEntries(GUIDES.filter((g) => g.tags?.length).map((g) => [`${SITE}/guides/${g.slug}`, g.tags])),
+    null,
+    2
+  ) + "\n"
 );
 
 // GSC 站点所有权验证文件。文件名 token 是 Google Search Console 给的，

@@ -93,6 +93,19 @@ function clearStage(dir) {
     // SerpPrism（SEO 工具站）：重新生成 → 单测 → 内容闸门。
     // 两道都必须过：工具算错等于站是坏的，而页面看起来完全正常。
     autoSync("gen-seosite.mjs");
+    // og:image 必须在闸门之前生成 —— check-seosite.mjs 会断言每个页面的 og:image
+    // 标签指向的图片真实存在。新增页面时这里自动补图，否则闸门会拦下部署。
+    // PIL 只在 venv 里（系统 python 没有），所以默认走 venv；可用 PYTHON_BIN 覆盖。
+    // 幂等：只补缺失的，已有文件跳过，正常部署几乎不花时间。
+    const PY =
+      process.env.PYTHON_BIN ||
+      "C:/Users/Administrator/.workbuddy-ai/binaries/python/envs/default/Scripts/python.exe";
+    try {
+      execSync(`"${PY}" scripts/gen-og-images.py`, { cwd: ROOT, stdio: "inherit" });
+    } catch (e) {
+      console.error("og 图片生成失败，中止部署（闸门会因 og:image 指向不存在的文件而不通过）。");
+      process.exit(1);
+    }
     try {
       execSync("node scripts/test-seosite.mjs", { cwd: ROOT, stdio: "inherit" });
     } catch (e) {

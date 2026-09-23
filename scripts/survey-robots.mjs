@@ -13,6 +13,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFile } from "node:child_process";
+import { DOMAINS, PROXY, UA } from "./survey-domains.mjs";
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, ".workbuddy", "tmp", "robots-survey");
@@ -228,7 +229,7 @@ const s = {
   声明多个sitemap: ok.filter((r) => r.sitemapCount > 1).length,
   用了http协议: ok.filter((r) => r.httpScheme > 0).length,
   sitemap主机不一致: ok.filter((r) => r.hostMismatch > 0).length,
-  disallow了sitemap: ok.filter((r) => r.disallowSitemap).length,
+  disallow了sitemap: ok.filter((r) => r.sitemapBlocked).length,
   有crawl_delay: ok.filter((r) => r.crawlDelay).length,
   空文件: ok.filter((r) => r.empty).length,
   没有user_agent星号: ok.filter((r) => !r.hasUaStar).length,
@@ -238,7 +239,7 @@ fs.writeFileSync(path.join(OUT, "rows.json"), JSON.stringify(rows, null, 1));
 fs.writeFileSync(
   path.join(OUT, "rows.tsv"),
   ["domain\tchannel\tstatus\tbytes\thtml\tuaStar\tsitemaps\thttp\tmismatch\tdisallowSitemap\tcrawlDelay\tempty\tfirst"]
-    .concat(rows.map((r) => [r.domain, r.channel, r.status, r.bytes, r.isHtml ? 1 : 0, r.hasUaStar ? 1 : 0, r.sitemapCount, r.httpScheme, r.hostMismatch, r.disallowSitemap ? 1 : 0, r.crawlDelay ? 1 : 0, r.empty ? 1 : 0, r.sitemapFirst].join("\t")))
+    .concat(rows.map((r) => [r.domain, r.channel, r.status, r.bytes, r.isHtml ? 1 : 0, r.hasUaStar ? 1 : 0, r.sitemapCount, r.httpScheme, r.hostMismatch, r.sitemapBlocked ? 1 : 0, r.crawlDelay ? 1 : 0, r.empty ? 1 : 0, r.sitemapFirst].join("\t")))
     .join("\n")
 );
 

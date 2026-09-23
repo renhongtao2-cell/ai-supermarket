@@ -23,6 +23,8 @@
 - [A Pre-Publish SEO Checklist for Any New Page](https://www.serpprism.com/guides/pre-publish-seo-checklist): Nine checks that take under ten minutes and catch the mistakes that are invisible after publishing. Ordered so that the cheap ones come first.
 - [What 71 Sites Actually Put in robots.txt](https://www.serpprism.com/guides/robots-txt-in-the-wild): We fetched the robots.txt of 78 high-traffic sites. A quarter declare no sitemap at all, and five still ship a directive Google ignores.
 - [What 61 Homepages Actually Ship in JSON-LD](https://www.serpprism.com/guides/json-ld-in-the-wild): We parsed the JSON-LD on 61 homepages. Half ship none in their HTML, and 14 still carry markup for a feature Google retired in 2024.
+- [What 62 Homepages Actually Ship in Open Graph](https://www.serpprism.com/guides/open-graph-in-the-wild): We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.
+- [What 70 robots.txt Files Say About AI Crawlers](https://www.serpprism.com/guides/ai-crawlers-in-the-wild): We read 70 robots.txt files and checked 22 AI crawler tokens in each. 63% never mention one, and the most famous crawler is blocked least often.
 
 ## Notes for automated readers
 All processing is client-side JavaScript. There is no API; tool behaviour is deterministic given the same input.

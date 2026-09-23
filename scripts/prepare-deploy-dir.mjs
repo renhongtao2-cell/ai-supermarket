@@ -44,6 +44,10 @@ const SITES = {
       "google11ba110197545384",
     ],
     dirs: ["css", "js", "tools", "guides"],
+    // og:image 的源必须在 seosite/ 之外 —— gen-seosite.mjs 每次 rmSync 整个 seosite/，
+    // 放在里面的图片下一次生成就没了（与 toolsite 的 assets/og-toolsite.png 同一个原因）。
+    // 由 scripts/gen-og-images.py 生成到 assets/og/，部署时铺到根目录的 /og/。
+    extra: [{ from: "assets/og", to: "og" }],
   },
   // Subtitle Tools 工具站（toolboxes.top / www）
   tools: {
@@ -90,6 +94,12 @@ for (const d of DIRS) {
   const src = path.join(SRC, d);
   if (fs.existsSync(src)) fs.cpSync(src, path.join(OUT, d), { recursive: true });
   else missing.push(d + "/");
+}
+// extra：源在仓库其他位置、需要在部署目录里换个名字的（目前只有 og:image）
+for (const e of SITE.extra || []) {
+  const src = path.join(ROOT, e.from);
+  if (fs.existsSync(src)) fs.cpSync(src, path.join(OUT, e.to), { recursive: true });
+  else missing.push(e.from + "/");
 }
 
 let n = 0;
