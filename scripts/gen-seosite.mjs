@@ -1007,6 +1007,69 @@ const GUIDES = [
       ["Can a sitemap live on another domain?", "Yes, if you verify that domain. It works, but it puts discovery on infrastructure you do not control."],
     ],
   },
+  {
+    slug: "json-ld-in-the-wild",
+    h1: "What 61 Homepages Actually Ship in JSON-LD",
+    lead: "We parsed the JSON-LD on 61 homepages. Half ship none in their HTML, and 14 still carry markup for a feature Google retired in 2024.",
+    body: `
+<h2>How this was measured</h2>
+<p>On 2026-09-23 we fetched the homepage of 78 well-known domains and extracted every <code>&lt;script type="application/ld+json"&gt;</code> block from the response. 61 returned a usable page — 42 over a direct connection and 19 over a local proxy. Of those 61, 32 contained at least one JSON-LD block.</p>
+<p>One caveat governs everything below, so it belongs at the top rather than the bottom: <strong>this measures what is present in the server-rendered HTML.</strong> A page that injects its structured data with JavaScript will look empty here even though a browser — and Google, which renders — would see it. Single-page applications are the obvious case. So when this article says a site "ships none", read it as "none in the initial HTML response", which is a different and weaker claim.</p>
+<p>For the sites where we did find markup, that caveat disappears: everything about blocks, <code>@graph</code>, <code>@id</code> and node types is measured on markup that was actually present.</p>
+
+<h2>Finding 1: about half ship nothing in the HTML</h2>
+<p>29 of the 61 homepages contained no JSON-LD block at all. The list includes <code>github.com</code>, <code>youtube.com</code>, <code>wikipedia.org</code>, <code>w3.org</code>, <code>mozilla.org</code>, <code>linkedin.com</code>, <code>x.com</code>, <code>spotify.com</code>, <code>npmjs.com</code>, <code>nodejs.org</code>, <code>kubernetes.io</code>, <code>mit.edu</code>, <code>stanford.edu</code>, <code>khanacademy.org</code>, <code>theguardian.com</code>, <code>slack.com</code>, <code>notion.so</code>, <code>trello.com</code>, <code>tumblr.com</code>, <code>vimeo.com</code>, <code>archive.org</code>, <code>wikimedia.org</code>, <code>digitalocean.com</code>, <code>squareup.com</code>, <code>uber.com</code>, <code>cdc.gov</code>, <code>go.dev</code>, <code>rust-lang.org</code> and <code>developer.mozilla.org</code>.</p>
+<p>Some of those are certainly JavaScript-rendered and will have markup in a browser. But <code>wikipedia.org</code> is not a JavaScript application, and neither is <code>w3.org</code> or <code>github.com</code> — those responses were 119KB, 51KB and 576KB of ordinary server-rendered HTML with no structured data anywhere in them.</p>
+<p>The honest conclusion is narrower than "half the web has no structured data" and more useful than nothing: shipping JSON-LD is a choice that a large share of serious sites have not made, and it is not a precondition for ranking.</p>
+
+<h2>Finding 2: 14 sites still ship markup for a retired feature</h2>
+<p>This was the most surprising result. Google retired the sitelinks search box on <strong>21 November 2024</strong> — the search field that used to appear under a brand's result. The markup that powered it, a <code>SearchAction</code> on the <code>WebSite</code> node, now produces nothing.</p>
+<p>Fourteen of the 32 sites with JSON-LD still carry it: <code>cnn.com</code>, <code>forbes.com</code>, <code>walmart.com</code>, <code>atlassian.com</code>, <code>zoom.us</code>, <code>pinterest.com</code>, <code>docker.com</code>, <code>python.org</code>, <code>screamingfrog.co.uk</code>, <code>yoast.com</code>, <code>cloudflare.com</code>, <code>heroku.com</code>, <code>airbnb.com</code> and <code>who.int</code>.</p>
+<p>Two of those are SEO tool vendors. That is the interesting part: this is not a case of amateurs leaving stale markup around. It is a case of markup that was correct when it was written, that nothing broke when it stopped mattering, and that no tool flags because it is still valid schema.org. There is no error, no warning, and no rich result — just a few lines of JSON that no longer do anything.</p>
+<p>It is worth being fair about this: leaving it in place costs nothing measurable. We are not suggesting the markup is harmful. The point is that it is invisible dead weight, and the only way to notice is to know the feature was retired — which is exactly the kind of thing that a site audit will never tell you.</p>
+<p>If you are auditing your own markup, this is the check that pays: <strong>is any of it aimed at a feature that no longer exists?</strong> The <a href="/tools/schema-markup-generator">schema generator</a> on this site does not emit <code>SearchAction</code> for that reason.</p>
+
+<h2>Finding 3: a single block is the norm, and @graph is the minority</h2>
+<p>Of the 32 sites with markup, 24 used exactly one block, four used two, three used three, and one used four. So the "many small blocks" pattern that <a href="/guides/json-ld-graph-structure">our @graph guide</a> warns about is not actually the common shape — one block is.</p>
+<p>Within that single block, however, the split matters. Only <strong>13 of the 32 (41%)</strong> use a <code>@graph</code> array. The rest put a single node at the top level.</p>
+<p>The 13: <code>gitlab.com</code>, <code>atlassian.com</code>, <code>zoom.us</code>, <code>asana.com</code>, <code>docker.com</code>, <code>twitch.tv</code>, <code>moz.com</code>, <code>screamingfrog.co.uk</code>, <code>yoast.com</code>, <code>searchenginejournal.com</code>, <code>stripe.com</code>, <code>netlify.com</code> and <code>heroku.com</code>.</p>
+<p>Look at that list again. Four of the thirteen are SEO tool vendors or SEO publications — Moz, Screaming Frog, Yoast and Search Engine Journal. When the people who build the tooling converge on a pattern, that is usually worth more than a spec reading, and it is consistent with the argument in the @graph guide: one connected graph beats several disconnected blocks.</p>
+
+<h2>Finding 4: most markup is boilerplate</h2>
+<p>Twenty of the 32 sites ship only generic node types — <code>Organization</code>, <code>WebSite</code>, <code>WebPage</code>, <code>ContactPoint</code>, <code>PostalAddress</code> — with nothing specific to the page being viewed.</p>
+<p>The type frequency across all 32 tells the same story. The most common types were <code>PostalAddress</code> (33 occurrences), <code>Organization</code> (25), <code>Place</code> (24), <code>WebSite</code> (20) and <code>ImageObject</code> (20). <code>BreadcrumbList</code> appeared 6 times. <code>SoftwareApplication</code> 6 times. <code>VideoObject</code> 6 times.</p>
+<p>More addresses than web pages. For a homepage that is defensible — the homepage is where the organization describes itself. But it means that on most of these sites, the structured data says "here is a company" and never says "here is what this particular page is about".</p>
+
+<h2>Finding 5: the pattern at full size</h2>
+<p><code>stripe.com</code> packs <strong>54 nodes into a single <code>@graph</code></strong> — by a wide margin the largest we found, and more than the next three sites combined.</p>
+<p>That is the @graph pattern doing what it is for. Fifty-four connected nodes with <code>@id</code> references resolve to one coherent description of the site rather than fifty-four independent assertions that must agree with each other by hand.</p>
+
+<h2>What we did not find: almost no dangling references</h2>
+<p>Our <a href="/guides/json-ld-graph-structure">@graph guide</a> warns that referencing an <code>@id</code> which is never defined causes the property to be silently ignored. We expected to find this in the wild.</p>
+<p>One site out of 32 — <code>paypal.com</code>, with a single reference to <code>https://www.paypal.com/c2/home#website</code> that no node defines.</p>
+<p>Two other things we expected and did not find: <strong>zero</strong> JSON parse failures across every block we extracted, and no site shipping markup in more than four blocks. Invalid JSON-LD and block sprawl both turn out to be much rarer than the advice would suggest.</p>
+<p>This is the second time in two surveys that a widely repeated warning did not appear at all in a sample of this size. That is not an argument for ignoring the warnings — a dangling reference is still a bug — but it is an argument for checking how often the thing you are worried about actually happens before you spend a week refactoring.</p>
+
+<h2>What to check on your own markup</h2>
+<p><strong>Is any of it aimed at a retired feature?</strong> <code>SearchAction</code> is the one to search for today. Check the markup against the current list of supported rich results rather than against a tutorial you followed in 2023.</p>
+<p><strong>Does it say anything about this page?</strong> If every page on your site emits the same <code>Organization</code> and <code>WebSite</code> nodes and nothing else, the markup is describing your company and not your content.</p>
+<p><strong>Is it one connected graph or several disconnected blocks?</strong> Neither is an error. One is easier to keep consistent.</p>
+<p><strong>Does every <code>@id</code> you reference exist on the page?</strong> Extract the defined <code>@id</code> values and the referenced ones and compare the lists. It takes a minute by eye on a page with under ten nodes.</p>
+
+<h2>Limitations</h2>
+<p>The sample is 61 reachable homepages chosen by hand to span categories — representative of well-known sites, not of the web. Homepages only: article, product and FAQ markup lives on inner pages and is not measured here.</p>
+<p>The server-rendered caveat is the big one. Any JavaScript-injected markup is invisible to this method, so the true rate of sites using structured data is certainly higher than 52%. The findings about <code>@graph</code>, node types and <code>SearchAction</code> are drawn only from markup we actually retrieved, so they are unaffected — but the headline number is a floor, not a rate.</p>
+<p>Finally, this is a single-day snapshot of pages that change constantly.</p>
+
+<h2>Reproduce it</h2>
+<p>The extraction script and the domain list ship with this site and run in about two minutes. It writes the extracted JSON-LD for every domain, so each claim above can be checked against the markup itself rather than our summary of it.</p>
+<p>If a row is wrong, the markup settles it. Corrections via the <a href="/contact">contact page</a> — and if you know why the sitelinks search box markup is still so widespread two years after retirement, we would like to hear that too.</p>`,
+    faq: [
+      ["Do I need structured data to rank?", "No. Half the homepages we fetched ship none and rank fine. It affects eligibility for rich results, not ranking itself."],
+      ["Should I remove SearchAction markup?", "It is harmless, but it does nothing since November 2024. Removing it is tidier than keeping dead code you will later assume is working."],
+      ["Is @graph required?", "No. Only 41% of the sites we checked use it. It is a consistency tool, not a requirement."],
+    ],
+  },
 ];
 
 /* =================================================================

@@ -22,6 +22,7 @@
 - [JSON-LD @graph: Why One Block Beats Five](https://www.serpprism.com/guides/json-ld-graph-structure): Most sites emit one JSON-LD block per schema type and never connect them. A single @graph with @id references fixes the duplication.
 - [A Pre-Publish SEO Checklist for Any New Page](https://www.serpprism.com/guides/pre-publish-seo-checklist): Nine checks that take under ten minutes and catch the mistakes that are invisible after publishing. Ordered so that the cheap ones come first.
 - [What 71 Sites Actually Put in robots.txt](https://www.serpprism.com/guides/robots-txt-in-the-wild): We fetched the robots.txt of 78 high-traffic sites. A quarter declare no sitemap at all, and five still ship a directive Google ignores.
+- [What 61 Homepages Actually Ship in JSON-LD](https://www.serpprism.com/guides/json-ld-in-the-wild): We parsed the JSON-LD on 61 homepages. Half ship none in their HTML, and 14 still carry markup for a feature Google retired in 2024.
 
 ## Notes for automated readers
 All processing is client-side JavaScript. There is no API; tool behaviour is deterministic given the same input.
