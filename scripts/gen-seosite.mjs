@@ -50,7 +50,7 @@ const TOOLS = [
     h1: "Meta Tag Generator",
     fn: "metaGen",
     metaDesc:
-      "Generate clean page title, meta description, canonical, Open Graph and Twitter card tags. Live length warnings, copy-ready HTML, runs entirely in your browser.",
+      "Generate clean page title, meta description, canonical, Open Graph and Twitter card tags. Live length warnings and copy-ready HTML, all in your browser.",
     intro:
       "Fill in the fields and get a complete, copy-ready block of <code>&lt;head&gt;</code> tags. Every length counter updates as you type, so you can see exactly where Google will truncate your title or description before you publish.",
     ui: `
@@ -121,7 +121,7 @@ const TOOLS = [
     h1: "SERP Preview Tool",
     fn: "serpPreview",
     metaDesc:
-      "Preview how your title and description will look in Google search results, measured in real pixels. See exactly where the snippet gets truncated before you publish.",
+      "Preview how your title and description look in Google results, measured in real pixels. See exactly where the snippet gets truncated before you publish.",
     intro:
       "This renders your snippet with the same font stack and sizing Google uses on desktop, then measures it with a canvas. Instead of guessing from a character count, you see the actual pixel width and get told where the cut lands.",
     ui: `
@@ -284,7 +284,7 @@ const TOOLS = [
     h1: "Keyword Density Checker",
     fn: "kwDensity",
     metaDesc:
-      "Count single words, two-word and three-word phrases with stopwords filtered out. See actual frequency and percentage, plus which phrases are worth targeting.",
+      "Count single words and two- or three-word phrases with stopwords filtered out. See frequency, percentage, and which phrases are worth targeting.",
     intro:
       "Paste your text and get word and phrase frequency with common English stopwords removed, so the top of the list is actually informative instead of being 'the, and, of'.",
     ui: `
@@ -349,7 +349,7 @@ const TOOLS = [
     h1: "Readability Score Checker",
     fn: "readability",
     metaDesc:
-      "Measure Flesch Reading Ease, Flesch-Kincaid grade level, sentence length, syllables per word and passive voice. See which sentences are dragging the score down.",
+      "Measure Flesch Reading Ease, grade level, sentence length and passive voice. See which specific sentences are dragging the score down.",
     intro:
       "Paste your text for a readability breakdown — the standard scores plus the specific sentences that are hardest to read, so you know where to cut rather than just how bad it is.",
     ui: `
@@ -399,7 +399,7 @@ const TOOLS = [
     h1: "llms.txt Generator",
     fn: "llmsGen",
     metaDesc:
-      "Build a valid llms.txt file for your site — the plain-text index that tells AI crawlers and assistants what your site actually offers. Runs entirely in your browser.",
+      "Build a valid llms.txt file — the plain-text index that tells AI crawlers what your site offers. Runs entirely in your browser.",
     intro:
       "Paste your site name, a one-line summary, and your pages or tools. Get a properly formatted llms.txt you can drop at your domain root. Nothing is uploaded.",
     ui: `
@@ -469,7 +469,7 @@ const TOOLS = [
     h1: "JSON-LD Schema Markup Generator",
     fn: "schemaGen",
     metaDesc:
-      "Generate valid JSON-LD structured data for Article, FAQ, HowTo, Product, BreadcrumbList and Organization. Fill in fields, get copy-ready markup that validates.",
+      "Generate valid JSON-LD for Article, FAQ, HowTo, Product, BreadcrumbList and Organization. Fill in fields, get copy-ready markup that validates.",
     intro:
       "Pick a schema type, fill in the fields, and get JSON-LD you can paste straight into your page head. Every field is validated as you type, and the output is checked for the properties Google actually requires.",
     ui: `
@@ -535,7 +535,7 @@ const TOOLS = [
     h1: "UTM Link Builder",
     fn: "utmBuild",
     metaDesc:
-      "Build campaign URLs with correctly encoded utm_source, utm_medium, utm_campaign, utm_term and utm_content. Live validation catches the mistakes that split your analytics data.",
+      "Build campaign URLs with correctly encoded utm_source, utm_medium and utm_campaign. Live validation catches the mistakes that split your analytics data.",
     intro:
       "Fill in your destination and campaign fields, get a properly URL-encoded link, and see warnings for the naming mistakes that silently split one campaign into several in your reports.",
     ui: `
@@ -600,7 +600,7 @@ const TOOLS = [
     h1: "Open Graph Preview Tool",
     fn: "ogPreview",
     metaDesc:
-      "Preview the card LinkedIn, Facebook, X and Slack will render for your link, and get the Open Graph and Twitter tags that produce it. Flags the image mistakes that make shares render as a grey box.",
+      "Preview the card LinkedIn, Facebook, X and Slack render for your link. Get the Open Graph and Twitter tags that produce it, plus checks for image mistakes.",
     intro:
       "Fill in the fields and both card layouts render live — the large image card and the small summary card. Below them you get the exact tags, plus a list of the specific problems that stop a card from rendering at all.",
     ui: `
@@ -674,7 +674,7 @@ const TOOLS = [
     h1: "hreflang Tag Generator",
     fn: "hreflangGen",
     metaDesc:
-      "Generate hreflang annotations as HTML link tags, an HTTP Link header, or XML sitemap entries — with real validation for bad language codes, duplicate entries and the missing return tag.",
+      "Generate hreflang annotations as HTML link tags, an HTTP Link header, or sitemap entries — with validation for bad language codes and missing return tags.",
     intro:
       "List one line per language version and pick an output format. The generator writes the full cluster for every URL, because that is what the specification actually requires, and it flags the mistakes that make Google silently ignore the whole set.",
     ui: `
@@ -752,7 +752,7 @@ const TOOLS = [
 const GUIDES = [
   {
     slug: "meta-description-length",
-    h1: "Meta Description Length: What Actually Gets Truncated",
+    h1: "Meta Description Length: What Gets Truncated",
     lead: "The number everyone quotes is 155 characters. The real rule is pixel width, and knowing the difference saves you from rewriting descriptions that were fine.",
     body: `
 <h2>Where the 155-character rule comes from</h2>
@@ -851,8 +851,8 @@ const GUIDES = [
 
   {
     slug: "json-ld-graph-structure",
-    h1: "JSON-LD @graph: Why One Block Beats Five Separate Ones",
-    lead: "Most sites emit one JSON-LD block per schema type and never connect them. The result is duplicated facts that drift apart. A single @graph with @id references fixes it and is barely more work.",
+    h1: "JSON-LD @graph: Why One Block Beats Five",
+    lead: "Most sites emit one JSON-LD block per schema type and never connect them. A single @graph with @id references fixes the duplication.",
     body: `
 <h2>The pattern almost everyone starts with</h2>
 <p>A site adds an Organization block to the footer, an Article block to the article template, and a BreadcrumbList to the breadcrumb component. Three separate <code>&lt;script type="application/ld+json"&gt;</code> blocks, each describing one thing. It works — Google reads all of them — and it is where most sites stop.</p>

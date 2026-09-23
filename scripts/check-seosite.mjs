@@ -32,6 +32,10 @@ const SITE = (() => {
 // 静态资源，**不应该**有 canonical / 词数 / JSON-LD。闸门必须跳过它们。
 const MIN_WORDS = 650;
 const applies = (f) => f.startsWith("tools/") || f.startsWith("guides/");
+// title 含品牌后缀，60 字符 ≈ Google 桌面端 ~580px 的截断点；
+// description 155 字符 ≈ 920px。留一点余量，超了就是会被截。
+const TITLE_MAX = 62;
+const DESC_MAX = 160;
 const isGscVerify = (f) => /^google[a-f0-9]{16}\.html$/i.test(path.basename(f));
 
 if (!fs.existsSync(OUT)) {
@@ -82,6 +86,19 @@ for (const f of files.slice().sort()) {
 
   if (!can) problems.push(`${f}: 缺少 canonical`);
   if (applies(f) && n < MIN_WORDS) problems.push(`${f}: 正文 ${n} 词 < ${MIN_WORDS}`);
+
+  // title / description 长度：Google 按像素截断，经验值 title ≈60 字符、
+  // description ≈155 字符。超了不会报错，只会被截断 —— 属于「看不见的问题」，
+  // 所以必须卡在闸门里。（SerpPrism 自己就踩过：7 个 description 超长，
+  // 最严重的 196 字符，而站上还有一篇讲这个的指南。）
+  const ttl = (h.match(/<title>([^<]*)<\/title>/) || [])[1] || "";
+  const dsc = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "";
+  if (!ttl) problems.push(`${f}: 缺少 title`);
+  else if (ttl.length > TITLE_MAX) problems.push(`${f}: title ${ttl.length} 字符 > ${TITLE_MAX}（会截断）`);
+  if (!dsc) problems.push(`${f}: 缺少 description`);
+  else if (dsc.length > DESC_MAX) problems.push(`${f}: description ${dsc.length} 字符 > ${DESC_MAX}（会截断）`);
+  const h1n = (h.match(/<h1[^>]*>/g) || []).length;
+  if (h1n !== 1) problems.push(`${f}: h1 数量 = ${h1n}（应为 1）`);
 
   const flag = applies(f) && n < MIN_WORDS ? "  ⚠️" : "";
   console.log(f.padEnd(36) + String(n).padStart(4) + "  " + ldNote.padEnd(9) + can.replace(SITE, "") + flag);
