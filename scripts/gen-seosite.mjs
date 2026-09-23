@@ -848,6 +848,99 @@ const GUIDES = [
       ["Should headings be sentence case or title case?", "Pick one and be consistent across the site. Consistency matters more than the choice."],
     ],
   },
+
+  {
+    slug: "json-ld-graph-structure",
+    h1: "JSON-LD @graph: Why One Block Beats Five Separate Ones",
+    lead: "Most sites emit one JSON-LD block per schema type and never connect them. The result is duplicated facts that drift apart. A single @graph with @id references fixes it and is barely more work.",
+    body: `
+<h2>The pattern almost everyone starts with</h2>
+<p>A site adds an Organization block to the footer, an Article block to the article template, and a BreadcrumbList to the breadcrumb component. Three separate <code>&lt;script type="application/ld+json"&gt;</code> blocks, each describing one thing. It works — Google reads all of them — and it is where most sites stop.</p>
+<p>The cost is not visible immediately. It shows up the first time you rename your company, change your logo URL, or move to a new domain. Now you have three places that each contain the same facts, and nothing enforces that they agree. One gets updated, the others do not, and the structured data on your site now contradicts itself in a way no error message will tell you about.</p>
+
+<h2>What @id actually does</h2>
+<p>Every node in JSON-LD can carry an <code>@id</code>, which is a stable identifier — a URL is conventional. Once a node has an <code>@id</code>, any other node can refer to it by that identifier instead of repeating its properties.</p>
+<p>So instead of the Article block containing its own copy of the publisher's name and logo, it contains <code>"publisher": { "@id": "https://example.com/#organization" }</code>. The full description of that organization lives once, in a node that other nodes point at. Change the logo in that one place and every reference is correct.</p>
+<p>The practical payoff is that your structured data becomes a description of relationships rather than a set of isolated assertions. This article was published by that organization, on this website, and sits at this position in this breadcrumb trail. All of it expressed explicitly rather than inferred.</p>
+
+<h2>The shape that works</h2>
+<p>A layout that has held up well across several sites: one <code>@graph</code> array in the page head containing, in order, the Organization, the WebSite, the WebPage for the current URL, and then whatever page-specific nodes apply — an Article, a FAQPage, a HowTo, a Product.</p>
+<p>The Organization and WebSite nodes are identical on every page, which is the point: they are declared once per page but defined consistently, and every page-specific node references them by <code>@id</code> rather than restating them. The WebPage node carries <code>datePublished</code> and <code>dateModified</code>, and the page-specific nodes carry their own.</p>
+<p>Breadcrumbs attach to the WebPage rather than floating free, because a breadcrumb trail describes a position within a site hierarchy, and the hierarchy belongs to the page.</p>
+
+<h2>Where this goes wrong</h2>
+<p><strong>Referencing an @id that does not exist on the page.</strong> If the Article says its publisher is <code>#organization</code> but no node with that <code>@id</code> is present, the reference resolves to nothing. Google handles this by ignoring the property, so the symptom is not an error — it is silently missing data. Always include the node you reference.</p>
+<p><strong>Using the same @id for different things.</strong> Identifiers must be unique. Two nodes sharing an <code>@id</code> means you have declared two contradictory definitions of one entity, and the outcome depends on which one a consumer reads first.</p>
+<p><strong>Absolute versus relative @id values.</strong> Use absolute URLs. A relative reference like <code>#organization</code> is interpreted against the page URL, which means the same markup on two domains produces two different identifiers, and any relationship you were trying to express across pages breaks.</p>
+
+<h2>Dates deserve their own paragraph</h2>
+<p><code>datePublished</code> should never change after the page goes live. <code>dateModified</code> should change when the content genuinely changes, and not otherwise.</p>
+<p>Incrementing <code>dateModified</code> on every deploy is a common habit, usually adopted because someone believed freshness helps rankings. It does not, and the pattern is easy to detect: a modified date that advances daily while the words stay identical tells any consumer that the field is noise, which means it will be discounted on the pages where it was actually true.</p>
+<p>If you use a build system, wire <code>dateModified</code> to a per-page content hash rather than to the build timestamp. That way the field moves only when the content does.</p>
+
+<h2>Checking your markup</h2>
+<p>Validate with Google's Rich Results Test for eligibility and the Schema Markup Validator for syntax. Neither will tell you that your <code>@id</code> references are dangling, because a dangling reference is not a syntax error.</p>
+<p>The check that catches it is manual and takes a minute: extract the list of <code>@id</code> values defined in the page, then extract every value used in a reference, and confirm every reference appears in the defined list. On a page with six nodes this is faster to do by eye than to automate.</p>`,
+    faq: [
+      ["Do I need @graph, or can I use separate script blocks?", "Separate blocks work and Google reads them. @graph is preferable when the nodes relate to each other, because it lets you express those relationships with @id instead of repeating properties in several places."],
+      ["Does one @graph block hurt performance?", "No. It is a few kilobytes of text in the head. The parse cost is negligible next to a single image."],
+      ["Should Organization appear on every page?", "Yes, as a node with a stable @id, so page-specific nodes can reference it without restating its properties."],
+      ["What is the correct @id format?", "An absolute URL with a fragment is conventional, for example https://example.com/#organization. The only hard requirements are that it is unique within the page and stable over time."],
+    ],
+  },
+
+  {
+    slug: "pre-publish-seo-checklist",
+    h1: "A Pre-Publish SEO Checklist for Any New Page",
+    lead: "Nine checks that take under ten minutes and catch the mistakes that are invisible after publishing. Ordered so that the cheap ones come first.",
+    body: `
+<h2>Why a checklist rather than a tool</h2>
+<p>Every item here has a dedicated tool on this site, and you can run them in any order. The reason to work from a list is that the failure mode is not a broken page — it is a page that looks finished. A missing canonical, a duplicate H1, a description that gets truncated: none of these produce a visible symptom. The page renders, the content is good, and the problem is only discoverable weeks later in a report nobody reads closely.</p>
+<p>The order below is deliberate. Structural checks first, because fixing them often changes the text, and re-running content checks after a rewrite wastes the first pass.</p>
+
+<h2>1. Does the page have exactly one H1?</h2>
+<p>Not zero, not two. Zero usually means the title was styled with a class rather than a heading element. Two usually means a template printed the site name as an H1 and the page title as another. Both are invisible in a browser and both make the page's main subject ambiguous.</p>
+<p>Run the HTML through the <a href="/tools/heading-analyzer">heading analyzer</a> and read the outline rather than the warnings. If the H2 list reads like a table of contents for the page, the structure is sound.</p>
+
+<h2>2. Do the heading levels descend without skipping?</h2>
+<p>An H2 followed by an H4 tells a reader that a level is missing. Sometimes a level genuinely is missing and the outline is still correct — but more often the H4 was chosen for its smaller font size. Choose levels for meaning and style them in CSS; nothing in HTML requires an H2 to be visually larger than an H3.</p>
+
+<h2>3. Is the title tag specific to this page?</h2>
+<p>Open ten tabs of your site and read the titles. If several are identical, those pages compete with each other for the same query and none of them wins clearly. A title should describe what this page specifically covers, not the category it belongs to.</p>
+
+<h2>4. Will the description survive truncation?</h2>
+<p>The widely quoted 155-character limit is an average, not a rule — the real constraint is rendered pixel width, and mobile is narrower than desktop. Put the sentence that must survive in the first 120 characters and treat the rest as elaboration. See <a href="/guides/meta-description-length">the full explanation</a> if you want the details.</p>
+<p>Preview it rather than counting: the <a href="/tools/serp-preview">SERP preview tool</a> measures in pixels and shows exactly where the cut lands.</p>
+
+<h2>5. Does the canonical point at itself?</h2>
+<p>A page's canonical should be its own URL, in the same form the page is served at. Trailing-slash mismatches are the common case: if <code>/tools</code> redirects to <code>/tools/</code>, the canonical must say <code>/tools/</code>, or you are telling Google that the real page is a URL that redirects.</p>
+<p>Check this on index pages specifically. They are the ones most often generated with a canonical that omits the trailing slash.</p>
+
+<h2>6. Is the page in the sitemap, with the right URL form?</h2>
+<p>Same trailing-slash question. A sitemap entry that redirects is a wasted crawl. If your sitemap is generated, generate the canonical at the same time from the same value — two independent string constructions will eventually disagree.</p>
+
+<h2>7. Are the internal links real and useful?</h2>
+<p>Every new page should link to at least two existing pages, and at least one existing page should link to it. A page that nothing links to is a page that is hard to find, and internal links are the only navigation signal you fully control.</p>
+<p>Link with descriptive anchor text. "Read the guide" tells a reader nothing about where it goes; the text should describe the destination.</p>
+
+<h2>8. Do images have dimensions and alt text?</h2>
+<p>Set explicit width and height attributes on every image. Without them the browser cannot reserve space, and the page shifts as images load — which is the single most common cause of a poor layout-shift score.</p>
+<p>Alt text describes the image for someone who cannot see it. If the image is purely decorative, an empty <code>alt=""</code> is correct and better than a description nobody needs.</p>
+
+<h2>9. Does the structured data describe this page accurately?</h2>
+<p>If you mark up an Article, the headline should match the visible title and the dates should be real. If you mark up an FAQ, those questions must be visible on the page — markup describing content that is not there is a violation, not an optimisation.</p>
+<p>See <a href="/guides/json-ld-graph-structure">the @graph guide</a> for how to keep the nodes consistent, or generate the markup with the <a href="/tools/schema-markup-generator">schema generator</a>.</p>
+
+<h2>What is deliberately not on this list</h2>
+<p>Keyword density. There is no target to hit, and writing to one produces worse text. Run the <a href="/tools/keyword-density">density checker</a> only to see whether the page is actually about the topic you intended — if the top phrases surprise you, that is a content problem, not a density problem.</p>
+<p>Word count. Length is a consequence of covering the subject, not a goal. A page that answers the question in 400 words is finished; padding it to 1200 makes it worse.</p>
+<p>Meta keywords. They have been ignored for over a decade.</p>`,
+    faq: [
+      ["How long should this take?", "Under ten minutes once you are used to it. The tool runs are seconds each; most of the time goes into reading the heading outline and checking the canonical form."],
+      ["Should I run this before or after publishing?", "Before, on a staging URL if you have one. Canonical and sitemap checks are easier when the URL form is not yet live, because there is nothing to compare against."],
+      ["Is this list complete?", "It covers the checks that catch invisible problems. Technical performance, accessibility and content quality all matter and are separate disciplines."],
+    ],
+  },
 ];
 
 /* =================================================================
