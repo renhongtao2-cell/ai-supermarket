@@ -24,6 +24,16 @@ const LAUNCH = "2026-09-21";
 const ADSENSE_CLIENT = "ca-pub-9901133369141996";
 const CONTACT_EMAIL = "renhongtao2@gmail.com";
 
+/* 作者 / E-E-A-T
+   AdSense 判「低价值内容」时缺的一整个维度是 Expertise：全站原本 0 处 author，
+   About 页也没写是谁做的。这里一次补齐署名 + bio + Person 结构化数据。
+   ⚠️ 只写能核实的事实，不编造资历 —— 虚假的 E-E-A-T 信号风险比没有更大。 */
+const AUTHOR_NAME = "Hongtao Ren";
+const AUTHOR_NAME_CN = "任宏涛";
+const AUTHOR_BIO =
+  "Hongtao Ren is a developer based in Xi'an, China. He builds browser-based tools and JetBrains IDE plugins, and built and maintains SerpPrism.";
+const AUTHOR_BIO_SHORT = "Developer based in Xi'an, China. Builds browser-based tools and JetBrains IDE plugins.";
+
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const stripTags = (s) => String(s).replace(/<[^>]*>/g, "");
@@ -2029,6 +2039,15 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
 .privacy h4{margin:0 0 7px;font-size:15px}
 .privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
 .note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+.byline{font-size:13.5px;color:var(--ink-2);margin:-10px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.byline a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line)}
+.byline a:hover{color:var(--accent)}
+.author-box{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:var(--panel);margin:28px 0}
+.author-box h3{margin:0 0 6px;font-size:15px}
+.author-box p{margin:0 0 8px;font-size:14.5px}
+.author-box p:last-child{margin-bottom:0}
+.author-avatar{width:44px;height:44px;flex:none;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+@media(max-width:620px){.author-box{flex-direction:column;gap:10px}}
 `;
 
 /* =================================================================
@@ -2036,6 +2055,28 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
    ================================================================= */
 const ORG_ID = `${SITE}/#organization`;
 const SITE_ID = `${SITE}/#website`;
+const PERSON_ID = `${SITE}/#person`;
+const ABOUT_ID = `${SITE}/about#webpage`;
+
+/* 作者节点：单独抽出来，About 页要把它升级成 ProfilePage 的主角 */
+const personNode = () => ({
+  "@type": "Person",
+  "@id": PERSON_ID,
+  name: AUTHOR_NAME,
+  alternateName: AUTHOR_NAME_CN,
+  url: `${SITE}/about`,
+  description: AUTHOR_BIO,
+  email: CONTACT_EMAIL,
+  address: { "@type": "PostalAddress", addressLocality: "Xi'an", addressCountry: "CN" },
+  knowsAbout: [
+    "Technical SEO",
+    "Search engine result page rendering",
+    "robots.txt",
+    "Open Graph and Twitter card metadata",
+    "hreflang and international SEO",
+    "Structured data (JSON-LD)",
+  ],
+});
 
 const siteNodes = () => [
   {
@@ -2045,8 +2086,10 @@ const siteNodes = () => [
     url: `${SITE}/`,
     description: "Free browser-based SEO and website auditing tools.",
     email: CONTACT_EMAIL,
+    founder: { "@id": PERSON_ID },
   },
   { "@type": "WebSite", "@id": SITE_ID, name: BRAND, url: `${SITE}/`, inLanguage: "en", publisher: { "@id": ORG_ID } },
+  personNode(),
 ];
 
 const webPageNode = ({ p, title, desc }) => ({
@@ -2059,6 +2102,7 @@ const webPageNode = ({ p, title, desc }) => ({
   inLanguage: "en",
   datePublished: LAUNCH,
   dateModified: UPDATED,
+  author: { "@id": PERSON_ID },
 });
 
 const breadcrumbNode = (p, trail) => ({
@@ -2109,6 +2153,8 @@ function toolJsonLd(t) {
       "@id": `${url}#howto`,
       name: `How to use the ${t.h1}`,
       totalTime: "PT1M",
+      author: { "@id": PERSON_ID },
+      publisher: { "@id": ORG_ID },
       tool: [{ "@type": "HowToTool", name: "A web browser" }],
       step: steps.map((text, i) => ({ "@type": "HowToStep", position: i + 1, text })),
     },
@@ -2143,6 +2189,7 @@ function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
 <meta property="og:site_name" content="${BRAND}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="${esc(AUTHOR_NAME)}">
 <link rel="alternate" type="text/plain" href="${SITE}/llms.txt" title="LLM-friendly index">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
 <style>${CSS}</style>
@@ -2165,6 +2212,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
       <div>
         <h5>${esc(BRAND)}</h5>
         <p style="margin:0">Free SEO and website auditing tools that run entirely in your browser. Nothing you paste is uploaded or stored.</p>
+        <p style="margin:10px 0 0">Built and maintained by <a href="/about">${esc(AUTHOR_NAME)}</a>.</p>
       </div>
       <div>
         <h5>Tools</h5>
@@ -2235,6 +2283,21 @@ const homeBody = `
 </div>
 `;
 
+/* ---------- 署名块（E-E-A-T 的 Expertise 信号）----------
+   工具页只用紧凑署名，避免 11 个页面重复同一段 bio 造成站内内容重复；
+   指南页（-ful）额外放完整作者框，About 页放最完整的一版。 */
+const BYLINE = `<p class="byline">By <a href="/about">${esc(AUTHOR_NAME)}</a> · Updated <time datetime="${UPDATED}">${UPDATED}</time></p>`;
+
+const AUTHOR_BOX = `
+  <div class="author-box">
+    <div class="author-avatar" aria-hidden="true">HR</div>
+    <div>
+      <h3>About the author</h3>
+      <p><strong>${esc(AUTHOR_NAME)}</strong> (${esc(AUTHOR_NAME_CN)}) — ${esc(AUTHOR_BIO_SHORT)} He built and maintains ${esc(BRAND)}.</p>
+      <p class="muted small">Corrections are the most useful thing you can send. If a tool or guide here gives you a wrong answer, that is a bug, not a judgement call — use the <a href="/contact">contact page</a>.</p>
+    </div>
+  </div>`;
+
 /* ---------- 工具页 ---------- */
 function toolBody(t) {
   const why = t.why
@@ -2252,6 +2315,7 @@ function toolBody(t) {
   <p class="crumb"><a href="/">Home</a> › <a href="/tools/">Tools</a> › ${esc(t.h1)}</p>
   <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">${esc(t.h1)}</h1>
   <p class="lead">${esc(t.metaDesc)}</p>
+  ${BYLINE}
 
   <div class="tool">
     ${t.ui}
@@ -2286,7 +2350,9 @@ function guideBody(g) {
   <p class="crumb"><a href="/">Home</a> › <a href="/guides/">Guides</a> › ${esc(g.h1)}</p>
   <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">${esc(g.h1)}</h1>
   <p class="lead">${esc(g.lead)}</p>
+  ${BYLINE}
   <article>${g.body}</article>
+  ${AUTHOR_BOX}
   <div class="faq">
     <h2>Questions</h2>
     ${g.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${a}</p></details>`).join("")}
@@ -2462,7 +2528,8 @@ for (const g of GUIDES) {
           description: g.lead,
           datePublished: LAUNCH,
           dateModified: UPDATED,
-          author: { "@id": ORG_ID },
+          // 原来写的是 author: ORG_ID —— 文章作者挂成「组织」，E-E-A-T 上等于没有作者
+          author: { "@id": PERSON_ID },
           publisher: { "@id": ORG_ID },
         },
         faqNode(`/guides/${g.slug}`, g.faq)
@@ -2515,11 +2582,33 @@ write(
   <h2>Accuracy and limits</h2>
   <p>Where a measurement is approximate, the tool says so. The SERP preview measures rendered pixel width using the font stack and sizes Google uses on desktop results; it is accurate enough to tell you whether a snippet will be cut, and it is not a guarantee of what Google will display, because Google frequently rewrites descriptions using text from the page itself.</p>
   <p>The robots.txt tester implements the longest-match rule from RFC 9309 including wildcards. It is not a substitute for Google's own tester in Search Console, which has access to Google's actual crawl behaviour — but it is much faster for answering "which of my rules is doing this?"</p>
+  ${AUTHOR_BOX}
   <h2>Who runs this</h2>
-  <p>${esc(BRAND)} is an independent site. Questions, bug reports and corrections are welcome — use the <a href="/contact">contact page</a>. Corrections are genuinely appreciated: if a tool here gives you a wrong answer, that is a bug worth knowing about.</p>
+  <p>${esc(BRAND)} is built and maintained by ${esc(AUTHOR_NAME)} (${esc(AUTHOR_NAME_CN)}), a developer based in Xi'an, China. He also builds JetBrains IDE plugins and a handful of small web tools; this is the one concerned with search results and page markup.</p>
+  <p>It started from a specific frustration. Every check that ought to take two seconds — does this snippet fit, is this path blocked, is this heading order sane — seemed to require pasting a URL into somebody else's server and waiting for a crawl. None of them actually need a server: a robots.txt rule can be evaluated in JavaScript, and a snippet's rendered width can be measured with a canvas. So these were built as plain client-side JavaScript instead.</p>
+  <h2>What this site does and does not claim to know</h2>
+  <p>Worth being straight about the limits. The tools implement published specifications — RFC 9309 for robots.txt, the Open Graph protocol, Google's documented hreflang behaviour — and each tool page states where a measurement is approximate rather than exact. Where behaviour is undocumented, or changes without notice, the page says so instead of guessing.</p>
+  <p>The guides are written from the same place: things you can check and fix in an afternoon, not strategic SEO advice. There is deliberately nothing here about link building, keyword research tooling or content calendars, because the useful version of that advice depends entirely on which site is asking.</p>
+  <h2>Independence and money</h2>
+  <p>${esc(BRAND)} is an independent site with no investors and no parent company. It is free to use and carries advertising; the advertising does not influence what any tool reports, because there is nothing in the code that could be influenced — the analysis runs on your machine and returns the same answer regardless.</p>
+  <h2>Corrections</h2>
+  <p>If a tool gives you the wrong answer, that is a bug and worth an email — use the <a href="/contact">contact page</a> and include the input that produced it. Technical SEO advice also ages badly: several widely repeated claims were accurate five years ago and are not now. Being told which ones this site has repeated is genuinely useful.</p>
 </div>`,
     jsonLd: graphOf(
-      webPageNode({ p: "/about", title: `About ${BRAND}`, desc: `What ${BRAND} is and what its tools deliberately do not do.` }),
+      {
+        "@type": "ProfilePage",
+        "@id": ABOUT_ID,
+        url: `${SITE}/about`,
+        name: `About ${BRAND}`,
+        description: `Who runs ${BRAND}, why the tools are client-side, and what the site does and does not claim to know.`,
+        isPartOf: { "@id": SITE_ID },
+        inLanguage: "en",
+        datePublished: LAUNCH,
+        dateModified: UPDATED,
+        about: { "@id": PERSON_ID },
+        author: { "@id": PERSON_ID },
+        mainEntity: { "@id": PERSON_ID },
+      },
       breadcrumbNode("/about", [["Home", `${SITE}/`], ["About", `${SITE}/about`]])
     ),
   })

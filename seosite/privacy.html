@@ -13,6 +13,7 @@
 <meta property="og:site_name" content="SerpPrism">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Hongtao Ren">
 <link rel="alternate" type="text/plain" href="https://www.serpprism.com/llms.txt" title="LLM-friendly index">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
 <style>
@@ -149,10 +150,19 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
 .privacy h4{margin:0 0 7px;font-size:15px}
 .privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
 .note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+.byline{font-size:13.5px;color:var(--ink-2);margin:-10px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.byline a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line)}
+.byline a:hover{color:var(--accent)}
+.author-box{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:var(--panel);margin:28px 0}
+.author-box h3{margin:0 0 6px;font-size:15px}
+.author-box p{margin:0 0 8px;font-size:14.5px}
+.author-box p:last-child{margin-bottom:0}
+.author-avatar{width:44px;height:44px;flex:none;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+@media(max-width:620px){.author-box{flex-direction:column;gap:10px}}
 </style>
 <script>try{var t=localStorage.getItem("sp-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.serpprism.com/#organization","name":"SerpPrism","url":"https://www.serpprism.com/","description":"Free browser-based SEO and website auditing tools.","email":"renhongtao2@gmail.com"},{"@type":"WebSite","@id":"https://www.serpprism.com/#website","name":"SerpPrism","url":"https://www.serpprism.com/","inLanguage":"en","publisher":{"@id":"https://www.serpprism.com/#organization"}},{"@type":"WebPage","@id":"https://www.serpprism.com/privacy#webpage","url":"https://www.serpprism.com/privacy","name":"Privacy Policy | SerpPrism","description":"How SerpPrism handles data and advertising cookies.","isPartOf":{"@id":"https://www.serpprism.com/#website"},"inLanguage":"en","datePublished":"2026-09-21","dateModified":"2026-09-22"},{"@type":"BreadcrumbList","@id":"https://www.serpprism.com/privacy#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.serpprism.com/"},{"@type":"ListItem","position":2,"name":"Privacy","item":"https://www.serpprism.com/privacy"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.serpprism.com/#organization","name":"SerpPrism","url":"https://www.serpprism.com/","description":"Free browser-based SEO and website auditing tools.","email":"renhongtao2@gmail.com","founder":{"@id":"https://www.serpprism.com/#person"}},{"@type":"WebSite","@id":"https://www.serpprism.com/#website","name":"SerpPrism","url":"https://www.serpprism.com/","inLanguage":"en","publisher":{"@id":"https://www.serpprism.com/#organization"}},{"@type":"Person","@id":"https://www.serpprism.com/#person","name":"Hongtao Ren","alternateName":"任宏涛","url":"https://www.serpprism.com/about","description":"Hongtao Ren is a developer based in Xi'an, China. He builds browser-based tools and JetBrains IDE plugins, and built and maintains SerpPrism.","email":"renhongtao2@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Xi'an","addressCountry":"CN"},"knowsAbout":["Technical SEO","Search engine result page rendering","robots.txt","Open Graph and Twitter card metadata","hreflang and international SEO","Structured data (JSON-LD)"]},{"@type":"WebPage","@id":"https://www.serpprism.com/privacy#webpage","url":"https://www.serpprism.com/privacy","name":"Privacy Policy | SerpPrism","description":"How SerpPrism handles data and advertising cookies.","isPartOf":{"@id":"https://www.serpprism.com/#website"},"inLanguage":"en","datePublished":"2026-09-21","dateModified":"2026-09-22","author":{"@id":"https://www.serpprism.com/#person"}},{"@type":"BreadcrumbList","@id":"https://www.serpprism.com/privacy#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.serpprism.com/"},{"@type":"ListItem","position":2,"name":"Privacy","item":"https://www.serpprism.com/privacy"}]}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -185,6 +195,7 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
       <div>
         <h5>SerpPrism</h5>
         <p style="margin:0">Free SEO and website auditing tools that run entirely in your browser. Nothing you paste is uploaded or stored.</p>
+        <p style="margin:10px 0 0">Built and maintained by <a href="/about">Hongtao Ren</a>.</p>
       </div>
       <div>
         <h5>Tools</h5>
@@ -214,7 +225,7 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
     </div>
   </div>
 </footer>
-<script src="/js/tools.js?v=6adbbdf9"></script>
+<script src="/js/tools.js?v=69850a96"></script>
 <script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("sp-theme",n)}catch(e){}});})();</script>
 </body>
 </html>

@@ -132,3 +132,12 @@ pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;pad
 .privacy h4{margin:0 0 7px;font-size:15px}
 .privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
 .note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+.byline{font-size:13.5px;color:var(--ink-2);margin:-10px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.byline a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line)}
+.byline a:hover{color:var(--accent)}
+.author-box{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:var(--panel);margin:28px 0}
+.author-box h3{margin:0 0 6px;font-size:15px}
+.author-box p{margin:0 0 8px;font-size:14.5px}
+.author-box p:last-child{margin-bottom:0}
+.author-avatar{width:44px;height:44px;flex:none;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+@media(max-width:620px){.author-box{flex-direction:column;gap:10px}}
