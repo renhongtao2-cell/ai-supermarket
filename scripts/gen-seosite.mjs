@@ -941,6 +941,72 @@ const GUIDES = [
       ["Is this list complete?", "It covers the checks that catch invisible problems. Technical performance, accessibility and content quality all matter and are separate disciplines."],
     ],
   },
+  {
+    slug: "robots-txt-in-the-wild",
+    h1: "What 71 Sites Actually Put in robots.txt",
+    lead: "We fetched the robots.txt of 78 high-traffic sites. A quarter declare no sitemap at all, and five still ship a directive Google ignores.",
+    body: `
+<h2>How this was measured</h2>
+<p>On 2026-09-23 we fetched <code>https://&lt;domain&gt;/robots.txt</code> for 78 high-traffic domains spanning news, ecommerce, SaaS, developer, social, finance, education and government categories. Of those, 71 returned a usable plain-text file. Two returned HTML instead of robots.txt, and five could not be read at all — four behind bot protection returning HTTP 403 or 418, and one returning 404 because no file exists.</p>
+<p>Fetching used curl from a single machine with a two-tier transport: direct connection first, then a local proxy for domains the direct route could not reach. 46 of the 71 files came back over the direct connection and 25 over the proxy. That split is a property of our network rather than of the sites, and it is not distributed evenly across categories — which is the main caveat on everything below.</p>
+<p>Parsing was done line by line, with user-agent groups respected. A <code>Disallow: /</code> that applies only to a scraper group is not treated as applying to Googlebot. The script and the domain list ship with this site, so every number here can be re-derived rather than taken on trust.</p>
+
+<h2>Finding 1: 24% declare no sitemap</h2>
+<p>54 of the 71 sites (76%) declare at least one sitemap, and 26 declare more than one. The other 17 declare none at all:</p>
+<p><code>forbes.com, amazon.com, etsy.com, shopify.com, github.com, gitlab.com, reddit.com, linkedin.com, quora.com, npmjs.com, python.org, go.dev, mozilla.org, w3.org, ahrefs.com, screamingfrog.co.uk, mit.edu</code></p>
+<p>Two things make that list worth reading. First, it contains sites with enormous page counts — Amazon, LinkedIn, Reddit — where a sitemap would seem most useful. Second, it contains two companies that sell SEO tools. That is not hypocrisy; it is evidence that the robots.txt sitemap line is genuinely optional in practice.</p>
+<p>Be precise about what "no sitemap line" means. It does not mean the site has no sitemap. A sitemap can be submitted directly in Search Console and never mentioned in robots.txt, which is a valid setup and arguably the cleaner one — the file stays about access control, and discovery is handled where discovery is managed. What the omission does mean is that any crawler relying on robots.txt to find sitemaps will not find these ones.</p>
+<p>If you are unsure whether your own file is read the way you think it is, paste it into the <a href="/tools/robots-txt-tester">robots.txt tester</a> and run a few real URLs through it.</p>
+
+<h2>Finding 2: Crawl-delay is still shipping, and Google ignores it</h2>
+<p>Five sites put <code>Crawl-delay</code> in the <code>User-agent: *</code> group: <code>x.com</code>, <code>tumblr.com</code>, <code>vimeo.com</code>, <code>semrush.com</code> and <code>searchengineland.com</code>.</p>
+<p><code>Crawl-delay</code> is not a Google directive. Googlebot has never supported it, and crawl rate is controlled in Search Console instead. So for the crawler it was most likely written for, the line does nothing.</p>
+<p>It is not harmless, though. It is a signal that whoever maintains the file believes it controls crawl rate — and when that belief is wrong, the decisions made from it are wrong too. On a site genuinely being crawled too hard, the fix is the crawl rate setting, not a line in robots.txt.</p>
+<p>One site in the sample uses <code>Crawl-delay</code> in a way worth copying rather than fixing. See the aside further down.</p>
+
+<h2>Finding 3: sitemaps that point somewhere else</h2>
+<p>Two sites declare a sitemap on a host other than the one being crawled.</p>
+<p><code>notion.so</code> declares eleven sitemaps, all on <code>www.notion.com</code>. That is a brand migration caught mid-flight — the .so domain being retired in favour of .com, with the old host's robots.txt pointing at the new one. It works, but the .so file can no longer be removed without breaking discovery for anyone still crawling it.</p>
+<p><code>trello.com</code> declares exactly one sitemap, on <code>a594014.sitemaphosting7.com</code> — a third-party sitemap host, not a Trello domain. Cross-host sitemap declarations are valid and Google accepts them, but they hand part of your discovery infrastructure to a domain you do not control. If that host changes its URL scheme or disappears, the declaration stops working silently.</p>
+
+<h2>Finding 4: http:// in a 2026 sitemap line</h2>
+<p>Two sites declare sitemap URLs over plain HTTP: <code>theguardian.com</code> and <code>who.int</code>.</p>
+<p>The URL is followed with a redirect, so it usually still resolves. But it is a needless hop, and on sites that moved to HTTPS everywhere else it is the kind of leftover that suggests the file has not been reviewed in years. The check takes seconds: search your robots.txt for <code>http://</code> and replace it with <code>https://</code>.</p>
+
+<h2>Finding 5: two sites serve HTML at /robots.txt</h2>
+<p><code>khanacademy.org</code> and <code>cdc.gov</code> both return HTTP 200 with an HTML document at <code>/robots.txt</code>.</p>
+<p>This is a soft 404: the request succeeds, so nothing alerts, but the content is not a robots.txt file. A crawler parsing it finds no directives and falls back to "everything allowed" — the same outcome as an empty file. The failure is invisible in a browser and invisible to a status-code monitor. It is exactly the class of problem a plain-text check catches and a dashboard does not.</p>
+
+<h2>What we did not find: nobody blocks their own sitemap</h2>
+<p>Before running this, we expected a handful of sites to declare a sitemap and then block it with their own <code>Disallow</code> rule — a classic own-goal that appears in most lists of robots.txt mistakes, including <a href="/guides/robots-txt-mistakes">our own</a>.</p>
+<p>Zero out of 71 did.</p>
+<p>That is worth stating plainly. The mistake is real and worth checking for, but across a sample this size it did not occur once. Advice can be technically correct and still miscalibrated about how often the problem actually happens — and the way to find out is to look, not to repeat the list.</p>
+
+<h2>An aside worth stealing: github rate-limits AI crawlers</h2>
+<p>github.com's robots.txt contains 13 user-agent groups, and one of them is a block listing <code>GPTBot</code>, <code>OAI-SearchBot</code>, <code>ClaudeBot</code>, <code>anthropic-ai</code> and <code>PerplexityBot</code>, carrying <code>Crawl-delay: 1</code>.</p>
+<p>So that <code>Crawl-delay</code> is not a mistake. It is aimed at AI crawlers rather than Googlebot, and it is a deliberate attempt to slow bulk training and answer-engine fetching without touching search crawling. Whether the receiving crawlers honour it is a separate question — most have not committed to it — but the structure is a reasonable pattern: one group for search, another for AI, different policies in each.</p>
+<p>If you are trying to control AI crawlers, that separation is the part worth copying. The <a href="/tools/llms-txt-generator">llms.txt generator</a> covers the other half of the same problem.</p>
+
+<h2>What to check on your own site</h2>
+<p><strong>Does /robots.txt return plain text?</strong> Curl it and read the first line. If you see <code>&lt;!DOCTYPE</code>, you have a soft 404 and none of your directives are being applied at all.</p>
+<p><strong>Is every declared sitemap on your own host?</strong> Cross-host declarations work until they don't.</p>
+<p><strong>Is there an <code>http://</code> anywhere in it?</strong> Replace it with <code>https://</code>.</p>
+<p><strong>Is <code>Crawl-delay</code> in there?</strong> If it targets Googlebot, delete it and use the crawl rate setting. If it targets AI crawlers, keep it but give it its own user-agent group.</p>
+<p><strong>Does your sitemap URL form match your canonical URL form?</strong> An entry that redirects is a wasted crawl. This is the same trailing-slash question covered in the <a href="/guides/pre-publish-seo-checklist">pre-publish checklist</a>.</p>
+
+<h2>Limitations</h2>
+<p>Seventy-one sites is a sample, not a census, and it is not random. The domains were chosen by hand to span categories, which makes them representative of "well-known sites" rather than of "the web". Sites behind bot protection are systematically missing, and those are disproportionately large and heavily defended — so the true rate of unreadable robots.txt files is likely higher than the 5 in 78 measured here.</p>
+<p>robots.txt is also a moving target. Files change without notice and this is a single-day snapshot, so the counts are a point-in-time measurement rather than a standing fact. Where a specific site is named, the raw body we retrieved is the arbiter.</p>
+
+<h2>Reproduce it</h2>
+<p>The survey script and the domain list are part of this site's source. It runs in about a minute and writes a per-domain table plus the raw files, so any claim on this page can be checked against the source text instead of taken on our word.</p>
+<p>If you spot an error in a specific row, the raw body settles it — and corrections are welcome via the <a href="/contact">contact page</a>.</p>`,
+    faq: [
+      ["Is a sitemap in robots.txt required?", "No. Submitting it directly in Search Console is equally valid and keeps the file focused on access control. Many large sites declare none."],
+      ["Does Google support Crawl-delay?", "No. Googlebot has never honoured it. Use the crawl rate setting in Search Console instead."],
+      ["Can a sitemap live on another domain?", "Yes, if you verify that domain. It works, but it puts discovery on infrastructure you do not control."],
+    ],
+  },
 ];
 
 /* =================================================================
