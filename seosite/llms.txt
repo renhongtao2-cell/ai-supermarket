@@ -25,6 +25,7 @@
 - [What 61 Homepages Actually Ship in JSON-LD](https://www.serpprism.com/guides/json-ld-in-the-wild): We parsed the JSON-LD on 61 homepages. Half ship none in their HTML, and 14 still carry markup for a feature Google retired in 2024.
 - [What 62 Homepages Actually Ship in Open Graph](https://www.serpprism.com/guides/open-graph-in-the-wild): We read the Open Graph tags on 62 homepages. 90% have some, only 23% declare image dimensions, and two sites ship an og:image tag that carries nothing.
 - [What 70 robots.txt Files Say About AI Crawlers](https://www.serpprism.com/guides/ai-crawlers-in-the-wild): We read 70 robots.txt files and checked 22 AI crawler tokens in each. 63% never mention one, and the most famous crawler is blocked least often.
+- [What 60 Sites Actually Do With hreflang](https://www.serpprism.com/guides/hreflang-in-the-wild): We parsed hreflang on 60 high-traffic homepages. Less than half declare it, and a third skip x-default — the tag Google recommends but never requires.
 
 ## Notes for automated readers
 All processing is client-side JavaScript. There is no API; tool behaviour is deterministic given the same input.

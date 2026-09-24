@@ -464,5 +464,54 @@
 <h2>Reproduce it</h2>
 <p>The script and the shared domain list ship with this site, run in about two minutes, and store the raw file for every domain — so every claim above can be checked against the source rather than against our summary of it. If a row is wrong, the file settles it; corrections via the <a href="https://www.serpprism.com/contact">contact page</a>.</p>]]></content:encoded>
   </item>
+  <item>
+    <title>What 60 Sites Actually Do With hreflang</title>
+    <link>https://www.serpprism.com/guides/hreflang-in-the-wild</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/hreflang-in-the-wild</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>We parsed hreflang on 60 high-traffic homepages. Less than half declare it, and a third skip x-default — the tag Google recommends but never requires.</description>
+    <category>seo</category>
+    <category>webdev</category>
+    <category>html</category>
+    <category>programming</category>
+    <content:encoded><![CDATA[
+<h2>How this was measured</h2>
+<p>On 2026-09-24 we fetched the homepage of 78 high-traffic domains and looked for <code>&lt;link rel="alternate" hreflang="..."&gt;</code> tags in the initial HTML. Of the 78, 60 returned a usable page: 41 over a direct connection and 19 over a local proxy, because some domains are unreachable from our network without one. The other 18 were unreadable — four behind bot protection returning 403 or 418, the rest timing out or returning 404.</p>
+<p>Extraction used a single regex over <code>&lt;link&gt;</code> tags, keeping only those whose <code>rel</code> contains <code>alternate</code> and whose <code>hreflang</code> is non-empty. A bare <code>hreflang=""</code> is treated as absent, because an empty annotation is the same as none and counting it would invent findings that are not there. The script and the domain list ship with this site, so every number below can be re-derived rather than taken on trust.</p>
+
+<h2>Finding 1: fewer than half use hreflang at all</h2>
+<p>28 of the 60 sites (46.7%) declare hreflang. The other 32 declare none. That sounds low until you look at who the 32 are: Amazon, LinkedIn, Reddit, GitHub, Wikipedia, the New York Times, Bloomberg — overwhelmingly monolingual or single-locale sites where hreflang would be meaningless. hreflang exists to tell a crawler "this page has equivalents in other languages or regions." A site with one language has nothing to point at, so its absence is correct, not a gap.</p>
+<p>So the coverage number is not a score. It is a reminder that hreflang is a multilingual-site tool, and most of the web's famous names are not multilingual in the way that needs it.</p>
+
+<h2>Finding 2: when sites do it, they do it thoroughly</h2>
+<p>The 28 that declare hreflang are not dabbling. 24 of them ship six or more alternate links; the median site in the group declares 15. The outliers are startling: uber.com emits 173, stripe.com 89, mozilla.org 80, linkedin.com 77, shopify.com 71. The average across the 28 is 30.9 annotations per site.</p>
+<p>Two things explain the spread. First, genuinely global products — ride-hailing, payments, browsers — really do serve dozens of locales, and each one is a link. Second, a few sites that are not obviously global still go deep: ahrefs.com and semrush.com, both SEO vendors, declare 14 each, which is consistent with the pattern we have seen across every survey on this site — the companies whose business is this metadata treat it more carefully than average.</p>
+<p>The practical point for a normal site: you do not need 70 annotations. You need one correct set per localized URL, which for most operators is a handful. The big numbers belong to companies with genuinely big locale matrices.</p>
+
+<h2>Finding 3: the common miss is x-default</h2>
+<p>Of the 28 sites that declare hreflang, 9 (32.1%) have no <code>x-default</code> annotation. The list is not obscure: bbc.com, atlassian.com, notion.so, pinterest.com, docker.com, kubernetes.io, semrush.com, squareup.com, uber.com.</p>
+<p>Google recommends x-default as the fallback for users whose language or region matches none of your specific alternates. Without it, the version an unmatched user sees is undefined, and because hreflang errors are silent, no validator will tell you it is missing. It is recommended, not required — a site without x-default is not penalised — but for sites serving this many locales, leaving it out is a real, if mild, gap. That a third of even the careful sites skip it tells you how easy it is to forget.</p>
+
+<h2>Finding 4: the format is cleaner than expected</h2>
+<p>We checked every hreflang value against BCP-47. Zero sites used a relative URL in the <code>href</code>. The values a naive validator might flag as non-standard — <code>zh-Hans</code>, <code>zh-Hant-TW</code>, <code>sco</code>, <code>ast</code> — are all valid: the <code>Hans</code>/<code>Hant</code> forms are script subtags, and <code>sco</code> and <code>ast</code> are legitimate ISO 639-3 language codes used by sites that genuinely serve Scots and Asturian. Nobody in the sample shipped a broken value like "english" or "en_en".</p>
+<p>This is a useful contrast with our other surveys, which did find real defects. hreflang's format is mature enough that the mistakes are about relationships between annotations, not about the annotations themselves.</p>
+
+<h2>Finding 5: a sampling caveat, not a defect</h2>
+<p>Four sites — gitlab.com, notion.so, zoom.us, spotify.com — have their hreflang set living on a different domain or subdomain from the bare homepage we fetched: about.gitlab.com, notion.com, zoom.com, open.spotify.com. Because we sampled the bare homepage, that page shows no same-origin self-reference. In every case the bare domain is effectively an entry point that redirects to the host serving localized content, where the set is complete and reciprocal. We report it as a measurement artifact, not as a broken annotation.</p>
+
+<h2>The two errors that actually break hreflang</h2>
+<p>The format is fine and the coverage question is mostly irrelevant. The failures that matter are about relationships, and both are silent. The first is a missing return tag: if your English page points at the German page, the German page must point back, or Google treats the whole annotation as unconfirmed and ignores it. The second is a missing self-reference: every URL in the set must include a link to itself. A page that lists its siblings but not itself is, to a crawler, a page that never confirmed its own identity.</p>
+<p>Both are invisible. The page renders, the links are present, and the annotation simply does not take effect — which is exactly the state you discover months later when a locale refuses to rank. The fix is to generate the full set, including x-default and the self-link, from one source, so the relationships cannot drift apart.</p>
+
+<h2>How to do it without the foot-guns</h2>
+<p>A correct set has one entry per locale plus <code>x-default</code>, every entry points at an absolute URL, the page lists itself, and every target links back. Writing that by hand for more than two locales is how the return-tag rule gets broken. Generating it — as the <a href="https://www.serpprism.com/tools/hreflang-generator">hreflang generator</a> on this site does, from a single list of language and URL pairs — makes the reciprocal links and the self-reference impossible to forget, because the tool emits them for you.</p>
+<p>If your site is monolingual, the right move is to declare nothing and spend the effort on content. hreflang is for sites that actually have equivalents to offer.</p>
+
+<h2>Limitations</h2>
+<p>60 pages from 78 hand-picked high-traffic domains — representative of well-known sites, not of the web. A random sample would be dominated by monolingual sites and would show lower usage. We parsed only the initial HTML of the homepage, so annotations delivered through HTTP headers, sitemap entries, or injected by client-side JavaScript on a single-page app are not counted. A site whose hreflang lives only in its sitemap would appear here as not using it. Where a specific site is named, the raw HTML we retrieved is the arbiter; corrections are welcome.</p>
+
+<h2>Reproduce it</h2>
+<p>The script and the shared domain list ship with this site and store the raw HTML for every domain, so every claim above can be checked against the source rather than against our summary of it.</p>]]></content:encoded>
+  </item>
 </channel>
 </rss>
