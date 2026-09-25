@@ -3117,8 +3117,10 @@ write(
         description: `Who runs ${BRAND}, why the tools are client-side, and what the site does and does not claim to know.`,
         isPartOf: { "@id": SITE_ID },
         inLanguage: "en",
-        datePublished: LAUNCH,
-        dateModified: UPDATED,
+        // ⚠️ ProfilePage 的 dateModified 在 Google 规范里是 DateTime 类型，官方示例全是完整
+        // ISO 8601（带时间+时区）。只给日期 "2026-09-22" 会被 GSC 判「日期时间值无效」
+        // （2026-09-26 Search Console 邮件实测）。datePublished 不是 ProfilePage 的属性，去掉。
+        dateModified: UPDATED + "T00:00:00+00:00",
         about: { "@id": PERSON_ID },
         author: { "@id": PERSON_ID },
         mainEntity: { "@id": PERSON_ID },
