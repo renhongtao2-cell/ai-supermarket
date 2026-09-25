@@ -1336,6 +1336,76 @@ const GUIDES = [
       ["Is a canonical in the HTTP Link header enough?", "It is valid, but only one site in our sample used it, and that site also had the tag in its HTML. Put it in the HTML; treat the header as an option for PDFs and other non-HTML files."],
     ],
   },
+  {
+    slug: "serp-snippet-in-the-wild",
+    tags: ["seo", "webdev", "html", "marketing"],
+    h1: "What 59 Homepages Put in Their SERP Snippet",
+    lead: "We fetched 78 well-known homepages and read 59. Every one ships a title; the median is 35 characters, and a fifth of the descriptions run long.",
+    body: `
+<h2>How this was measured</h2>
+<p>On 2026-09-25 we fetched <code>https://&lt;domain&gt;/</code> for 78 hand-picked domains spanning news, commerce, SaaS, developer tooling, social, education, finance, government and SEO. 62 returned a usable page: 41 over a direct connection and 21 over a local proxy, because a number of these domains are unreachable from our network without one.</p>
+<p>Three of the 62 were not homepages and were dropped. <code>khanacademy.org</code> answered 200 with a 3 KB Cloudflare interstitial whose entire title is "Client Challenge". <code>paypal.com</code> returned an 8 KB JavaScript shell with no <code>&lt;title&gt;</code> at all. <code>archive.org</code> returned a 1.9 KB shell. Counting them would have manufactured findings that do not exist — a 15-character title, two missing titles — so they are excluded and listed in the script's output instead.</p>
+<p>One bug is worth naming, because it changed the headline. Our first pass read <code>python.org</code> as having no <code>&lt;title&gt;</code>. It has one. The site returns gzip unconditionally, and our fetch was not decompressing, so we were parsing gzip bytes as HTML. Once the fetch decompressed, the title appeared, and the count of homepages without a title went from two to zero. A measurement pipeline that fails quietly produces confident nonsense.</p>
+<p>For each page we took the first <code>&lt;title&gt;</code> and the first <code>&lt;meta name="description"&gt;</code>, decoded HTML entities, collapsed runs of whitespace and measured in Unicode code points. Skipping the decode step inflates every number: <code>&amp;amp;</code> counts as five characters instead of one.</p>
+
+<h2>Finding 1: every homepage has a title, and the median is 35 characters</h2>
+<p>59 of 59. Not one homepage in the sample ships without a <code>&lt;title&gt;</code>. The distribution is narrow at the bottom and long at the top: minimum 3 characters, 25th percentile 22, median 35, 75th percentile 54, 90th percentile 61, maximum 116, mean 36.9.</p>
+<p>The familiar rule — keep your title under 60 characters — is true and almost empty. Only 7 of 59 pages (12%) exceed 60, and just 2 exceed 70. The real behaviour is at the opposite end: 21 of 59 (36%) are under 30 characters. Half the sample writes a title shorter than 35 characters.</p>
+<p>If you have been treating 60 as a target to hit, you are aiming at a number almost nobody in this sample reaches.</p>
+
+<h2>Finding 2: the shorter the title, the bigger the brand</h2>
+<p>The shortest titles belong to the most famous names in the sample: <code>w3.org</code> (3 characters, "W3C"), <code>forbes.com</code> (6, "Forbes"), <code>tumblr.com</code> (6), <code>twitch.tv</code> (6), <code>youtube.com</code> (7), <code>pinterest.com</code> (9), <code>wikipedia.org</code> (9), <code>wikimedia.org</code> (9), <code>kubernetes.io</code> (10), <code>developer.mozilla.org</code> (12, "MDN Web Docs").</p>
+<p>The longest belong to sites that still have to explain themselves: <code>bbc.com</code> at 116 characters, <code>airbnb.com</code> at 74, <code>atlassian.com</code> at 70, <code>wise.com</code> at 68, <code>shopify.com</code> at 66, <code>github.com</code> at 61.</p>
+<p>That is not a style difference, it is an equity budget. "Forbes" is a complete title because the reader already knows what Forbes is; the word carries the meaning the other 54 characters would otherwise have to. A site nobody has heard of that ships its name alone has said nothing at all. The 60 characters are not a ceiling to stay under — they are space you have to fill until your name does the work by itself.</p>
+<p>The practical corollary: copying the title format of a famous site means copying a luxury you have not earned yet.</p>
+
+<h2>Finding 3: nearly everyone writes a meta description, so that advice is stale</h2>
+<p>57 of 59 homepages (97%) ship a description. Only two do not: <code>linkedin.com</code> and <code>cdc.gov</code>.</p>
+<p>This contradicts a piece of advice still repeated constantly — that most sites forget the description and let Google invent one. On this sample that is simply false. What the last decade of snippet rewriting actually did was make the tag universal rather than optional. The omission rate here is 3%, not the 50% the folklore implies.</p>
+<p>Two caveats. <code>linkedin.com</code> served a 121 KB JavaScript shell and <code>cdc.gov</code> a 60 KB document, so a description injected after load would be invisible to this method; both are recorded as "none in the served HTML", which is also what a crawler parsing the initial document sees. And writing a description does not mean Google uses it — this measurement is only about what sites ship, not about which sentence ends up in the snippet.</p>
+
+<h2>Finding 4: descriptions cluster at 114 to 150, and the 160 guideline holds up</h2>
+<p>The length distribution: minimum 45, 25th percentile 114, median 131, 75th percentile 150, 90th percentile 184, maximum 559, mean 141.</p>
+<p>That interquartile range — 114 to 150 — is remarkably tight for a number nobody enforces. Practitioners have converged on a working band just under the display limit without being told to.</p>
+<p>12 of the 57 (21%) run past 160 characters. The extremes are instructive: <code>kubernetes.io</code> ships 559 characters, roughly three and a half times what will ever be shown; <code>stanford.edu</code> ships 364; <code>trello.com</code> ships 195. At the other end, four descriptions fall under 70 characters, leaving more than half of the available space empty.</p>
+<p>The practical read: 120 to 155 characters is where this sample lives, and it is also where truncation is least likely.</p>
+
+<h2>Finding 5: pipe is the most common separator, but no separator is more common</h2>
+<p>Counting only separators with whitespace on both sides, so that the hyphen inside <code>rust-lang</code> is not mistaken for one: pipe appears in 16 titles (27%), hyphen in 11 (19%), em dash in 2, and colon, middle dot and slash once each.</p>
+<p>But 27 of 59 (46%) use no separator at all. The pipe is the plurality, not the majority; nearly half the sample writes a name or a sentence and stops.</p>
+<p>A separator is a formatting decision with no ranking consequence. What it does signal is how many ideas you are concatenating. One separator means two ideas, and in most of the titles above the second one is the weaker — the tagline, the region, the boilerplate. The titles with no separator have a single idea, and a single idea is usually the better title.</p>
+
+<h2>Finding 6: your title is not one thing</h2>
+<p>We fetched from a Chinese IP address, and several sites served a regional variant rather than the default. <code>linkedin.com</code> returned 领英企业服务. <code>stripe.com</code> returned "Stripe | 金融基础设施，托举营收增长". <code>wise.com</code> returned "Wise: The international account | Money without borders | Wise China". <code>bloomberg.com</code> returned "Bloomberg Europe".</p>
+<p>None of those are mistakes. But they mean a title audit performed from one location gives you one slice of a title that changes with geography, and a crawler dispatched from a different location reads a different string. The same applies to the description.</p>
+<p>If you localise titles per region, decide it deliberately and keep it consistent with your <a href="/guides/hreflang-in-the-wild">hreflang annotations</a> and your <a href="/guides/canonical-in-the-wild">canonical choice</a>. If you do not intend to localise, check that your edge is not doing it for you — the way to find out is to fetch your own homepage from more than one country.</p>
+
+<h2>What to do with this</h2>
+<p><strong>Write 50 to 60 characters, not 3.</strong> The median homepage title in this sample is 35 characters and 36% are under 30 — but those are household names. Unless yours is one, use the space.</p>
+<p><strong>Always write a description.</strong> 97% of the sample does. It is table stakes now, not an optional extra, and omitting it hands the sentence a searcher reads entirely to Google.</p>
+<p><strong>Target 120 to 155 characters.</strong> That is the measured interquartile band, and it sits just inside where truncation begins.</p>
+<p><strong>Do not copy a famous site's title.</strong> Its brevity is backed by recognition you have not earned yet.</p>
+<p><strong>Prefer one idea per title.</strong> 46% of the sample uses no separator. When you do need one, pipe is the safe default at 27% — but check whether the second half is pulling its weight.</p>
+<p><strong>Check what your edge actually serves.</strong> Fetch your homepage from two or three regions before concluding that your title is what you wrote.</p>
+<p>To see the truncation before you ship it, the <a href="/tools/serp-preview">SERP preview tool</a> on this site renders a title and description at Google's real desktop and mobile widths. The <a href="/tools/meta-tag-generator">meta tag generator</a> emits the title, description and canonical from a single input, so the values cannot drift apart from each other.</p>
+
+<h2>Limitations</h2>
+<p>59 homepages from 78 hand-picked, well-known domains — representative of famous sites, not of the web. A random sample would look different in both directions, and probably longer: small sites write longer titles than W3C does.</p>
+<p>16 of the 78 domains never produced a readable page — 403s, bot checks, timeouts. That loss is not random; it skews toward large consumer and financial sites that fight crawlers, so the sample is biased toward sites that serve their homepage to anyone who asks.</p>
+<p>We read the initial HTML only. A title or description injected by JavaScript after load is invisible here, and one of the two missing descriptions may be exactly that.</p>
+<p>One fetch, from one IP address, on one day. Finding 6 is the direct consequence of that limitation rather than a separate discovery.</p>
+<p>The brand-position analysis we planned did not survive checking and is not reported. Judging brand placement from the domain's first label fails on multi-word brands and on brands spelled differently from their domain: 9 of the 10 titles flagged as containing no brand did contain one — "the Guardian", "Node.js", "Rust", "Screaming Frog", "Search Engine Journal", "Square". We dropped the metric rather than publish a number we could not stand behind.</p>
+
+<h2>Reproduce it</h2>
+<p>The script and the shared domain list ship with this site. <code>node scripts/survey-serp-snippet.mjs</code> fetches and stores the raw HTML for every domain; <code>--report</code> re-derives every number from that stored HTML without touching the network; <code>--sample=N</code> prints raw title and description lines for manual checking; and <code>--outliers</code> lists every title over 60 characters, every description over 160, and every response excluded as a non-homepage. Our <a href="/guides/robots-txt-in-the-wild">robots.txt</a>, <a href="/guides/hreflang-in-the-wild">hreflang</a> and <a href="/guides/canonical-in-the-wild">canonical</a> surveys cover the same domain list from different angles.</p>`,
+    faq: [
+      ["How long should a title tag be?", "The median homepage title in our sample is 35 characters and only 12% exceed 60, so the familiar 'under 60' rule is already satisfied by almost everyone. For a site without brand recognition, 50 to 60 characters is the useful target — long enough to say what the page is."],
+      ["Do I still need a meta description?", "Yes. 57 of the 59 homepages we measured ship one. Google may rewrite or replace it, but omitting it hands the decision over entirely and you lose the ability to choose the sentence a searcher reads."],
+      ["Should my brand name go at the start or the end of the title?", "We could not measure that reliably and are not reporting a number for it. What the data does show is that famous brands can use the name alone as the entire title, and sites that are not yet famous cannot."],
+      ["What separator should I use in a title tag?", "None, if one idea will do — 46% of the homepages we measured use no separator. When you need two, pipe is the most common by a wide margin at 27%, followed by hyphen at 19%. There is no ranking difference between them."],
+      ["How long should a meta description be?", "The middle half of our sample sits between 114 and 150 characters, with a median of 131. Staying inside 120 to 155 keeps you in the band where the sample lives and inside the range Google usually displays."],
+    ],
+  },
 ];
 
 /* =================================================================

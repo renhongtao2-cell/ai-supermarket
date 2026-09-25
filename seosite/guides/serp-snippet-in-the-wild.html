@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What 59 Homepages Put in Their SERP Snippet | SerpPrism</title>
+<meta name="description" content="We fetched 78 well-known homepages and read 59. Every one ships a title; the median is 35 characters, and a fifth of the descriptions run long.">
+<link rel="canonical" href="https://www.serpprism.com/guides/serp-snippet-in-the-wild">
+<meta property="og:title" content="What 59 Homepages Put in Their SERP Snippet | SerpPrism">
+<meta property="og:description" content="We fetched 78 well-known homepages and read 59. Every one ships a title; the median is 35 characters, and a fifth of the descriptions run long.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.serpprism.com/guides/serp-snippet-in-the-wild">
+<meta property="og:site_name" content="SerpPrism">
+<meta property="og:image" content="https://www.serpprism.com/og/guides-serp-snippet-in-the-wild.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="What 59 Homepages Put in Their SERP Snippet | SerpPrism">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.serpprism.com/og/guides-serp-snippet-in-the-wild.png">
+<meta name="twitter:image:alt" content="What 59 Homepages Put in Their SERP Snippet | SerpPrism">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Hongtao Ren">
+<link rel="alternate" type="text/plain" href="https://www.serpprism.com/llms.txt" title="LLM-friendly index">
+<link rel="alternate" type="application/rss+xml" href="https://www.serpprism.com/feed.xml" title="SerpPrism — Guides">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
+<style>
+:root{
+  --bg:#ffffff; --panel:#f7f9fc; --line:#e4e8ef; --ink:#151821; --ink-2:#5a6373;
+  --accent:#2f6df6; --good:#0f7b4f; --warn:#a8630a; --bad:#b3261e;
+  --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+[data-theme="dark"]{
+  --bg:#0f1218; --panel:#171b24; --line:#262c38; --ink:#e8ecf3; --ink-2:#9aa4b5;
+  --accent:#6b9bff; --good:#4cc38a; --warn:#e0a458; --bad:#ff7b6e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+.wrap.narrow{max-width:760px}
+a{color:var(--accent)}
+h1,h2,h3,h4{line-height:1.28;letter-spacing:-.2px}
+h2{font-size:21px;margin:30px 0 10px}
+h3{font-size:17px;margin:22px 0 8px}
+p{margin:0 0 14px}
+code{font-family:var(--mono);font-size:.9em;background:var(--panel);padding:1px 5px;border-radius:4px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;background:var(--bg);padding:8px 12px;z-index:9;border:1px solid var(--line)}
+header.site{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+header.site .wrap{display:flex;align-items:center;gap:16px;min-height:58px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:17px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:7px}
+.logo .mark{font-size:19px}
+.logo em{font-style:normal;color:var(--accent)}
+header.site nav{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;align-items:center}
+header.site nav a{font-size:13.5px;color:var(--ink-2);text-decoration:none;padding:5px 8px;border-radius:7px}
+header.site nav a:hover{background:var(--panel);color:var(--ink)}
+#theme{background:none;border:1px solid var(--line);border-radius:8px;cursor:pointer;padding:4px 8px;margin-left:4px}
+main{padding:34px 0 60px}
+footer.site{border-top:1px solid var(--line);padding:34px 0 40px;background:var(--panel);font-size:14px}
+footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
+footer.site .fcol{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)}
+footer.site ul{list-style:none;margin:0;padding:0}
+footer.site li{margin-bottom:5px}
+footer.site a{color:var(--ink-2);text-decoration:none}
+footer.site a:hover{color:var(--accent)}
+.legal{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:13px}
+.crumb{font-size:13px;color:var(--ink-2);margin:0 0 6px}
+.crumb a{color:var(--ink-2)}
+.lead{font-size:17.5px;color:var(--ink-2);margin:0 0 22px}
+.hero{background:var(--panel);border-bottom:1px solid var(--line);padding:40px 0 38px;margin:-34px 0 34px}
+.hero h1{font-size:clamp(26px,4.2vw,38px);margin:0 0 12px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.badge{font-size:12.5px;padding:4px 11px;border:1px solid var(--line);border-radius:20px;background:var(--bg);color:var(--ink-2)}
+.badge.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.grid-tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:22px 0}
+.tcard{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:var(--bg);text-decoration:none;color:inherit;display:block}
+.tcard:hover{border-color:var(--accent)}
+.tcard h3{margin:0 0 6px;font-size:16px}
+.tcard p{margin:0;font-size:14px;color:var(--ink-2)}
+.tool{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--panel);margin:22px 0}
+label{display:block;margin-bottom:13px;font-size:13.5px;color:var(--ink-2);font-weight:600}
+label input,label textarea,label select{
+  display:block;width:100%;margin-top:6px;padding:9px 11px;font:inherit;font-size:15px;
+  border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+label textarea{font-family:var(--mono);font-size:13.5px;line-height:1.6;resize:vertical}
+label input:focus,label textarea:focus,label select:focus{outline:2px solid var(--accent);outline-offset:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+@media(max-width:620px){.grid2,.grid3{grid-template-columns:1fr}}
+.meter{height:7px;background:var(--line);border-radius:20px;overflow:hidden;margin:10px 0 4px}
+.meter-fill{height:100%;border-radius:20px}
+.meter-fill.good{background:var(--good)}.meter-fill.warn{background:var(--warn)}.meter-fill.bad{background:var(--bad)}
+.meter-note{font-size:12.5px;font-weight:600}
+.meter-note.good{color:var(--good)}.meter-note.warn{color:var(--warn)}.meter-note.bad{color:var(--bad)}
+.out-head{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px;font-weight:700;font-size:14px}
+.mini{font:inherit;font-size:12.5px;padding:4px 11px;border:1px solid var(--line);background:var(--bg);
+  color:var(--ink);border-radius:7px;cursor:pointer}
+.mini:hover{border-color:var(--accent)}
+pre.code{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:13px;overflow:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;margin:0;max-height:340px}
+.muted{color:var(--ink-2)}
+.small{font-size:12.5px}
+.serp-box{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;max-width:620px}
+[data-theme="dark"] .serp-box{background:#11151c}
+.serp-url{display:flex;align-items:center;gap:7px;font-size:13px;color:#202124;margin-bottom:3px}
+[data-theme="dark"] .serp-url{color:#c9d1dc}
+.serp-fav{width:22px;height:22px;border-radius:50%;background:#e8eaed;flex:none}
+.serp-site{font-weight:600}
+.serp-path{color:#5f6368}
+.serp-title{color:#1a0dab;font-size:19px;line-height:1.35;margin-bottom:3px}
+[data-theme="dark"] .serp-title{color:#8ab4f8}
+.serp-desc{color:#4d5156;font-size:13.5px;line-height:1.58}
+[data-theme="dark"] .serp-desc{color:#bdc1c6}
+.serp-cut{color:#9aa0a6;text-decoration:line-through}
+.verdict{margin-top:6px}
+.verdict-box{border:1px solid var(--line);border-left-width:4px;border-radius:9px;padding:13px 15px;background:var(--bg);margin-bottom:10px}
+.verdict-box.ok{border-left-color:var(--good)}
+.verdict-box.no{border-left-color:var(--bad)}
+.verdict-word{font-weight:800;font-size:17px;letter-spacing:.02em}
+.verdict-box.ok .verdict-word{color:var(--good)}
+.verdict-box.no .verdict-word{color:var(--bad)}
+.verdict-why{font-size:14px;color:var(--ink-2)}
+.mini-table{border-collapse:collapse;font-size:13px;margin-top:10px}
+.mini-table th,.mini-table td{border:1px solid var(--line);padding:5px 10px;text-align:left}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{font-size:12.5px;padding:3px 10px;border:1px solid var(--line);border-radius:20px}
+.chip.dim{opacity:.45}
+.outline{border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--bg);max-height:380px;overflow:auto}
+.h-row{padding:3px 0;font-size:14px;display:flex;gap:9px;align-items:baseline}
+.h-tag{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);flex:none;min-width:26px}
+.h-1 .h-text{font-weight:700;font-size:16px}
+.h-2{padding-left:14px}.h-3{padding-left:28px}.h-4{padding-left:42px}
+.h-5{padding-left:56px}.h-6{padding-left:70px}
+.issue-list{display:flex;flex-direction:column;gap:7px}
+.issue{border:1px solid var(--line);border-left-width:3px;border-radius:8px;padding:9px 12px;font-size:14px;background:var(--bg)}
+.issue.warn{border-left-color:var(--warn)}
+.issue.ok{border-left-color:var(--good)}
+.issue.info{border-left-color:var(--line)}
+.kw-table{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:10px}
+.kw-table th,.kw-table td{border-bottom:1px solid var(--line);padding:6px 9px;text-align:left}
+.kw-table .num{text-align:right;font-variant-numeric:tabular-nums;width:64px}
+.bar{height:6px;background:var(--line);border-radius:20px;overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);border-radius:20px}
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+@media(max-width:680px){.score-grid{grid-template-columns:repeat(2,1fr)}}
+.score{border:1px solid var(--line);border-radius:var(--radius);padding:14px;text-align:center;background:var(--bg)}
+.score-n{font-size:27px;font-weight:800;line-height:1.1}
+.score.good .score-n{color:var(--good)}.score.warn .score-n{color:var(--warn)}.score.bad .score-n{color:var(--bad)}
+.score-l{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+.score-b{font-size:11.5px;color:var(--ink-2);opacity:.8;margin-top:2px}
+.faq{margin:26px 0 0}
+.faq details{border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:9px;background:var(--panel)}
+.faq summary{cursor:pointer;font-weight:600;font-size:15px}
+.faq p{margin:9px 0 0;font-size:14.5px;color:var(--ink-2)}
+.privacy{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;
+  padding:14px 16px;background:var(--panel);margin:22px 0}
+.privacy h2{margin:0 0 7px;font-size:15px}
+.privacy p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.note{font-size:14px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin-top:30px}
+.byline{font-size:13.5px;color:var(--ink-2);margin:-10px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.byline a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--line)}
+.byline a:hover{color:var(--accent)}
+.author-box{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:var(--panel);margin:28px 0}
+.author-box h3{margin:0 0 6px;font-size:15px}
+.author-box p{margin:0 0 8px;font-size:14.5px}
+.author-box p:last-child{margin-bottom:0}
+.author-avatar{width:44px;height:44px;flex:none;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+@media(max-width:620px){.author-box{flex-direction:column;gap:10px}}
+</style>
+<script>try{var t=localStorage.getItem("sp-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9901133369141996" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.serpprism.com/#organization","name":"SerpPrism","url":"https://www.serpprism.com/","description":"Free browser-based SEO and website auditing tools.","email":"renhongtao2@gmail.com","founder":{"@id":"https://www.serpprism.com/#person"}},{"@type":"WebSite","@id":"https://www.serpprism.com/#website","name":"SerpPrism","url":"https://www.serpprism.com/","inLanguage":"en","publisher":{"@id":"https://www.serpprism.com/#organization"}},{"@type":"Person","@id":"https://www.serpprism.com/#person","name":"Hongtao Ren","alternateName":"任宏涛","url":"https://www.serpprism.com/about","description":"Hongtao Ren is a developer based in Xi'an, China. He builds browser-based tools and JetBrains IDE plugins, and built and maintains SerpPrism.","email":"renhongtao2@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Xi'an","addressCountry":"CN"},"knowsAbout":["Technical SEO","Search engine result page rendering","robots.txt","Open Graph and Twitter card metadata","hreflang and international SEO","Structured data (JSON-LD)"]},{"@type":"WebPage","@id":"https://www.serpprism.com/guides/serp-snippet-in-the-wild#webpage","url":"https://www.serpprism.com/guides/serp-snippet-in-the-wild","name":"What 59 Homepages Put in Their SERP Snippet","description":"We fetched 78 well-known homepages and read 59. Every one ships a title; the median is 35 characters, and a fifth of the descriptions run long.","isPartOf":{"@id":"https://www.serpprism.com/#website"},"inLanguage":"en","datePublished":"2026-09-21","dateModified":"2026-09-22","author":{"@id":"https://www.serpprism.com/#person"}},{"@type":"BreadcrumbList","@id":"https://www.serpprism.com/guides/serp-snippet-in-the-wild#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.serpprism.com/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://www.serpprism.com/guides/"},{"@type":"ListItem","position":3,"name":"What 59 Homepages Put in Their SERP Snippet","item":"https://www.serpprism.com/guides/serp-snippet-in-the-wild"}]},{"@type":"TechArticle","@id":"https://www.serpprism.com/guides/serp-snippet-in-the-wild#article","headline":"What 59 Homepages Put in Their SERP Snippet","description":"We fetched 78 well-known homepages and read 59. Every one ships a title; the median is 35 characters, and a fifth of the descriptions run long.","datePublished":"2026-09-21","dateModified":"2026-09-22","author":{"@id":"https://www.serpprism.com/#person"},"publisher":{"@id":"https://www.serpprism.com/#organization"}},{"@type":"FAQPage","@id":"https://www.serpprism.com/guides/serp-snippet-in-the-wild#faq","mainEntity":[{"@type":"Question","name":"How long should a title tag be?","acceptedAnswer":{"@type":"Answer","text":"The median homepage title in our sample is 35 characters and only 12% exceed 60, so the familiar 'under 60' rule is already satisfied by almost everyone. For a site without brand recognition, 50 to 60 characters is the useful target — long enough to say what the page is."}},{"@type":"Question","name":"Do I still need a meta description?","acceptedAnswer":{"@type":"Answer","text":"Yes. 57 of the 59 homepages we measured ship one. Google may rewrite or replace it, but omitting it hands the decision over entirely and you lose the ability to choose the sentence a searcher reads."}},{"@type":"Question","name":"Should my brand name go at the start or the end of the title?","acceptedAnswer":{"@type":"Answer","text":"We could not measure that reliably and are not reporting a number for it. What the data does show is that famous brands can use the name alone as the entire title, and sites that are not yet famous cannot."}},{"@type":"Question","name":"What separator should I use in a title tag?","acceptedAnswer":{"@type":"Answer","text":"None, if one idea will do — 46% of the homepages we measured use no separator. When you need two, pipe is the most common by a wide margin at 27%, followed by hyphen at 19%. There is no ranking difference between them."}},{"@type":"Question","name":"How long should a meta description be?","acceptedAnswer":{"@type":"Answer","text":"The middle half of our sample sits between 114 and 150 characters, with a median of 131. Staying inside 120 to 155 keeps you in the band where the sample lives and inside the range Google usually displays."}}]}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark">🔍</span>Serp<em>Prism</em></a>
+    <nav><a href="/tools/">All tools</a><a href="/tools/meta-tag-generator">Meta tags</a><a href="/tools/serp-preview">SERP preview</a><a href="/tools/robots-txt-tester">robots.txt</a><a href="/tools/heading-analyzer">Headings</a><a href="/tools/keyword-density">Keyword density</a><a href="/tools/readability-score">Readability</a><a href="/tools/llms-txt-generator">llms.txt</a><a href="/tools/schema-markup-generator">Schema markup</a><a href="/tools/utm-link-builder">UTM builder</a><a href="/tools/open-graph-preview">OG preview</a><a href="/tools/hreflang-generator">hreflang</a><a href="/guides/">Guides</a><button id="theme" title="Toggle theme" aria-label="Toggle theme">🌗</button></nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap narrow">
+  <p class="crumb"><a href="/">Home</a> › <a href="/guides/">Guides</a> › What 59 Homepages Put in Their SERP Snippet</p>
+  <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">What 59 Homepages Put in Their SERP Snippet</h1>
+  <p class="lead">We fetched 78 well-known homepages and read 59. Every one ships a title; the median is 35 characters, and a fifth of the descriptions run long.</p>
+  <p class="byline">By <a href="/about">Hongtao Ren</a> · Updated <time datetime="2026-09-22">2026-09-22</time></p>
+  <article>
+<h2>How this was measured</h2>
+<p>On 2026-09-25 we fetched <code>https://&lt;domain&gt;/</code> for 78 hand-picked domains spanning news, commerce, SaaS, developer tooling, social, education, finance, government and SEO. 62 returned a usable page: 41 over a direct connection and 21 over a local proxy, because a number of these domains are unreachable from our network without one.</p>
+<p>Three of the 62 were not homepages and were dropped. <code>khanacademy.org</code> answered 200 with a 3 KB Cloudflare interstitial whose entire title is "Client Challenge". <code>paypal.com</code> returned an 8 KB JavaScript shell with no <code>&lt;title&gt;</code> at all. <code>archive.org</code> returned a 1.9 KB shell. Counting them would have manufactured findings that do not exist — a 15-character title, two missing titles — so they are excluded and listed in the script's output instead.</p>
+<p>One bug is worth naming, because it changed the headline. Our first pass read <code>python.org</code> as having no <code>&lt;title&gt;</code>. It has one. The site returns gzip unconditionally, and our fetch was not decompressing, so we were parsing gzip bytes as HTML. Once the fetch decompressed, the title appeared, and the count of homepages without a title went from two to zero. A measurement pipeline that fails quietly produces confident nonsense.</p>
+<p>For each page we took the first <code>&lt;title&gt;</code> and the first <code>&lt;meta name="description"&gt;</code>, decoded HTML entities, collapsed runs of whitespace and measured in Unicode code points. Skipping the decode step inflates every number: <code>&amp;amp;</code> counts as five characters instead of one.</p>
+
+<h2>Finding 1: every homepage has a title, and the median is 35 characters</h2>
+<p>59 of 59. Not one homepage in the sample ships without a <code>&lt;title&gt;</code>. The distribution is narrow at the bottom and long at the top: minimum 3 characters, 25th percentile 22, median 35, 75th percentile 54, 90th percentile 61, maximum 116, mean 36.9.</p>
+<p>The familiar rule — keep your title under 60 characters — is true and almost empty. Only 7 of 59 pages (12%) exceed 60, and just 2 exceed 70. The real behaviour is at the opposite end: 21 of 59 (36%) are under 30 characters. Half the sample writes a title shorter than 35 characters.</p>
+<p>If you have been treating 60 as a target to hit, you are aiming at a number almost nobody in this sample reaches.</p>
+
+<h2>Finding 2: the shorter the title, the bigger the brand</h2>
+<p>The shortest titles belong to the most famous names in the sample: <code>w3.org</code> (3 characters, "W3C"), <code>forbes.com</code> (6, "Forbes"), <code>tumblr.com</code> (6), <code>twitch.tv</code> (6), <code>youtube.com</code> (7), <code>pinterest.com</code> (9), <code>wikipedia.org</code> (9), <code>wikimedia.org</code> (9), <code>kubernetes.io</code> (10), <code>developer.mozilla.org</code> (12, "MDN Web Docs").</p>
+<p>The longest belong to sites that still have to explain themselves: <code>bbc.com</code> at 116 characters, <code>airbnb.com</code> at 74, <code>atlassian.com</code> at 70, <code>wise.com</code> at 68, <code>shopify.com</code> at 66, <code>github.com</code> at 61.</p>
+<p>That is not a style difference, it is an equity budget. "Forbes" is a complete title because the reader already knows what Forbes is; the word carries the meaning the other 54 characters would otherwise have to. A site nobody has heard of that ships its name alone has said nothing at all. The 60 characters are not a ceiling to stay under — they are space you have to fill until your name does the work by itself.</p>
+<p>The practical corollary: copying the title format of a famous site means copying a luxury you have not earned yet.</p>
+
+<h2>Finding 3: nearly everyone writes a meta description, so that advice is stale</h2>
+<p>57 of 59 homepages (97%) ship a description. Only two do not: <code>linkedin.com</code> and <code>cdc.gov</code>.</p>
+<p>This contradicts a piece of advice still repeated constantly — that most sites forget the description and let Google invent one. On this sample that is simply false. What the last decade of snippet rewriting actually did was make the tag universal rather than optional. The omission rate here is 3%, not the 50% the folklore implies.</p>
+<p>Two caveats. <code>linkedin.com</code> served a 121 KB JavaScript shell and <code>cdc.gov</code> a 60 KB document, so a description injected after load would be invisible to this method; both are recorded as "none in the served HTML", which is also what a crawler parsing the initial document sees. And writing a description does not mean Google uses it — this measurement is only about what sites ship, not about which sentence ends up in the snippet.</p>
+
+<h2>Finding 4: descriptions cluster at 114 to 150, and the 160 guideline holds up</h2>
+<p>The length distribution: minimum 45, 25th percentile 114, median 131, 75th percentile 150, 90th percentile 184, maximum 559, mean 141.</p>
+<p>That interquartile range — 114 to 150 — is remarkably tight for a number nobody enforces. Practitioners have converged on a working band just under the display limit without being told to.</p>
+<p>12 of the 57 (21%) run past 160 characters. The extremes are instructive: <code>kubernetes.io</code> ships 559 characters, roughly three and a half times what will ever be shown; <code>stanford.edu</code> ships 364; <code>trello.com</code> ships 195. At the other end, four descriptions fall under 70 characters, leaving more than half of the available space empty.</p>
+<p>The practical read: 120 to 155 characters is where this sample lives, and it is also where truncation is least likely.</p>
+
+<h2>Finding 5: pipe is the most common separator, but no separator is more common</h2>
+<p>Counting only separators with whitespace on both sides, so that the hyphen inside <code>rust-lang</code> is not mistaken for one: pipe appears in 16 titles (27%), hyphen in 11 (19%), em dash in 2, and colon, middle dot and slash once each.</p>
+<p>But 27 of 59 (46%) use no separator at all. The pipe is the plurality, not the majority; nearly half the sample writes a name or a sentence and stops.</p>
+<p>A separator is a formatting decision with no ranking consequence. What it does signal is how many ideas you are concatenating. One separator means two ideas, and in most of the titles above the second one is the weaker — the tagline, the region, the boilerplate. The titles with no separator have a single idea, and a single idea is usually the better title.</p>
+
+<h2>Finding 6: your title is not one thing</h2>
+<p>We fetched from a Chinese IP address, and several sites served a regional variant rather than the default. <code>linkedin.com</code> returned 领英企业服务. <code>stripe.com</code> returned "Stripe | 金融基础设施，托举营收增长". <code>wise.com</code> returned "Wise: The international account | Money without borders | Wise China". <code>bloomberg.com</code> returned "Bloomberg Europe".</p>
+<p>None of those are mistakes. But they mean a title audit performed from one location gives you one slice of a title that changes with geography, and a crawler dispatched from a different location reads a different string. The same applies to the description.</p>
+<p>If you localise titles per region, decide it deliberately and keep it consistent with your <a href="/guides/hreflang-in-the-wild">hreflang annotations</a> and your <a href="/guides/canonical-in-the-wild">canonical choice</a>. If you do not intend to localise, check that your edge is not doing it for you — the way to find out is to fetch your own homepage from more than one country.</p>
+
+<h2>What to do with this</h2>
+<p><strong>Write 50 to 60 characters, not 3.</strong> The median homepage title in this sample is 35 characters and 36% are under 30 — but those are household names. Unless yours is one, use the space.</p>
+<p><strong>Always write a description.</strong> 97% of the sample does. It is table stakes now, not an optional extra, and omitting it hands the sentence a searcher reads entirely to Google.</p>
+<p><strong>Target 120 to 155 characters.</strong> That is the measured interquartile band, and it sits just inside where truncation begins.</p>
+<p><strong>Do not copy a famous site's title.</strong> Its brevity is backed by recognition you have not earned yet.</p>
+<p><strong>Prefer one idea per title.</strong> 46% of the sample uses no separator. When you do need one, pipe is the safe default at 27% — but check whether the second half is pulling its weight.</p>
+<p><strong>Check what your edge actually serves.</strong> Fetch your homepage from two or three regions before concluding that your title is what you wrote.</p>
+<p>To see the truncation before you ship it, the <a href="/tools/serp-preview">SERP preview tool</a> on this site renders a title and description at Google's real desktop and mobile widths. The <a href="/tools/meta-tag-generator">meta tag generator</a> emits the title, description and canonical from a single input, so the values cannot drift apart from each other.</p>
+
+<h2>Limitations</h2>
+<p>59 homepages from 78 hand-picked, well-known domains — representative of famous sites, not of the web. A random sample would look different in both directions, and probably longer: small sites write longer titles than W3C does.</p>
+<p>16 of the 78 domains never produced a readable page — 403s, bot checks, timeouts. That loss is not random; it skews toward large consumer and financial sites that fight crawlers, so the sample is biased toward sites that serve their homepage to anyone who asks.</p>
+<p>We read the initial HTML only. A title or description injected by JavaScript after load is invisible here, and one of the two missing descriptions may be exactly that.</p>
+<p>One fetch, from one IP address, on one day. Finding 6 is the direct consequence of that limitation rather than a separate discovery.</p>
+<p>The brand-position analysis we planned did not survive checking and is not reported. Judging brand placement from the domain's first label fails on multi-word brands and on brands spelled differently from their domain: 9 of the 10 titles flagged as containing no brand did contain one — "the Guardian", "Node.js", "Rust", "Screaming Frog", "Search Engine Journal", "Square". We dropped the metric rather than publish a number we could not stand behind.</p>
+
+<h2>Reproduce it</h2>
+<p>The script and the shared domain list ship with this site. <code>node scripts/survey-serp-snippet.mjs</code> fetches and stores the raw HTML for every domain; <code>--report</code> re-derives every number from that stored HTML without touching the network; <code>--sample=N</code> prints raw title and description lines for manual checking; and <code>--outliers</code> lists every title over 60 characters, every description over 160, and every response excluded as a non-homepage. Our <a href="/guides/robots-txt-in-the-wild">robots.txt</a>, <a href="/guides/hreflang-in-the-wild">hreflang</a> and <a href="/guides/canonical-in-the-wild">canonical</a> surveys cover the same domain list from different angles.</p></article>
+  
+  <div class="author-box">
+    <div class="author-avatar" aria-hidden="true">HR</div>
+    <div>
+      <h3>About the author</h3>
+      <p><strong>Hongtao Ren</strong> (任宏涛) — Developer based in Xi&#39;an, China. Builds browser-based tools and JetBrains IDE plugins. He built and maintains SerpPrism.</p>
+      <p class="muted small">Corrections are the most useful thing you can send. If a tool or guide here gives you a wrong answer, that is a bug, not a judgement call — use the <a href="/contact">contact page</a>.</p>
+    </div>
+  </div>
+  <div class="faq">
+    <h2>Questions</h2>
+    <details><summary>How long should a title tag be?</summary><p>The median homepage title in our sample is 35 characters and only 12% exceed 60, so the familiar 'under 60' rule is already satisfied by almost everyone. For a site without brand recognition, 50 to 60 characters is the useful target — long enough to say what the page is.</p></details><details><summary>Do I still need a meta description?</summary><p>Yes. 57 of the 59 homepages we measured ship one. Google may rewrite or replace it, but omitting it hands the decision over entirely and you lose the ability to choose the sentence a searcher reads.</p></details><details><summary>Should my brand name go at the start or the end of the title?</summary><p>We could not measure that reliably and are not reporting a number for it. What the data does show is that famous brands can use the name alone as the entire title, and sites that are not yet famous cannot.</p></details><details><summary>What separator should I use in a title tag?</summary><p>None, if one idea will do — 46% of the homepages we measured use no separator. When you need two, pipe is the most common by a wide margin at 27%, followed by hyphen at 19%. There is no ranking difference between them.</p></details><details><summary>How long should a meta description be?</summary><p>The middle half of our sample sits between 114 and 150 characters, with a median of 131. Staying inside 120 to 155 keeps you in the band where the sample lives and inside the range Google usually displays.</p></details>
+  </div>
+</div></main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <p class="fcol">SerpPrism</p>
+        <p style="margin:0">Free SEO and website auditing tools that run entirely in your browser. Nothing you paste is uploaded or stored.</p>
+        <p style="margin:10px 0 0">Built and maintained by <a href="/about">Hongtao Ren</a>.</p>
+      </div>
+      <div>
+        <p class="fcol">Tools</p>
+        <ul>
+          <li><a href="/tools/"><strong>All tools</strong></a></li>
+          <li><a href="/tools/meta-tag-generator">Meta Tag Generator</a></li><li><a href="/tools/serp-preview">SERP Preview Tool</a></li><li><a href="/tools/robots-txt-tester">robots.txt Tester</a></li><li><a href="/tools/heading-analyzer">Heading Structure Analyzer</a></li><li><a href="/tools/keyword-density">Keyword Density Checker</a></li><li><a href="/tools/readability-score">Readability Score Checker</a></li><li><a href="/tools/llms-txt-generator">llms.txt Generator</a></li><li><a href="/tools/schema-markup-generator">JSON-LD Schema Markup Generator</a></li><li><a href="/tools/utm-link-builder">UTM Link Builder</a></li><li><a href="/tools/open-graph-preview">Open Graph Preview Tool</a></li><li><a href="/tools/hreflang-generator">hreflang Tag Generator</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol">Guides</p>
+        <ul>
+          <li><a href="/guides/"><strong>All guides</strong></a></li>
+          <li><a href="/guides/meta-description-length">Meta Description Length: What Gets Truncated</a></li><li><a href="/guides/robots-txt-mistakes">robots.txt Mistakes That Silently Deindex Pages</a></li><li><a href="/guides/heading-structure-seo">Heading Structure: What H1–H6 Order Actually Does</a></li><li><a href="/guides/json-ld-graph-structure">JSON-LD @graph: Why One Block Beats Five</a></li><li><a href="/guides/pre-publish-seo-checklist">A Pre-Publish SEO Checklist for Any New Page</a></li><li><a href="/guides/robots-txt-in-the-wild">What 71 Sites Actually Put in robots.txt</a></li><li><a href="/guides/json-ld-in-the-wild">What 61 Homepages Actually Ship in JSON-LD</a></li><li><a href="/guides/open-graph-in-the-wild">What 62 Homepages Actually Ship in Open Graph</a></li><li><a href="/guides/ai-crawlers-in-the-wild">What 70 robots.txt Files Say About AI Crawlers</a></li><li><a href="/guides/hreflang-in-the-wild">What 60 Sites Actually Do With hreflang</a></li><li><a href="/guides/canonical-in-the-wild">What 55 Homepages Actually Do With Canonical</a></li><li><a href="/guides/serp-snippet-in-the-wild">What 59 Homepages Put in Their SERP Snippet</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fcol">Site</p>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>© 2026 SerpPrism — www.serpprism.com. All analysis happens locally in your browser. Last updated 2026-09-22.</p>
+    </div>
+  </div>
+</footer>
+<script src="/js/tools.js?v=894d452e"></script>
+<script>(function(){var b=document.getElementById("theme");if(!b)return;b.addEventListener("click",function(){var h=document.documentElement,n=h.getAttribute("data-theme")==="dark"?"light":"dark";h.setAttribute("data-theme",n);try{localStorage.setItem("sp-theme",n)}catch(e){}});})();</script>
+</body>
+</html>
