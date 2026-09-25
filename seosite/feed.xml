@@ -513,5 +513,75 @@
 <h2>Reproduce it</h2>
 <p>The script and the shared domain list ship with this site and store the raw HTML for every domain, so every claim above can be checked against the source rather than against our summary of it.</p>]]></content:encoded>
   </item>
+  <item>
+    <title>What 55 Homepages Actually Do With Canonical</title>
+    <link>https://www.serpprism.com/guides/canonical-in-the-wild</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/canonical-in-the-wild</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>We fetched the homepage of 78 well-known domains and read 55. Four in five declare a canonical; one in five ships a homepage with none at all.</description>
+    <category>seo</category>
+    <category>webdev</category>
+    <category>html</category>
+    <category>programming</category>
+    <content:encoded><![CDATA[
+<h2>How this was measured</h2>
+<p>On 2026-09-24 we fetched <code>https://&lt;domain&gt;/</code> for 78 well-known domains spanning news, commerce, SaaS, developer tooling, social, education, finance and government. 55 returned a usable page: 34 over a direct connection and 21 over a local proxy, because a number of these domains are unreachable from our network without one.</p>
+<p>The other 23 could not be read. 14 answered with something other than 200 — mostly 403, one 401, one 202, one timeout — and 20 served a bot check or an interstitial instead of a page; the two groups overlap. One is worth naming: <code>amazon.com</code> answers 200 with a 2 KB page whose entire content is a <code>bm-verify</code> meta-refresh, not a homepage. Our first pass counted it as a real page and would have recorded Amazon as a site with no canonical. Re-reading the response is what caught it, and it is why every number below was checked against the raw HTML before it was written down.</p>
+<p>For each page we took the <code>&lt;link rel="canonical"&gt;</code> from the initial HTML, resolved it against the URL we actually landed on after redirects, and compared the two after normalising: lowercased host, <code>www</code> stripped, trailing slash and <code>index.html</code> removed. We also captured the HTTP <code>Link</code> header, counted how many canonical tags each page ships, and recorded whether the tag sits before <code>&lt;/head&gt;</code>. Then we made a second request to each canonical URL with redirects disabled, to see whether it points at a page that exists.</p>
+
+<h2>Finding 1: one homepage in five declares nothing</h2>
+<p>44 of the 55 pages (80%) declare a canonical. The other 11 declare none:</p>
+<p><code>reddit.com, kubernetes.io, python.org, rust-lang.org, netflix.com, wikipedia.org, mozilla.org, w3.org, archive.org, wikimedia.org, airbnb.com</code></p>
+<p>Two of those need an asterisk. <code>reddit.com</code> and <code>archive.org</code> returned client-rendered shells — 8.4 KB and 1.9 KB with no content in them — so a canonical injected by JavaScript would be invisible to a method that reads only the initial HTML. We cannot say they have no canonical; we can only say none is served with the document.</p>
+<p>The other nine are server-rendered and full-sized, and the absence is real. Wikipedia, Mozilla, W3C and Python.org are not sites that forgot a tag through carelessness; for a homepage that is the most-linked URL on the domain, the duplicate-selection problem canonical solves is largely solved by the link graph anyway. <code>airbnb.com</code> is the interesting one: it ships <code>&lt;meta id="english-canonical-url" content=""&gt;</code>, a canonical slot that arrived empty.</p>
+<p>What the omission costs is narrow but real. Without it, <code>/</code>, <code>/index.html</code>, <code>/?utm_source=newsletter</code> and the http variant are four separate URLs that a crawler must choose between. It is one line of HTML to remove the question.</p>
+
+<h2>Finding 2: you have to follow the redirect first</h2>
+<p>43 of the 55 homepages (78%) redirected at least once before serving content, and 35 of the 44 that declare a canonical (80%) did. Some are ordinary www normalisation; several land on a different host entirely:</p>
+<p><code>gitlab.com &rarr; about.gitlab.com</code>, <code>spotify.com &rarr; open.spotify.com</code>, <code>notion.so &rarr; notion.com</code>, <code>zoom.us &rarr; zoom.com</code>, <code>linkedin.com &rarr; www.linkedin.cn</code>, <code>cnn.com &rarr; edition.cnn.com</code>.</p>
+<p>This is the most common way to misread your own canonical. If you compare the tag against the URL you typed rather than the URL you were finally served, every one of those six looks like a cross-domain canonical pointing somewhere suspicious. They are not — they are self-referencing canonicals on the page that actually exists. When you audit, audit against the final URL after redirects, which is what a crawler sees.</p>
+
+<h2>Finding 3: six of 44 point anywhere other than themselves</h2>
+<p>38 of the 44 canonicals (86%) resolve to exactly the URL we were served. The six that do not are the whole story of this survey:</p>
+<p><code>cnn.com</code> — served <code>edition.cnn.com</code>, canonical <code>https://www.cnn.com</code>, which returns 200. This is geo consolidation done deliberately: the regional edition defers to the global URL.</p>
+<p><code>linkedin.com</code> — served <code>www.linkedin.cn</code>, canonical <code>https://business.linkedin.com/zh-cn/zh-cn</code>, 200. The same pattern on a different host.</p>
+<p><code>tumblr.com</code> — served <code>/</code>, canonical <code>https://www.tumblr.com/explore/trending</code>, 200. The logged-out homepage canonicalises to the trending feed rather than to itself.</p>
+<p><code>stanford.edu</code> — served <code>/</code>, canonical <code>https://www.stanford.edu/home</code>, which returns <strong>404</strong>.</p>
+<p><code>trello.com</code> — served <code>/</code>, canonical <code>https://www.trello.com/home</code>, which returns <strong>301</strong>.</p>
+<p><code>mit.edu</code> — served <code>web.mit.edu</code>, canonical <code>https://tlecms.mit.edu/spotlight/zombie-cells</code>: a different host, and a specific article about zombie cells. We could not reach that URL to check it — a direct request timed out and a proxied request failed the TLS handshake — so we report it as unverified rather than as broken. It has the shape of the classic template bug, where a homepage inherits a canonical slot filled from an article template, but we did not confirm it.</p>
+
+<h2>Finding 4: two canonical targets are not reachable pages</h2>
+<p>We managed to test 43 of the 44 canonical URLs. 41 returned 200 (95%). Two did not, and both belong to large, well-resourced sites.</p>
+<p>Stanford's homepage tells a crawler that the preferred version of <code>https://www.stanford.edu/</code> is a URL that answers 404. Trello's points at <code>/home</code>, which 301s — and in Trello's case the bare host redirects too, so the canonical points into a redirect chain rather than at a destination.</p>
+<p>Neither is a syntax error, and nothing warns you. The tag is well-formed, the page renders, validators pass. The failure is silent in exactly the way canonical failures always are: a crawler that cannot resolve the canonical behaves as though you had not written one, which returns you to the duplicate-selection problem you wrote the tag to avoid. One command settles it for any URL you own:</p>
+<p><code>curl -sS -o /dev/null -w "%{http_code}" https://example.com/your-canonical</code></p>
+<p>The answer must be 200. Anything else is a canonical that does not do its job.</p>
+
+<h2>Finding 5: the mechanics are cleaner than the reputation suggests</h2>
+<p>Across 44 canonicals we found <strong>zero</strong> relative hrefs — every single one used an absolute URL. Zero http/https mismatches. Zero pages shipping two conflicting canonicals. Zero canonicals placed outside <code>&lt;head&gt;</code>.</p>
+<p>Two near-misses are worth knowing. <code>bbc.com</code> ships the identical canonical tag twice, a harmless artefact of a framework rendering the head twice. <code>moz.com</code> is the only site in the sample to send a canonical in the HTTP <code>Link</code> header — and it also has the tag in its HTML, so the header is redundant rather than load-bearing.</p>
+<p>Read alongside the two broken targets above, this is the useful shape of the result: nobody writes malformed canonicals any more. The failures are not in the syntax, they are in what the tag points at.</p>
+
+<h2>Finding 6: geo-personalisation is the real design decision</h2>
+<p>Seven of the 44 canonical URLs carry a language or region segment in the path. Four are region-personalised versions of what we asked for: <code>stripe.com/cn</code>, <code>coinbase.com/en-ca</code>, <code>squareup.com/us/en</code>, <code>uber.com/ca/en</code>. Because we fetched from a Chinese IP address, those are the variants we were served — and each of them self-canonicalises to the variant it served.</p>
+<p>CNN made the opposite choice: it served us the regional edition and canonicalised back to the global URL. Both are defensible. What matters is that the choice is consistent, that it matches your <a href="https://www.serpprism.com/guides/hreflang-in-the-wild">hreflang annotations</a>, and that one URL produces one canonical regardless of who asks. If your canonical varies with the visitor's IP, then a crawler geo-dispatched differently from your users will consolidate a different set of pages than the set your users actually see.</p>
+
+<h2>What to do with this</h2>
+<p><strong>Emit an absolute, self-referencing canonical on every indexable URL.</strong> One in five famous homepages does not, and the ones that do are not doing anything clever.</p>
+<p><strong>Compare it against the final URL after redirects.</strong> 80% of the pages here redirected before serving content. Auditing against the URL you typed will manufacture cross-domain errors that do not exist.</p>
+<p><strong>Check that the canonical itself returns 200.</strong> Two of 43 did not. It is one curl command and no validator will do it for you.</p>
+<p><strong>Never point a canonical at a redirect.</strong> Point it at where the redirect lands.</p>
+<p><strong>Pick one geo policy and apply it everywhere.</strong> Consolidate globally like CNN, or self-canonicalise per locale like Stripe — but do not let the answer depend on who is asking.</p>
+<p><strong>Generate the tag rather than hand-writing it.</strong> Every failure above is a value problem, not a syntax problem, and values are what templates and generators get right. The <a href="https://www.serpprism.com/tools/meta-tag-generator">meta tag generator</a> on this site emits the canonical alongside the rest of the head from a single URL, so the value cannot drift away from the page it describes.</p>
+
+<h2>Limitations</h2>
+<p>55 pages from 78 hand-picked, well-known domains — representative of famous sites, not of the web. A random sample would look different in both directions.</p>
+<p>The 23 unreadable pages are not a random loss. They are disproportionately large consumer and financial sites that fight crawlers — Amazon, GitHub, the New York Times, PayPal, Target, eBay — so the sample skews toward sites that serve their homepage to anyone who asks. That is a real bias, and it probably makes these numbers look tidier than the web as a whole.</p>
+<p>We read only the initial HTML. A canonical delivered through JavaScript, a sitemap entry, or an HTTP header on a site that omits it from HTML is invisible here; two of the eleven "absent" pages were client-rendered shells where that caveat is live rather than theoretical.</p>
+<p>One fetch, from one IP address, on one day. Because that address is in China we were served regional variants of several sites, which is what made Finding 6 visible — and it also means a different vantage point would produce a slightly different set of canonicals.</p>
+
+<h2>Reproduce it</h2>
+<p>The script and the shared domain list ship with this site. <code>node scripts/survey-canonical.mjs</code> fetches and stores the raw HTML for every domain; <code>--report</code> re-derives every number from that stored HTML without touching the network, and <code>--evidence</code> prints the raw <code>&lt;link&gt;</code> tag behind each verdict. Our <a href="https://www.serpprism.com/guides/robots-txt-in-the-wild">first robots.txt survey</a> covers the same domain list from a different angle.</p>]]></content:encoded>
+  </item>
 </channel>
 </rss>
