@@ -1475,6 +1475,90 @@ const GUIDES = [
       ["Why does this page not list prices for every tool?", "Because we could not confirm them at the source on the day we published. Prices in this category change often and third-party roundups go stale, so we quote only what we verified ourselves and describe the rest by what they are for."],
     ],
   },
+  {
+    slug: "why-pages-arent-indexed",
+    tags: ["seo", "webdev", "beginners", "marketing"],
+    h1: "Why Google Won't Index Your Page: A Checklist",
+    lead: "Indexing problems get diagnosed in the wrong order, so the fixes don't work. Here is the order that separates a code fault from a trust gate.",
+    body: `
+<h2>Two problems that look identical and are not</h2>
+<p>Almost every "my page is not indexed" complaint is one of two things, and they need opposite responses.</p>
+<p>A <strong>code fault</strong> is something wrong with the URL or the page. It is fixable today, and once it is fixed the page becomes eligible. A <strong>trust gate</strong> is Google having fetched the page and decided not to spend index space on it yet. There is nothing to fix, because nothing is broken — and this is where most advice sends people in circles.</p>
+<p>Order matters because the two produce the same symptom in Search Console, and the fix for one does nothing for the other. Re-requesting indexing on a page in a trust gate wastes your one lever. Rewriting the content of a page blocked by a <code>noindex</code> tag is worse than wasted, because the actual problem is still sitting there.</p>
+
+<h2>Step 1 — read the status code, not the page</h2>
+<p>A page that renders in your browser is not proof of anything. Ask the server instead:</p>
+<p><code>curl -sS -o /dev/null -w "%{http_code}" https://example.com/page</code></p>
+<p>What the answer tells you:</p>
+<ul>
+<li><strong>404 or 410</strong> — the page is not indexed by design. Either the URL is wrong or it was deliberately removed. Nothing else in this guide applies.</li>
+<li><strong>5xx</strong> — the server is failing. Google backs off and retries later; it will not index a page it cannot fetch. Fix the server first.</li>
+<li><strong>301 or 302</strong> — you are looking at a different URL from the one you think. Follow the redirect and diagnose the destination.</li>
+<li><strong>200</strong> — good, but keep reading, because 200 is where the real traps live.</li>
+</ul>
+<p>The trap that hides inside a 200 is the <strong>soft 404</strong>: the server reports success and the content is an error page. Our <a href="/guides/robots-txt-in-the-wild">robots.txt survey</a> caught exactly this on two of 78 well-known domains — <code>khanacademy.org</code> and <code>cdc.gov</code> answered 200 with an HTML error page instead of a robots file. A monitor watching status codes sees nothing wrong and a browser shows a page. If your unindexed URL returns 200 and reads like an error, you have your answer.</p>
+
+<h2>Step 2 — is it blocked?</h2>
+<p>Two mechanisms can block indexing, and they are not the same mechanism:</p>
+<ul>
+<li><strong>robots.txt</strong> — a <code>Disallow</code> line stops the crawl. Note that it stops the <em>fetch</em>, not the indexing of a URL Google already knows about from links elsewhere.</li>
+<li><strong>A <code>noindex</code> meta tag or <code>X-Robots-Tag</code> header</strong> — this stops indexing even when the page is crawled normally.</li>
+</ul>
+<p>One combination costs people weeks: <strong>a robots.txt <code>Disallow</code> and a <code>noindex</code> on the same page.</strong> The disallow prevents Google from fetching the page, so Google never sees the <code>noindex</code>, so the URL can still be indexed from links pointing at it. You then remove the <code>noindex</code>, observe no change, and conclude the tag was never the problem. The order to undo it is: remove the <code>Disallow</code> first, let Google fetch the page, confirm it reads the <code>noindex</code>, and only then remove that.</p>
+<p>You can test the first of these with our <a href="/tools/robots-txt-tester">robots.txt tester</a>. For the header, one curl is enough: <code>curl -sSI https://example.com/page | grep -i x-robots-tag</code>. And note that a page with no robots meta at all is normal — <code>index, follow</code> is the default, so its absence is not a fault.</p>
+
+<h2>Step 3 — can it be discovered?</h2>
+<p>Google cannot index a URL it never finds. Three ways a page stays invisible:</p>
+<ul>
+<li><strong>It is not in your sitemap.</strong> Check that the URL appears in <code>sitemap.xml</code> — and that the URL listed there actually exists. A sitemap full of 404s is a signal of neglect rather than of coverage.</li>
+<li><strong>The sitemap is not declared.</strong> Listing it in robots.txt lets a crawler find it without being told twice.</li>
+<li><strong>Nothing links to it.</strong> This is the most common cause of a page that is technically perfect and never gets indexed. A page with no internal links is an orphan, and orphans depend entirely on the sitemap being read.</li>
+</ul>
+<p>That last one is the same class of omission our <a href="/guides/canonical-in-the-wild">canonical survey</a> found on 11 of 55 famous homepages: the tag was simply absent. Nobody forgot on purpose. Omission is the default state of a site nobody audits.</p>
+
+<h2>Step 4 — is it a duplicate?</h2>
+<p>If the page is crawlable, discoverable and unblocked, the next question is whether Google treats it as a second copy of something else. The canonical tag is the instruction that decides this, and the mistake that matters is comparing it against the wrong URL.</p>
+<p>In our canonical survey, 43 of 55 homepages redirected at least once before serving content. If you compare your canonical against the URL you typed rather than the URL you were finally served, you will conclude you have a cross-domain canonical problem when you do not. Compare against the final URL after redirects. Then check that the canonical target itself returns 200 — two of the 43 we tested pointed at URLs that did not, and nothing warns you when that happens.</p>
+<p>Three more duplicates worth ruling out: the http and https versions of the page, the <code>www</code> and non-<code>www</code> versions, and any tracking parameters that create a second address for the same content.</p>
+
+<h2>Step 5 — is the content actually there?</h2>
+<p>If the page is a single-page app, the HTML Google receives may contain almost nothing. Curl the URL and read the raw source rather than the rendered page. If the body is an empty container and a bundle of script tags, that is what a crawler may be evaluating.</p>
+<p>This is not hypothetical. Two of the homepages in our <a href="/guides/serp-snippet-in-the-wild">SERP snippet survey</a> returned client-rendered shells with no title in the served HTML at all. Google can render JavaScript, but it does so on a second pass, and a page that needs rendering is a page that is slower and less certain to be evaluated.</p>
+
+<h2>Step 6 — now it is a trust gate, and there is nothing to fix</h2>
+<p>If every check above passed, the page is eligible and Google is choosing not to index it yet. Search Console describes this in two ways:</p>
+<ul>
+<li><strong>Discovered — currently not indexed</strong>: Google knows the URL exists and has not fetched it yet.</li>
+<li><strong>Crawled — currently not indexed</strong>: Google fetched it and judged it not worth index space at this point.</li>
+</ul>
+<p>Neither is a defect, and neither is a bug you can patch. The usual reasons are thin content, no internal links, a brand-new domain with no authority, or content close enough to pages that already exist that Google does not need another copy of it.</p>
+<p>What actually moves it: content clearly more useful than what is already indexed, internal links from pages that are themselves indexed, genuine external links or mentions, and time. What does not move it: requesting indexing repeatedly, resubmitting the sitemap repeatedly, or rewriting the page for the third time.</p>
+<p>We went through this on our own site. A batch of pages sat in "Crawled — currently not indexed" while every technical check passed: 200 status, self-referencing canonical, index and follow, well over a thousand words each. There was nothing to fix. They drained on their own within days. The useful conclusion is not "wait and hope" — it is that <strong>when all five steps above pass, the correct action is to stop working on that page and go make the rest of the site better.</strong></p>
+
+<h2>What "Request indexing" does, and does not do</h2>
+<p>It queues a fetch. That is the whole of it. It is worth using on a brand-new URL, or on a page you have just fixed, because it shortens the wait for the next crawl.</p>
+<p>It is not worth using on a page that has already been crawled and judged. Requesting indexing does not override a quality decision, there is a practical limit on how often you can use it, and spending it on a trust gate burns the one lever you have for a genuine fault.</p>
+
+<h2>The order, in one table</h2>
+<table class="mini-table">
+<tr><th>#</th><th>Check</th><th>If it fails</th><th>Fixable by you</th></tr>
+<tr><td>1</td><td>Status code</td><td>404, 410, 5xx, or a soft 404</td><td>Yes, today</td></tr>
+<tr><td>2</td><td>robots.txt, noindex, X-Robots-Tag</td><td>Blocked from crawl or from index</td><td>Yes, today</td></tr>
+<tr><td>3</td><td>Sitemap and internal links</td><td>Undiscoverable, or an orphan</td><td>Yes, today</td></tr>
+<tr><td>4</td><td>Canonical and duplicates</td><td>Consolidated into another URL</td><td>Yes, today</td></tr>
+<tr><td>5</td><td>Content present in the served HTML</td><td>Empty shell as seen by a crawler</td><td>Yes, today</td></tr>
+<tr><td>6</td><td>All of the above passed</td><td>A trust gate</td><td><strong>No</strong> — content, links and time</td></tr>
+</table>
+<p>The point of working in this order is that you stop at the first failure, and you stop entirely at step 6. Most people start at step 6 and work backwards, which is why the advice to "just keep improving the content" gets applied to pages that were never crawlable in the first place.</p>`,
+    faq: [
+      ["How long does it take Google to index a new page?", "Anywhere from hours to several weeks. Requesting indexing can shorten the wait for the first crawl. There is no reliable way to force it, and pages sitting in a trust gate are not on a schedule you control."],
+      ["Why is my page crawled but not indexed?", "Google fetched it and decided it was not worth index space yet. That is a judgement about quality and authority, not a technical fault. Check that the page is not thin, that pages Google already indexes link to it, and that it is not a near-duplicate of content you already have."],
+      ["Does requesting indexing guarantee my page will be indexed?", "No. It queues a fetch. If the page passes every technical check the fetch will succeed and the page may still not be indexed, because the decision is about value rather than access."],
+      ["Should I use noindex and a robots.txt Disallow at the same time?", "Not if you want the page removed from the index. The Disallow stops Google fetching the page, so it never reads the noindex. Remove the Disallow first, let the noindex be read, then remove that."],
+      ["Is a sitemap enough to get my pages indexed?", "No. A sitemap helps discovery, but a page with no internal links is still an orphan that depends on the sitemap being read at all. Internal links from pages Google already indexes do more work than a sitemap entry."],
+      ["My page returns 200 and has content. Why is it still not indexed?", "Then you are at step 6, and there is no fault to repair. The page is eligible and Google is deferring. Improve what is on the page, link to it from indexed pages, and give it time — those are the only levers that reliably work."],
+    ],
+  },
 ];
 
 /* =================================================================
