@@ -28,6 +28,7 @@
 - [What 60 Sites Actually Do With hreflang](https://www.serpprism.com/guides/hreflang-in-the-wild): We parsed hreflang on 60 high-traffic homepages. Less than half declare it, and a third skip x-default — the tag Google recommends but never requires.
 - [What 55 Homepages Actually Do With Canonical](https://www.serpprism.com/guides/canonical-in-the-wild): We fetched the homepage of 78 well-known domains and read 55. Four in five declare a canonical; one in five ships a homepage with none at all.
 - [What 59 Homepages Put in Their SERP Snippet](https://www.serpprism.com/guides/serp-snippet-in-the-wild): We fetched 78 well-known homepages and read 59. Every one ships a title; the median is 35 characters, and a fifth of the descriptions run long.
+- [Whatsmyserp Alternatives: Pick by Job, Not Price](https://www.serpprism.com/guides/whatsmyserp-alternatives): Two different jobs hide behind the phrase 'Whatsmyserp alternative', and most lists ignore the difference. Here is what each tool is actually for.
 
 ## Notes for automated readers
 All processing is client-side JavaScript. There is no API; tool behaviour is deterministic given the same input.

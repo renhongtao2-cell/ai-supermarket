@@ -651,5 +651,71 @@
 <h2>Reproduce it</h2>
 <p>The script and the shared domain list ship with this site. <code>node scripts/survey-serp-snippet.mjs</code> fetches and stores the raw HTML for every domain; <code>--report</code> re-derives every number from that stored HTML without touching the network; <code>--sample=N</code> prints raw title and description lines for manual checking; and <code>--outliers</code> lists every title over 60 characters, every description over 160, and every response excluded as a non-homepage. Our <a href="https://www.serpprism.com/guides/robots-txt-in-the-wild">robots.txt</a>, <a href="https://www.serpprism.com/guides/hreflang-in-the-wild">hreflang</a> and <a href="https://www.serpprism.com/guides/canonical-in-the-wild">canonical</a> surveys cover the same domain list from different angles.</p>]]></content:encoded>
   </item>
+  <item>
+    <title>Whatsmyserp Alternatives: Pick by Job, Not Price</title>
+    <link>https://www.serpprism.com/guides/whatsmyserp-alternatives</link>
+    <guid isPermaLink="true">https://www.serpprism.com/guides/whatsmyserp-alternatives</guid>
+    <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
+    <description>Two different jobs hide behind the phrase 'Whatsmyserp alternative', and most lists ignore the difference. Here is what each tool is actually for.</description>
+    <category>seo</category>
+    <category>marketing</category>
+    <category>tools</category>
+    <category>webdev</category>
+    <content:encoded><![CDATA[
+<h2>What Whatsmyserp actually is</h2>
+<p>We read <code>whatsmyserp.com/pricing</code> on 2026-09-26. It lists three plans, all with daily automatic refreshes, unlimited on-demand updates, unlimited domains and white-label reporting:</p>
+<table class="mini-table">
+<tr><th>Plan</th><th>Price / month</th><th>Keywords tracked daily</th><th>Backlink rows</th><th>Keyword lookups / mo</th></tr>
+<tr><td>Starter</td><td>$19.99</td><td>200</td><td>50,000</td><td>100</td></tr>
+<tr><td>Premium</td><td>$29.99</td><td>500</td><td>75,000</td><td>200</td></tr>
+<tr><td>Professional</td><td>$59.99</td><td>1,000</td><td>150,000</td><td>300</td></tr>
+</table>
+<p>Every tier also carries custom alerts and a 30-day money-back guarantee, and every tier lists <strong>API (coming soon)</strong> — so as of the date above there is no API to build on, only a promise of one.</p>
+<p>Its job is narrow and clear: <strong>watch where a set of keywords rank over time</strong>, on a schedule, and produce a report you can hand to someone else. It does that and stops. Two things it does not do are worth knowing before you shop: it does not show you <strong>how your page will look in the SERP</strong> (it reports positions, not snippets), and it does not check your page's <strong>on-page markup</strong> — titles, descriptions, headings, canonical, structured data.</p>
+<p>On a free tier: the pricing page lists three paid plans and no free plan. Several third-party reviews describe a free spot-checker capped at roughly 10 searches a day with no signup, but we could not confirm that on the site itself, so treat the number as second-hand.</p>
+
+<h2>The question most lists skip: which job do you actually have?</h2>
+<p>Two unrelated jobs get bundled into one search phrase, and a list that does not separate them will sell you the wrong thing.</p>
+<p><strong>Job one is tracking.</strong> "Where do I rank for these 200 keywords, and how did that change since last week?" Answering it needs a crawler, a stored history and a schedule. It cannot be done in a browser tab, and no free tool substitutes for it.</p>
+<p><strong>Job two is checking.</strong> "Will my title and description render without being cut off? Is my canonical self-referencing? Is my robots.txt blocking something it should not?" This is a per-page, right-now question. It needs no account, no history and no data set.</p>
+<p>Whatsmyserp is a tool for job one. If job one is your job, nothing free replaces it — you are buying someone's crawler. If job two is your job, a monthly subscription is the wrong purchase.</p>
+
+<h2>If you need rank tracking</h2>
+<p><strong>Google Search Console</strong> — free, and the only source of <em>actual</em> position data for your own site rather than an estimate. Set it up before you buy anything. Its ceiling: your own verified properties only, no competitor tracking, and it will not tell you where you rank for a keyword you do not already appear for.</p>
+<p><strong>SERPROBOT</strong> — its pricing page states one price: $4.99 per month, for 75 keyword updates per 24 hours. That is roughly a quarter of Whatsmyserp's entry tier for a comparable core job. The trade-off is scope: it is a rank checker, not a reporting suite.</p>
+<p><strong>Mangools</strong> — bundles rank tracking with keyword research and SERP analysis, and its pricing table is worth reading closely on one line. The two cheaper tiers update ranks <strong>weekly</strong>; only the top tier is daily. If you are tracking a rollout, a recovery or a short-lived volatility spike, weekly is a different product from what Whatsmyserp sells.</p>
+<p><strong>Ahrefs, Semrush, SE Ranking</strong> — full suites where rank tracking is one feature among many. You are really buying keyword and backlink data. If you already pay for one, check whether its tracker covers your list before adding a second subscription.</p>
+<p><strong>BrightLocal</strong> — built around local pack and Google Business Profile reporting. The right purchase if "rankings" for you means map pack visibility rather than blue links.</p>
+<p>A warning that applies to this page as much as to any other: <strong>prices in this market change and roundups go stale.</strong> We verified Whatsmyserp and SERPROBOT at the source on 2026-09-26 and deliberately do not quote numbers we could not confirm. Check the vendor's own pricing page before you decide.</p>
+
+<h2>If you need to check how a page renders and is marked up</h2>
+<p>This is the job our own tools do, so read this section knowing that we have an interest in it.</p>
+<p>A <strong>SERP preview</strong> renders your title and description at Google's desktop and mobile widths, so you see the truncation before you publish rather than after. Our <a href="https://www.serpprism.com/tools/serp-preview">SERP preview tool</a> does it in the browser with no signup. Mangools ships a comparable simulator; Whatsmyserp does not have one.</p>
+<p><strong>Length is the most common avoidable mistake, and not in the direction people expect.</strong> We measured the homepages of 59 well-known domains in our <a href="https://www.serpprism.com/guides/serp-snippet-in-the-wild">SERP snippet survey</a>: the median title is 35 characters, only 12% exceed 60, and 36% fall under 30. Overlong titles are the minority problem.</p>
+<p><strong>On-page checks</strong> — headings, canonical, robots.txt, structured data, Open Graph, hreflang — are deterministic and per-page. They need no crawler and no data set. Our <a href="https://www.serpprism.com/tools/meta-tag-generator">meta tag generator</a> emits the title, description and canonical from one input so the values cannot drift apart, and the <a href="https://www.serpprism.com/tools/heading-analyzer">heading analyzer</a> and <a href="https://www.serpprism.com/tools/robots-txt-tester">robots.txt tester</a> cover the rest.</p>
+
+<h2>What we are not</h2>
+<p>Being direct, because a comparison page that only flatters its own product is not worth reading.</p>
+<p><strong>SerpPrism is not a rank tracker.</strong> We do not crawl Google, we do not store your positions and we cannot tell you where you ranked last week. If rank tracking is what you need, Whatsmyserp or one of the trackers above is the correct purchase, and we are not an alternative to it.</p>
+<p><strong>Everything runs in your browser.</strong> Nothing you paste is uploaded. That is a privacy property and also a limit: no history, no alerts, no report to send a client.</p>
+<p><strong>There is no account and no quota.</strong> No signup, no daily search meter, no upsell.</p>
+<p><strong>We have no backlink data, no search volume data and no API.</strong> If your question needs any of those, we are the wrong tool and we would rather say so here than have you find out after signing up.</p>
+
+<h2>How to decide in one minute</h2>
+<table class="mini-table">
+<tr><th>What you are trying to answer</th><th>What to use</th></tr>
+<tr><td>Where do I rank, and how has it moved?</td><td>A rank tracker — Whatsmyserp, SERPROBOT, or a suite you already pay for</td></tr>
+<tr><td>Where do I rank for my own site, for free?</td><td>Google Search Console</td></tr>
+<tr><td>Where does a competitor rank?</td><td>A paid tracker; nothing free does this reliably</td></tr>
+<tr><td>How will my title and description look in Google?</td><td>A SERP preview — ours is free and needs no account</td></tr>
+<tr><td>Is my canonical, robots.txt or structured data correct?</td><td>A per-page checker</td></tr>
+<tr><td>Do I need a client-ready white-label report?</td><td>A tracker with white-label reporting — we cannot do this</td></tr>
+</table>
+
+<h2>Limitations of this comparison</h2>
+<p>We verified Whatsmyserp's plans and prices from its own pricing page on 2026-09-26, and SERPROBOT's single price from its own pricing page on the same day. Everything else is described by positioning rather than by number, because we could not confirm those prices at the source and would rather say less than say something wrong.</p>
+<p>Features and prices in this market change monthly. Treat every number here as a dated snapshot, not a standing fact.</p>
+<p>We build the tools recommended in the two sections above, so we have an obvious commercial interest in this page. We have tried to state plainly where we lose. If something here is wrong about a competitor, tell us through the <a href="https://www.serpprism.com/contact">contact page</a> and we will correct it.</p>]]></content:encoded>
+  </item>
 </channel>
 </rss>
