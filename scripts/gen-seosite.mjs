@@ -2814,11 +2814,17 @@ const ogName = (canonicalPath) => {
   return p === "" || p === "/" ? "home" : p.split("/").filter(Boolean).join("-");
 };
 
-function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
+function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "", noindex = false, noAds = false }) {
   const url = SITE + canonicalPath;
   // 社交卡片。2026-09-23 之前 25/25 个页面都是 twitter:card=summary_large_image
   // 却没有 og:image，分享出去是灰框 —— 本站的 open-graph-preview 工具正好判它 bad。
   const ogUrl = `${SITE}/og/${ogName(canonicalPath)}.png`;
+  // ⚠️ 错误页不能放广告 —— AdSense 政策明令禁止在 404 / 无发布者内容的页面上投放。
+  // 2026-09-26 实测：线上 /zzz-nonexistent 返回 404，但页面里带着 adsbygoogle.js。
+  // 这个失败是静默的（页面照常渲染、闸门也不查），只会在人工审核时暴露。
+  const adScript = noAds
+    ? ""
+    : `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2839,14 +2845,14 @@ function layout({ title, desc, canonicalPath, body, jsonLd, bodyAttr = "" }) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${ogUrl}">
 <meta name="twitter:image:alt" content="${esc(title)}">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="${noindex ? "noindex, follow" : "index, follow, max-image-preview:large"}">
 <meta name="author" content="${esc(AUTHOR_NAME)}">
 <link rel="alternate" type="text/plain" href="${SITE}/llms.txt" title="LLM-friendly index">
 <link rel="alternate" type="application/rss+xml" href="${SITE}/feed.xml" title="${BRAND} — Guides">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232f6df6%22/><text y=%22.74em%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2252%22>%F0%9F%94%8D</text></svg>">
 <style>${CSS}</style>
 <script>try{var t=localStorage.getItem("sp-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>
+${adScript}
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ""}
 </head>
 <body${bodyAttr}>
@@ -3335,6 +3341,11 @@ write(
     // /404.html 308 跳到 /404，canonical 指到会跳转的地址等于让 Google
     // 去收录一个 3xx。（2026-09-23 实测 /404.html → 308 → /404）
     canonicalPath: "/404",
+    // ⚠️ 404 页必须同时满足两条：
+    //   noindex —— 错误页不该邀请收录（原先是 index, follow，自相矛盾）
+    //   noAds   —— AdSense 政策禁止在错误页投放（2026-09-26 实测线上带着 adsbygoogle.js）
+    noindex: true,
+    noAds: true,
     body: `<div class="wrap narrow">
   <h1 style="font-size:clamp(25px,3.6vw,34px);margin:8px 0 10px">Page not found</h1>
   <p class="lead">That address does not exist on this site. Nothing is broken — the link is just wrong or the page moved.</p>

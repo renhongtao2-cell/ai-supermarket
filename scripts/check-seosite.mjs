@@ -140,6 +140,26 @@ for (const f of files) {
   if (!/<meta property="og:image:height" content="630">/.test(h)) problems.push(`${f}: 缺少 og:image:height`);
 }
 
+/* ---- [7] 404 页：不得有广告代码，且必须 noindex ----
+   AdSense 政策明令禁止在错误页 / 无发布者内容的页面投放广告。
+   2026-09-26 实测线上 /zzz-nonexistent 返回 404，页面里却带着
+   adsbygoogle.js —— 页面照常渲染、其它检查全过、wrangler 也不报，
+   只在人工审核时暴露。这类「静默的政策违规」必须卡在闸门里。
+
+   同时 404 页原先写的是 index, follow（自相矛盾：404 状态码 + 邀请收录）。 */
+{
+  const p404 = path.join(OUT, "404.html");
+  if (!fs.existsSync(p404)) {
+    problems.push("404.html: 缺失 —— CF Pages 会退化成 soft-404（不存在的路径返回 200）");
+  } else {
+    const h = fs.readFileSync(p404, "utf8");
+    if (/adsbygoogle|pagead2\.googlesyndication\.com/.test(h))
+      problems.push("404.html: 含广告代码 —— AdSense 禁止在错误页投放");
+    const rb = (h.match(/<meta name="robots" content="([^"]*)"/) || [])[1] || "";
+    if (!/noindex/.test(rb)) problems.push(`404.html: robots 应为 noindex, follow（现在 "${rb || "缺失"}"）`);
+  }
+}
+
 /* ---- [7] 标题层级不能跳级 ----
    正文里 h2 直接跳到 h5（或 h1 直接跳到 h3），屏幕阅读器和 outline 工具都会
    当成结构断裂。站上就有一篇讲 heading structure 的指南，自己跳级说不过去。
