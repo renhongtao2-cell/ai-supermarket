@@ -1337,6 +1337,70 @@ const GUIDES = [
     ],
   },
   {
+    slug: "llms-txt-in-the-wild",
+    tags: ["seo", "webdev", "ai", "llm"],
+    h1: "llms.txt Adoption: 22 of 78 Big Sites",
+    lead: "Half of 78 well-known sites return a clean 404 for /llms.txt. Of the 22 that serve one, 11 hide behind a redirect and 4 break their own heading.",
+    body: `
+<h2>How this was measured</h2>
+<p>On 2026-09-27 we requested <code>https://&lt;domain&gt;/llms.txt</code> for the same 78 hand-picked domains used by our other surveys — news, commerce, SaaS, developer tooling, social, streaming, reference, SEO, education, finance, cloud, local and government. Every request was attempted twice: once over a direct connection and once over a local proxy, because many of these domains are unreachable from our network without one.</p>
+<p>A file counted as adopted only if all three things were true: the final status was 200, the response body was not HTML, and the URL we landed on still had <code>/llms.txt</code> as its path. That third condition is the one that matters most and the one most casual checks get wrong. 51 of the 78 domains answered the bare-host URL with a redirect, and 50 of those were ordinary <code>www</code> normalisation — <code>https://bbc.com/llms.txt</code> &rarr; <code>https://www.bbc.com/llms.txt</code>. A checker that does not follow redirects reports 51 sites as "no llms.txt" when 11 of them have one sitting right there.</p>
+<p>A checker that follows redirects blindly is wrong the other way. Two domains redirect <code>/llms.txt</code> somewhere else entirely and serve a 200 when they get there, and both would be counted as adopted by anything that only looks at the status code. We excluded them and list them separately below.</p>
+
+<h2>Finding 1: 28% adoption, and half the sample says 404</h2>
+<p>22 of 78 domains (28.2%) serve a real <code>llms.txt</code>. The remaining 56 break down like this:</p>
+<p><strong>39 (50.0%) return a clean 404.</strong> Not a soft 404, not a redirect — an honest 404. This is the majority answer, and it is worth saying plainly because most writing about llms.txt implies adoption is further along than it is. Half of well-known sites have not engaged with the file at all.</p>
+<p><strong>6 return 200 with an HTML page.</strong> <code>trello.com</code>, <code>reddit.com</code>, <code>pinterest.com</code>, <code>twitch.tv</code>, <code>khanacademy.org</code> and <code>linkedin.com</code>. Five of them are single-page-app or CDN fallback behaviour: the route does not exist, so the framework renders its shell and returns 200. <code>khanacademy.org</code> answered with a 3 KB bot-challenge page, the same response this domain gave in our earlier surveys. <code>linkedin.com</code> is the reverse case: the bare host answered 200 with HTML, but following the redirect produced a 404.</p>
+<p><strong>2 redirect to somewhere that is not llms.txt.</strong> <code>spotify.com</code> lands on <code>/int/why-not-available/</code>, which is a geo block — we fetched from a Chinese IP address, and that page is what Spotify serves this region. <code>cdc.gov</code> lands on <code>/index.html</code>. Both return 200, so both look like success to a status-code check, and neither has a file.</p>
+<p><strong>9 could not be determined.</strong> <code>reuters.com</code> answered 401, <code>bloomberg.com</code>, <code>npmjs.com</code>, <code>netflix.com</code>, <code>yelp.com</code>, <code>nih.gov</code> and <code>gitlab.com</code> answered 403, <code>uber.com</code> answered 406, and <code>washingtonpost.com</code> timed out on both paths. These are excluded from the adoption rate rather than counted as non-adopters, because we genuinely do not know.</p>
+
+<h2>Finding 2: the split is about audience, not about size</h2>
+<p>Aggregate adoption hides the actual signal. Broken out by category, the 78 domains divide almost perfectly along one line — whether the site's content is documentation-shaped:</p>
+<p><code>cloud 4/5</code> (Cloudflare, Vercel, Netlify, Heroku) &middot; <code>finance 4/5</code> (Stripe, PayPal, Coinbase, Square) &middot; <code>SEO 4/7</code> (Semrush, Yoast, Search Engine Journal, Search Engine Land) &middot; <code>SaaS 5/9</code> (GitHub, Atlassian, Slack, Notion, Asana) &middot; <code>commerce 3/6</code> (Etsy, Shopify, Target).</p>
+<p>And on the other side: <code>news 0/8</code> &middot; <code>social 0/6</code> &middot; <code>reference 0/5</code> (Wikipedia, Mozilla, W3C, Archive.org, Wikimedia) &middot; <code>streaming 0/5</code> &middot; <code>local 0/5</code> &middot; <code>government 0/3</code>. Developer tooling is the surprising one at <code>1/9</code> — only <code>nodejs.org</code> of Stack Overflow, npm, Docker, Kubernetes, Python, Rust, Go and MDN.</p>
+<p>The pattern is not company size and it is not technical sophistication. W3C publishes the specs the web runs on and does not serve an llms.txt; Etsy does. What separates the two groups is whether the site has a body of reference material it wants a machine to read. Stripe, Cloudflare, Vercel, Netlify and Heroku all sell to developers and all maintain large documentation sets — a curated index of that documentation is a product asset. A news homepage has no stable canonical set of pages to hand over, and a social feed has even less.</p>
+<p>If you are deciding whether this file is worth publishing, that is the question to ask: do you have a set of pages a machine should read instead of your marketing copy? If yes, you are in the group that adopted. If no, you are in the group that did not, and the group that did not is larger.</p>
+
+<h2>Finding 3: the files are much bigger than the proposal suggests</h2>
+<p>The median file among the 22 adopters is <strong>15,010 bytes</strong> with <strong>74 links</strong>. The smallest is Netlify at 2,818 bytes and 27 links. Both are far larger than the short, hand-curated index the original proposal describes.</p>
+<p>The largest is <code>searchengineland.com</code> at <strong>1,724,189 bytes</strong> across 21,440 lines with <strong>5,351 links</strong> — 115 times the median. That is not a curated index; it is a generated dump of the site's content. Whether an automated export serves the purpose better than a hand-written one is not something this survey can settle, but it is worth naming, because the median is being pulled by files like this and "typical" is doing a lot of work in the number above.</p>
+
+<h2>Finding 4: four files break their own heading with a byte-order mark</h2>
+<p>21 of 22 files open with an H1. 22 of 22 have at least one <code>##</code> section. 10 of 22 include the optional <code>## Optional</code> section the proposal defines. Structurally, adoption means following the format.</p>
+<p>But four files — <code>searchenginejournal.com</code>, <code>searchengineland.com</code>, <code>paypal.com</code> and <code>heroku.com</code> — begin with a UTF-8 byte-order mark (<code>U+FEFF</code>) sitting immediately in front of the <code>#</code>. The character is invisible in an editor, which is exactly why it survives review.</p>
+<p>We tested what it does rather than assuming. Rendered through Python-Markdown, <code>"\\ufeff# Hello"</code> produces <code>&lt;p&gt;&amp;#65279;# Hello&lt;/p&gt;</code> — a paragraph — while <code>"# Hello"</code> produces <code>&lt;h1&gt;Hello&lt;/h1&gt;</code>. The heading is lost. CommonMark, which most markdown parsers implement, does not classify <code>U+FEFF</code> as whitespace, so this is not specific to one library.</p>
+<p>One file has no H1 at all: <code>notion.so</code> opens with a blockquote description and no title heading. That is a deliberate-looking deviation rather than an error, and it is the only one of the 22.</p>
+<p>The fix for the BOM is one setting. Save the file without a BOM — in most editors it is a toggle in the save dialogue, and if the file is generated by a build step, check whether your templating layer is prepending one. Then verify by rendering the first line rather than by looking at it.</p>
+
+<h2>Finding 5: the companion file is rare</h2>
+<p>The proposal describes a second file, <code>llms-full.txt</code>, holding the complete content rather than an index. 5 of the 22 adopters publish it: <code>cloudflare.com</code> (166,160 bytes), <code>atlassian.com</code> (35,333), <code>github.com</code> (28,658), <code>shopify.com</code> (18,863) and <code>coinbase.com</code> (8,926). The other 17 publish the index alone.</p>
+<p>Cloudflare's is eleven times the size of its own llms.txt, which is what the two-file split is supposed to look like. That it is the exception rather than the rule says the pair is being treated as one deliverable, not two.</p>
+
+<h2>What to do with this</h2>
+<p><strong>Check your own site by following redirects and checking the final path.</strong> Half of the adopters here are behind a <code>www</code> redirect, and two non-adopters return 200 on a path that is not <code>/llms.txt</code>. Status code alone will give you the wrong answer in both directions. <code>curl -sSL -o /dev/null -w "%{http_code} %{url_effective}" https://example.com/llms.txt</code> gives you both halves.</p>
+<p><strong>Make sure it is served as text, not rendered by your app.</strong> Six of the sites here serve an HTML shell at a route that does not exist. If your framework catch-all route answers unknown paths with a 200, your llms.txt route is already broken in the same way — and so is every future route you add.</p>
+<p><strong>Save it without a BOM.</strong> Four of 22 failed this, and the failure is invisible in every editor that does not show invisible characters.</p>
+<p><strong>Keep it an index, not a dump.</strong> The median file here is 15 KB and 74 links. The one file that ran to 1.7 MB and 5,351 links is an outlier for a reason: the value of the format is curation, and a dump removes the reason to read it.</p>
+<p><strong>Decide using your content shape, not the trend.</strong> Adoption clusters almost entirely in companies with documentation to hand over. Half of well-known sites have not published one and are not obviously worse off. If you have a stable set of pages a machine should prefer over your marketing copy, publish it — the <a href="/tools/llms-txt-generator">llms.txt generator</a> on this site writes the structure and lets you paste in your own links. If you do not, the 39 sites returning a clean 404 are the more honest precedent.</p>
+
+<h2>Limitations</h2>
+<p>78 hand-picked, well-known domains, not a random sample of the web. Categories are our own manual grouping, several contain five domains, and a single adoption moves a rate by 20 points — read the per-category counts as descriptions of these specific sites, not as estimates of a category.</p>
+<p>All requests came from one IP address in China on one day. That is directly visible in the data: <code>spotify.com</code> redirected to a regional unavailability page, and nine domains answered 401, 403, 406 or nothing. Those nine are excluded rather than counted as non-adopters. A different vantage point would almost certainly find a few more adopters among them.</p>
+<p>We read the initial HTTP response only. A file served by a worker, an edge function or client-side routing would not appear here, and none of the exclusions were tested a second time by a different method.</p>
+<p>The BOM finding was verified with one parser, Python-Markdown. We did not test every parser, so treat "the heading is lost" as demonstrated for that one and likely for other CommonMark implementations, not as measured across all of them.</p>
+<p>Nothing here says llms.txt affects search ranking. It is a proposed convention, not a standard, and no major search engine has said it uses the file. This survey measures what sites do, not what doing it earns you.</p>
+
+<h2>Reproduce it</h2>
+<p>The script and the shared domain list ship with this site. <code>node scripts/survey-llmstxt.mjs</code> fetches every domain and stores the raw responses; <code>--report</code> re-derives every number from that stored data without touching the network; <code>--evidence</code> prints the first three lines of every file judged to be a real llms.txt, which is how we checked the 22 verdicts above; <code>--refollow</code> and <code>--refull</code> re-run individual passes. Our <a href="/guides/robots-txt-in-the-wild">robots.txt</a>, <a href="/guides/canonical-in-the-wild">canonical</a>, <a href="/guides/hreflang-in-the-wild">hreflang</a> and <a href="/guides/ai-crawlers-in-the-wild">AI crawler</a> surveys use the same domain list from different angles.</p>`,
+    faq: [
+      ["Does Google use llms.txt?", "No search engine has said it does. It is a proposed convention for LLM crawlers, not a ranking factor, and half the well-known sites we checked return a 404 for it."],
+      ["Why did my check say a site has no llms.txt when it does?", "Because of www redirects. 11 of the 22 adopters we found only serve the file after a redirect to the www host. Use curl with -L and check the final URL path, not just the status code."],
+      ["What is llms-full.txt for?", "The proposal defines it as the complete content behind the index in llms.txt. Only 5 of the 22 adopters publish it, so in practice most sites ship the index alone."],
+      ["Can a byte-order mark really break my llms.txt?", "Yes. Four of 22 files start with U+FEFF. We rendered '\\ufeff# Hello' through Python-Markdown and got a paragraph, not an h1, because CommonMark does not treat U+FEFF as whitespace."],
+      ["How big should an llms.txt be?", "The median among adopters is 15 KB with 74 links. The largest was 1.7 MB with 5,351 links, which is a generated dump rather than a curated index."],
+    ],
+  },
+  {
     slug: "serp-snippet-in-the-wild",
     tags: ["seo", "webdev", "html", "marketing"],
     h1: "What 59 Homepages Put in Their SERP Snippet",

@@ -151,6 +151,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.serpprism.com/guides/llms-txt-in-the-wild</loc>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.serpprism.com/guides/serp-snippet-in-the-wild</loc>
     <lastmod>2026-09-22</lastmod>
     <changefreq>monthly</changefreq>
