@@ -220,6 +220,16 @@
 /tool/trip-com-tripgenie    /departments/travel    301
 /tool/kai    /departments/education    301
 /tool/squirrel-ai    /departments/education    301
+/tool/sentera    /departments/agriculture    301
+/tool/solinftec-solix    /departments/agriculture    301
+/tool/indigo-ag    /departments/agriculture    301
+/tool/landing-ai    /departments/manufacturing    301
+/tool/senseye    /departments/manufacturing    301
+/tool/aveva    /departments/manufacturing    301
+/tool/kinetix    /departments/gaming    301
+/tool/kaedim    /departments/gaming    301
+/tool/eliseai    /departments/realestate    301
+/tool/mercor    /departments/hr    301
 
 # 兜底：任何其他 /tool/ 路径回首页
 /tool/*    /    301

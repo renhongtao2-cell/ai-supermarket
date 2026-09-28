@@ -281,7 +281,7 @@ const TOOLS = [
   { name: "Climate FieldView", url: "https://climate.com",     dept: "agriculture", pricing: "freemium", desc: "Bayer's field data platform with AI agronomic insights.", tags: ["farming", "fields", "bayer"] },
   { name: "OneSoil",           url: "https://onesoil.ai",      dept: "agriculture", pricing: "free", desc: "Free precision-farming maps built from satellite data.", tags: ["satellite", "fields", "precision"] },
   { name: "Plantix",           url: "https://plantix.net",     dept: "agriculture", pricing: "free", desc: "Diagnose crop diseases from a phone photo in seconds.", tags: ["crops", "disease", "mobile"] },
-  { name: "xarvio Field Manager", url: "https://www.xarvio.com/en", dept: "agriculture", pricing: "freemium", desc: "Agronomic AI for spray timing and field scouting.", tags: ["spraying", "scouting", "agronomy"] },
+  { name: "xarvio Field Manager", url: "https://ag.xarvio.com", dept: "agriculture", pricing: "freemium", desc: "Agronomic AI for spray timing and field scouting.", tags: ["spraying", "scouting", "agronomy"] },
   { name: "Cropwise",          url: "https://www.cropwise.com", dept: "agriculture", pricing: "freemium", desc: "Syngenta's digital agronomy platform with AI advisories.", tags: ["agronomy", "advisory", "syngenta"] },
   { name: "Taranis",           url: "https://www.taranis.com",  dept: "agriculture", pricing: "paid", desc: "Sub-millimeter aerial imagery AI that scouts every plant in a field.", tags: ["scouting", "imagery", "aerial"] },
   { name: "CropX",             url: "https://www.cropx.com",    dept: "agriculture", pricing: "paid", desc: "Soil moisture and evapotranspiration sensors with AI irrigation advice.", tags: ["soil", "irrigation", "sensors"] },
@@ -310,5 +310,25 @@ const TOOLS = [
 
   /* ---------- EDUCATION (extended) ---------- */
   { name: "Kai",              url: "https://kai.ai",           dept: "education", pricing: "freemium", desc: "AI study buddy that turns lectures into notes, quizzes and flashcards.", tags: ["notes", "quizzes", "students"] },
-  { name: "Squirrel AI",      url: "https://www.squirrelai.com", dept: "education", pricing: "paid", desc: "K-12 adaptive learning engine that personalizes every math path in real time.", tags: ["k12", "adaptive", "math"] }
+  { name: "Squirrel AI",      url: "https://www.squirrelai.com", dept: "education", pricing: "paid", desc: "K-12 adaptive learning engine that personalizes every math path in real time.", tags: ["k12", "adaptive", "math"] },
+
+  /* ---------- AGRICULTURE (extended) ---------- */
+  { name: "Sentera",          url: "https://sentera.com",      dept: "agriculture", pricing: "paid", desc: "Multispectral drone and sensor imaging with FieldAgent AI for crop health and weed scouting.", tags: ["drone", "imagery", "scouting"] },
+  { name: "Solinftec Solix",  url: "https://www.solinftec.com/en-us/",    dept: "agriculture", pricing: "paid", desc: "Autonomous Solix field robot that scouts row crops and spot-sprays weeds plant by plant.", tags: ["robotics", "spraying", "autonomous"] },
+  { name: "Indigo Ag",        url: "https://www.indigoag.com", dept: "agriculture", pricing: "paid", desc: "Carbon and sustainability programs that pay growers per acre, backed by AI crop analytics.", tags: ["carbon", "sustainability", "marketplace"] },
+
+  /* ---------- MANUFACTURING (extended) ---------- */
+  { name: "Landing AI",       url: "https://landing.ai",       dept: "manufacturing", pricing: "paid", desc: "Visual inspection suite by Andrew Ng — train defect-detection models from small datasets and deploy at the line.", tags: ["computer-vision", "inspection", "defect"] },
+  { name: "Senseye",          url: "https://www.senseye.io",   dept: "manufacturing", pricing: "paid", desc: "Predictive maintenance AI that auto-builds models for every asset to cut unplanned downtime.", tags: ["maintenance", "iot", "uptime"] },
+  { name: "AVEVA",            url: "https://www.aveva.com",    dept: "manufacturing", pricing: "paid", desc: "Industrial software with AI optimization for process plants — output, energy use and digital twins.", tags: ["process", "digital-twin", "scada"] },
+
+  /* ---------- GAMING (extended) ---------- */
+  { name: "Kinetix",          url: "https://www.kinetix.tech", dept: "gaming", pricing: "freemium", desc: "AI animation engine that turns video clips into game-ready character animations with no rigging.", tags: ["animation", "mocap", "characters"] },
+  { name: "Kaedim",           url: "https://www.kaedim3d.com", dept: "gaming", pricing: "paid", desc: "AI-assisted 2D-to-3D modeling service that delivers production-ready game assets in hours.", tags: ["3d", "assets", "modeling"] },
+
+  /* ---------- REAL ESTATE (extended) ---------- */
+  { name: "EliseAI",          url: "https://www.eliseai.com",  dept: "realestate", pricing: "paid", desc: "AI leasing and resident assistant for property managers — answers inquiries, books tours, automates renewals.", tags: ["leasing", "property", "automation"] },
+
+  /* ---------- HR (extended) ---------- */
+  { name: "Mercor",           url: "https://mercor.com",       dept: "hr", pricing: "freemium", isNew: true, desc: "AI recruiting marketplace that matches vetted candidates to roles with automated interviews.", tags: ["recruiting", "hiring", "matching"] }
 ];
